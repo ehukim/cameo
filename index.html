@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cameo by biosustain</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Cameo</h1>
+        <p>cameo - computer assisted metabolic engineering &amp; optimization</p>
+
+        <p class="view"><a href="https://github.com/biosustain/cameo">View the Project on GitHub <small>biosustain/cameo</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/biosustain/cameo/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/biosustain/cameo/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/biosustain/cameo">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a name="cameo---computer-assisted-metabolic-engineering--optimization" class="anchor" href="#cameo---computer-assisted-metabolic-engineering--optimization"><span class="octicon octicon-link"></span></a>cameo - computer assisted metabolic engineering &amp; optimization</h2>
+
+<p><a href="https://travis-ci.org/biosustain/cameo"><img src="https://travis-ci.org/biosustain/cameo.svg?branch=devel" alt="Build Status"></a>
+<a href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img src="https://coveralls.io/repos/biosustain/cameo/badge.png?branch=devel" alt="Coverage Status"></a>
+<a href="https://gitter.im/biosustain/cameo"><img src="https://badges.gitter.im/biosustain/cameo.png" alt="Gitter chat"></a></p>
+
+<h3>
+<a name="vision" class="anchor" href="#vision"><span class="octicon octicon-link"></span></a>Vision</h3>
+
+<p>Provide a high-level python library to aid <em>in silico</em> strain design process in metabolic engineering projects. The library provides a modular architecture that enables the efficient construction of custom analysis workflows.</p>
+
+<h3>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h3>
+
+<p>This library depends on:</p>
+
+<ul>
+<li>
+<a href="https://github.com/opencobra/cobrapy">cobrapy</a> for constraint-based modeling</li>
+<li>
+<a href="https://github.com/biosustain/optlang">optlang</a> for heuristic optimization and mathematical programming</li>
+</ul><p>Furthermore, the following dependencies are needed: </p>
+
+<ul>
+<li>
+<a href="http://www.numpy.org/">numpy</a> and <a href="http://www.scipy.org/">scipy</a> for obvious reasons.</li>
+<li>
+<a href="http://ipython.org/">IPython</a> is needed for parallel computations and notebook interface.</li>
+<li>
+<a href="http://bokeh.pydata.org/">bokeh</a> is needed for reporting progress and plotting in the IPython notebook interface.</li>
+<li>
+<a href="http://pandas.pydata.org/">pandas</a> is needed because most functions returns results as pandas DataFrames.</li>
+<li>
+<a href="https://pypi.python.org/pypi/inspyred">inspyred</a> for evolutionary computations.</li>
+</ul><p>Computationally heavy methods have been parallelized and can be run on a clusters using the IPython parallelization framework (see example and documentation for more details). The default fallback is python's multiprocessing library.</p>
+
+<h3>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>Run
+    python setup.py install
+to install cameo. Installation is still a little bit shaky, so if it fails due to version mismatches, try to install the appropriate version manually and then retry <code>python setup.py install</code>. For example:
+pip install pytz==2013b --upgrade</p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/biosustain">biosustain</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
