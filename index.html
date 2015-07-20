@@ -5,9 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>Cameo by biosustain</title>
 
-    <link rel="shortcut icon" href="favicon.ico"/>
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -16,9 +15,8 @@
   <body>
     <div class="wrapper">
       <header>
-        <!-- <h1>Cameo</h1> -->
-        <img src="cameo_logo.png" width="100%">
-        <p>Computer Assisted Metabolic Engineering &amp; Optimization</p>
+        <h1>Cameo</h1>
+        <p>cameo - computer assisted metabolic engineering &amp; optimization</p>
 
         <p class="view"><a href="https://github.com/biosustain/cameo">View the Project on GitHub <small>biosustain/cameo</small></a></p>
 
@@ -31,23 +29,88 @@
       </header>
       <section>
         <h2>
-<!-- <a name="cameo---computer-assisted-metabolic-engineering--optimization" class="anchor" href="#cameo---computer-assisted-metabolic-engineering--optimization"><span class="octicon octicon-link"></span></a>cameo - computer assisted metabolic engineering &amp; optimization</h2> -->
+<a id="cameocomputer-aided-metabolic-engineering-and-optimization" class="anchor" href="#cameocomputer-aided-metabolic-engineering-and-optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cameo—Computer Aided Metabolic Engineering and Optimization</h2>
 
-<p>
-<a href='https://readthedocs.org/projects/cameo/?badge=devel'>
-    <img src='https://readthedocs.org/projects/cameo/badge/?version=devel' alt='Documentation Status' />
-</a>
+<p><a href="https://readthedocs.org/projects/cameo/?badge=devel"><img src="https://readthedocs.org/projects/cameo/badge/?version=devel" alt="Documentation Status"></a>
 <a href="https://travis-ci.org/biosustain/cameo"><img src="https://travis-ci.org/biosustain/cameo.svg?branch=devel" alt="Build Status"></a>
-<a href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img src="https://coveralls.io/repos/biosustain/cameo/badge.png?branch=devel" alt="Coverage Status"></a>
-</p>
+<a href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img src="https://coveralls.io/repos/biosustain/cameo/badge.svg?branch=devel" alt="Coverage Status"></a>
+<a href="http://dx.doi.org/10.5281/zenodo.19827"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.19827.svg" alt="DOI"></a></p>
 
 <h3>
-<a name="vision" class="anchor" href="#vision"><span class="octicon octicon-link"></span></a>Vision</h3>
+<a id="what-is-cameo" class="anchor" href="#what-is-cameo" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is Cameo?</h3>
 
-<p>Provide a high-level python library to aid <em>in silico</em> strain design process in metabolic engineering projects. The library provides a modular architecture that enables the efficient construction of custom analysis workflows.</p>
+<p><strong>Cameo</strong> is a high-level python library developed to aid the strain design process in metabolic engineering projects. The library provides a modular framework of simulation methods, strain design methods, access to models, that targets developers that want  custom analysis workflows. </p>
+
+<p>Computationally heavy methods have been parallelized and can be run on a clusters using the IPython parallelization framework (see example and documentation for more details). The default fallback is python's multiprocessing library.</p>
+
+<p>Furthermore, it exposes a high-level API to users that just want to compute promising strain designs. </p>
+
+<p>You got curious? Head over to <a href="http://try.cameo.bio">try.cameo.bio</a> and give it a try.</p>
 
 <h3>
-<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h3>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
+
+<p>Use pip to install Cameo from <a href="https://pypi.python.org/pypi/cameo">PyPI</a> (we recommend doing this inside a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a>).</p>
+
+<pre><code>pip install cameo
+</code></pre>
+
+<p>We highly recommend updating <code>pip</code> beforehand (<code>pip install pip --upgrade</code>).</p>
+
+<p>In case you downloaded the source code, run</p>
+
+<pre><code>pip install -e .  # recommended
+</code></pre>
+
+<p>while you are in the top level directory. You might need to run these commands with administrative privileges if you're not using a virtual environment (using <code>sudo</code> for example).</p>
+
+<h3>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<p>A number of examples are available as static (<a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/tree/master/">nbviewer.ipython.org</a>) or executable Jupyter (née IPython) notebooks (<a href="http://try.cameo.bio">try.cameo.bio</a>).</p>
+
+<h4>
+<a id="high-level-api-for-users" class="anchor" href="#high-level-api-for-users" aria-hidden="true"><span class="octicon octicon-link"></span></a>High-level API (for users)</h4>
+
+<p>Compute strain engineering strategies for a desired product in a number of host organisms using the high-level interface.</p>
+
+<pre><code>from cameo.api import design
+design(product='L-Serine')
+</code></pre>
+
+<p><a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/blob/master/8-high-level-API.ipynb">Output</a></p>
+
+<h4>
+<a id="low-level-api-for-developers" class="anchor" href="#low-level-api-for-developers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Low-level API (for developers)</h4>
+
+<p>Find gene knockout targets using evolutionary computation.</p>
+
+<pre><code>from cameo import models
+from cameo.strain_design.heuristic import GeneKnockoutOptimization
+from cameo.strain_design.heuristic.objective_functions import biomass_product_coupled_yield
+
+model = models.bigg.e_coli_core
+obj = biomass_product_coupled_yield(
+    model.reactions.Biomass_Ecoli_core_w_GAM,
+    model.reactions.EX_succ_e,
+    model.reactions.EX_glc_e)
+ko = GeneKnockoutOptimization(model=model, objective_function=obj)
+ko.run(max_evaluations=50000, n=1, mutation_rate=0.15, indel_rate=0.185)
+</code></pre>
+
+<p><a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/blob/master/6-predict-gene-knockout-strategies.ipynb">Output</a></p>
+
+<p>Predict heterologous pathways for a desired chemical.</p>
+
+<pre><code>from cameo.strain_design import pathway_prediction
+predictor = pathway_prediction.PathwayPredictor(model)
+pathways = predictor.run(product="vanillin")
+</code></pre>
+
+<p><a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/blob/master/7-predict-heterologous-pathways.ipynb">Output</a></p>
+
+<h3>
+<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h3>
 
 <p>This library depends on:</p>
 
@@ -56,7 +119,9 @@
 <a href="https://github.com/opencobra/cobrapy">cobrapy</a> for constraint-based modeling</li>
 <li>
 <a href="https://github.com/biosustain/optlang">optlang</a> for heuristic optimization and mathematical programming</li>
-</ul><p>Furthermore, the following dependencies are needed: </p>
+</ul>
+
+<p>Furthermore, the following dependencies are needed: </p>
 
 <ul>
 <li>
@@ -69,15 +134,7 @@
 <a href="http://pandas.pydata.org/">pandas</a> is needed because most functions returns results as pandas DataFrames.</li>
 <li>
 <a href="https://pypi.python.org/pypi/inspyred">inspyred</a> for evolutionary computations.</li>
-</ul><p>Computationally heavy methods have been parallelized and can be run on a clusters using the IPython parallelization framework (see example and documentation for more details). The default fallback is python's multiprocessing library.</p>
-
-<h3>
-<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h3>
-
-<p>Run
-    python setup.py install
-to install cameo. Installation is still a little bit shaky, so if it fails due to version mismatches, try to install the appropriate version manually and then retry <code>python setup.py install</code>. For example:
-pip install pytz==2013b --upgrade</p>
+</ul>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/biosustain">biosustain</a></p>
