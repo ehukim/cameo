@@ -111,21 +111,43 @@ def construct_universal_model(list_of_db_prefixes):
         model.add_demand(metabolite)
     return model
 
-
 if __name__ == '__main__':
 
     import logging
+    import sys
+    import os
 
     logging.basicConfig(level='INFO')
 
+    if len(sys.argv) > 1:
+        metanetx_version = sys.argv[1]
+    else:
+        metanetx_version = '22_09_15'
+
+    scripts_dir = os.path.abspath(os.path.dirname(__file__))
+    metanetx_dir = os.path.join(scripts_dir, "..", "data", "metanetx_%s" % metanetx_version)
+
     # load metanetx data
-    chem_xref = read_table('../data/metanetx/chem_xref.tsv.gz', skiprows=124, compression='gzip')
+    chem_xref = read_table(os.path.join(metanetx_dir, 'chem_xref.tsv.gz'),
+                           skiprows=next( count for count, line in enumerate(gzip.open(os.path.join(metanetx_dir, 'chem_xref.tsv.gz'), 'rb')) if line[0] != '#')-1,
+                           compression='gzip')
     chem_xref.columns = [name.replace('#', '') for name in chem_xref.columns]
-    reac_xref = read_table('../data/metanetx/reac_xref.tsv.gz', skiprows=107, compression='gzip')
+    
+    reac_xref = read_table(os.path.join(metanetx_dir, 'reac_xref.tsv.gz'),
+                           skiprows=next( count for count, line in enumerate(gzip.open(os.path.join(metanetx_dir, 'reac_xref.tsv.gz'), 'rb')) if line[0] != '#')-1,
+                           compression='gzip')
     reac_xref.columns = [name.replace('#', '') for name in reac_xref.columns]
-    reac_prop = read_table('../data/metanetx/reac_prop.tsv.gz', skiprows=107, compression='gzip', index_col=0)
+    
+    reac_prop = read_table(os.path.join(metanetx_dir, 'reac_prop.tsv.gz'),
+                           skiprows=next( count for count, line in enumerate(gzip.open(os.path.join(metanetx_dir, 'reac_prop.tsv.gz'), 'rb')) if line[0] != '#')-1,
+                           compression='gzip', 
+                           index_col=0)
     reac_prop.columns = [name.replace('#', '') for name in reac_prop.columns]
-    chem_prop = read_table('../data/metanetx/chem_prop.tsv.gz', skiprows=125, compression='gzip', index_col=0,
+    
+    chem_prop = read_table(os.path.join(metanetx_dir, 'chem_prop.tsv.gz'),
+                           skiprows=next( count for count, line in enumerate(gzip.open(os.path.join(metanetx_dir, 'chem_prop.tsv.gz'), 'rb')) if line[0] != '#')-1,
+                           compression='gzip', 
+                           index_col=0,
                            names=['name', 'formula', 'charge', 'mass', 'InChI', 'SMILES', 'source'])
 
     REVERSE_ID_SANITIZE_RULES_SIMPHENY = [(value, key) for key, value in ID_SANITIZE_RULES_SIMPHENY]
@@ -163,18 +185,20 @@ if __name__ == '__main__':
             ID_SANITIZE_RULES_TAB_COMPLETION)
         all2mnx[cleaned_key] = mnx_id
 
+    cameo_data_folder = os.path.join(scripts_dir, '..', 'cameo', 'data')
     metanetx['all2mnx'] = all2mnx
-    with open('../cameo/data/metanetx.pickle', 'wb') as f:
+    with open(os.path.join(cameo_data_folder, 'metanetx.pickle'), 'wb') as f:
         pickle.dump(metanetx, f)
 
     # generate universal reaction models
-    db_combinations = [('bigg',), ('rhea',) , ('bigg', 'rhea'), ('bigg', 'rhea', 'kegg'), ('bigg', 'rhea', 'kegg', 'brenda')]
+    cameo_data_univ_folder = os.path.join(cameo_data_folder,'universal_models')
+    db_combinations = [('bigg',), ('rhea',), ('bigg', 'rhea'), ('bigg', 'rhea', 'kegg'), ('bigg', 'rhea', 'kegg', 'brenda')]
     for db_combination in db_combinations:
         universal_model = construct_universal_model(db_combination)
-        with open('../cameo/data/universal_models/{model_name}.pickle'.format(model_name=universal_model.id) , 'wb') as f:
+        with open(os.path.join(cameo_data_univ_folder, '{model_name}.pickle').format(model_name=universal_model.id) , 'wb') as f:
             pickle.dump(universal_model, f)
 
     chem_prop_filtered = chem_prop[[any([source.startswith(db) for db in ('bigg', 'rhea', 'kegg', 'brenda', 'chebi')]) for source in chem_prop.source]]
     chem_prop_filtered = chem_prop_filtered.dropna(subset=['name'])
-    with gzip.open('../cameo/data/metanetx_chem_prop.pklz','wb') as f:
+    with gzip.open(os.path.join(cameo_data_folder,'metanetx_chem_prop.pklz'),'wb') as f:
         pickle.dump(chem_prop_filtered, f)
