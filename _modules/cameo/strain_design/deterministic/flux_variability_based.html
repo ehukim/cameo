@@ -1,0 +1,890 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.strain_design.deterministic.flux_variability_based &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../../../../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cameo.strain_design.deterministic.flux_variability_based</h1><div class="highlight"><pre>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># Copyright 2014 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Javascript</span>
+
+<span class="kn">from</span> <span class="nn">IProgress</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">pandas</span>
+<span class="kn">from</span> <span class="nn">cameo.visualization</span> <span class="kn">import</span> <span class="n">plotting</span>
+
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">config</span><span class="p">,</span> <span class="n">flux_variability_analysis</span><span class="p">,</span> <span class="n">fba</span>
+
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">Metabolite</span>
+<span class="kn">from</span> <span class="nn">cameo.parallel</span> <span class="kn">import</span> <span class="n">SequentialView</span>
+<span class="kn">from</span> <span class="nn">cameo.core.solver_based_model</span> <span class="kn">import</span> <span class="n">Reaction</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.strain_design</span> <span class="kn">import</span> <span class="n">StrainDesignMethod</span><span class="p">,</span> <span class="n">StrainDesignResult</span><span class="p">,</span> <span class="n">StrainDesign</span>
+<span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="kn">import</span> <span class="n">phenotypic_phase_plane</span><span class="p">,</span> <span class="n">PhenotypicPhasePlaneResult</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
+<span class="kn">from</span> <span class="nn">cameo.ui</span> <span class="kn">import</span> <span class="n">notice</span>
+<span class="kn">from</span> <span class="nn">cameo.visualization.escher_ext</span> <span class="kn">import</span> <span class="n">NotebookBuilder</span>
+
+
+
+<span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+    <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+            <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">IntSlider</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">IntSlider</span>
+
+
+<span class="k">if</span> <span class="n">six</span><span class="o">.</span><span class="n">PY2</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">izip</span> <span class="k">as</span> <span class="n">my_zip</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">my_zip</span> <span class="o">=</span> <span class="nb">zip</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DifferentialFVA&#39;</span><span class="p">,</span> <span class="s1">&#39;FSEOF&#39;</span><span class="p">]</span>
+
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="DifferentialFVA"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.DifferentialFVA">[docs]</a><span class="k">class</span> <span class="nc">DifferentialFVA</span><span class="p">(</span><span class="n">StrainDesignMethod</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Differential flux variability analysis.</span>
+
+<span class="sd">    Compares flux ranges of a reference model to a set of models that</span>
+<span class="sd">    have been parameterized to lie on a grid of evenly spaced points in the</span>
+<span class="sd">    n-dimensional production envelope (n being the number of reaction bounds</span>
+<span class="sd">    to be varied).</span>
+<span class="sd">    ::</span>
+<span class="sd">        production</span>
+<span class="sd">        ^</span>
+<span class="sd">        |---------.          * reference_model</span>
+<span class="sd">        | . . . . .\         . design_space_model</span>
+<span class="sd">        | . . . . . \</span>
+<span class="sd">        | . . . . . .\</span>
+<span class="sd">        | . . . . . . \</span>
+<span class="sd">        o--------------*- &gt;</span>
+<span class="sd">                     growth</span>
+
+<span class="sd">    Overexpression, downregulation, knockout, flux-reversal and other</span>
+<span class="sd">    strain engineering targets can be inferred from the resulting comparison.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    design_space_model : SolverBasedModel</span>
+<span class="sd">        A model whose flux ranges will be scanned.</span>
+<span class="sd">    objective : str or Reaction or Metabolite</span>
+<span class="sd">        A reaction whose flux or a metabolite whose production should be maximized.</span>
+<span class="sd">    variables : iterable, optional</span>
+<span class="sd">        A iterable of n reactions (or IDs) to be scanned (defaults to current objective in design_space_model).</span>
+<span class="sd">    reference_model : SolverBasedModel, optional</span>
+<span class="sd">        A model whose flux ranges represent the reference state and all calculated</span>
+<span class="sd">        flux ranges will be compared to. Defaults to design_space_model constrained</span>
+<span class="sd">        to its maximum objective value.</span>
+<span class="sd">    exclude : iterable</span>
+<span class="sd">        An iterable of reactions (or IDs) to be excluded in the analysis (exchange</span>
+<span class="sd">        reactions will not be analyzed automatically).</span>
+<span class="sd">    normalize_ranges_by : str or Reaction, optional</span>
+<span class="sd">        A reaction ID that specifies a flux by whom all calculated flux ranges</span>
+<span class="sd">        will be normalized by.</span>
+<span class="sd">    points : int, optional</span>
+<span class="sd">        Number of points to lay on the surface of the n-dimensional production envelope (defaults to 10).</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from cameo import models</span>
+<span class="sd">    &gt;&gt;&gt; from cameo.strain_design.deterministic import DifferentialFVA</span>
+<span class="sd">    &gt;&gt;&gt; model = models.bigg.e_coli_core</span>
+<span class="sd">    &gt;&gt;&gt; reference_model = model.copy()</span>
+<span class="sd">    &gt;&gt;&gt; reference_model.reactions.Biomass_Ecoli_core_w_GAM.lower_bound = reference_model.solve().objective_value</span>
+<span class="sd">    &gt;&gt;&gt; diffFVA = DifferentialFVA(design_space_model=model,</span>
+<span class="sd">                          reference_model=reference_model,</span>
+<span class="sd">                          objective=model.reactions.EX_succ_e,</span>
+<span class="sd">                          variables=[model.reactions.Biomass_Ecoli_core_w_GAM],</span>
+<span class="sd">                          normalize_ranges_by=model.reactions.Biomass_Ecoli_core_w_GAM,</span>
+<span class="sd">                          points=10)</span>
+<span class="sd">    &gt;&gt;&gt; result = diffFVA.run(surface_only=True)</span>
+<span class="sd">    &gt;&gt;&gt; result.plot()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design_space_model</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reference_model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="n">normalize_ranges_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DifferentialFVA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span> <span class="o">=</span> <span class="n">design_space_model</span>
+        <span class="k">if</span> <span class="n">reference_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">fix_objective_as_constraint</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span> <span class="o">=</span> <span class="n">reference_model</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">objective</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="n">Metabolite</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">add_demand</span><span class="p">(</span><span class="n">objective</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">add_demand</span><span class="p">(</span><span class="n">objective</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s2">&quot;DM_&quot;</span> <span class="o">+</span> <span class="n">objective</span><span class="o">.</span><span class="n">id</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">objective</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to either provide &#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c1"># try to establish the current objective reaction</span>
+            <span class="n">obj_var_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">free_symbols</span><span class="p">]</span>
+            <span class="n">obj_var_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;_reverse.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">obj_var_ids</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">obj_var_ids</span><span class="p">))</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The current objective in design_space_model is not a single reaction objective. DifferentialFVA does not support composite objectives.&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">obj_var_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">elem</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">+=</span> <span class="p">[</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">exchanges</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">+=</span> <span class="p">[</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">exchanges</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">normalize_ranges_by</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span> <span class="o">=</span> <span class="n">normalize_ranges_by</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span> <span class="o">=</span> <span class="n">normalize_ranges_by</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_interval_overlap</span><span class="p">(</span><span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">interval1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">interval2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">interval2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">interval1</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_interval_gap</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">):</span>
+        <span class="n">overlap</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">_interval_overlap</span><span class="p">(</span><span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">overlap</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">interval1</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">interval2</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="n">overlap</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">overlap</span>
+
+    <span class="k">def</span> <span class="nf">_init_search_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_only</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the grid of points to be scanned within the production envelope.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
+        <span class="n">intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">[[</span><span class="s1">&#39;objective_lower_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;objective_upper_bound&#39;</span><span class="p">]]</span>
+        <span class="n">max_distance</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">max_interval</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span> <span class="ow">in</span> <span class="n">intervals</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">distance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">distance</span> <span class="o">&gt;</span> <span class="n">max_distance</span><span class="p">:</span>
+                <span class="n">max_distance</span> <span class="o">=</span> <span class="n">distance</span>
+                <span class="n">max_interval</span> <span class="o">=</span> <span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span>
+        <span class="n">step_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">max_interval</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">max_interval</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">grid</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">minimal_reference_production</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="p">[</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">]</span>
+            <span class="n">lb</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">objective_lower_bound</span>
+            <span class="k">if</span> <span class="n">improvements_only</span><span class="p">:</span>
+                <span class="n">lb</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">minimal_reference_production</span><span class="p">)</span> <span class="o">+</span> <span class="n">step_size</span>
+            <span class="n">ub</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">objective_upper_bound</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">surface_only</span><span class="p">:</span>
+                <span class="n">coordinate</span> <span class="o">=</span> <span class="n">lb</span>
+                <span class="k">while</span> <span class="n">coordinate</span> <span class="o">&lt;</span> <span class="n">ub</span><span class="p">:</span>
+                    <span class="n">grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">coordinate</span><span class="p">])</span>
+                    <span class="n">coordinate</span> <span class="o">+=</span> <span class="n">step_size</span>
+            <span class="k">if</span> <span class="n">improvements_only</span> <span class="ow">and</span> <span class="n">ub</span> <span class="o">&lt;=</span> <span class="n">minimal_reference_production</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">grid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">ub</span><span class="p">])</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DifferentialFVA.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.DifferentialFVA.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_only</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run the differential flux variability analysis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        surface_only : bool, optional</span>
+<span class="sd">            If only the surface of the n-dimensional production envelope should be scanned (defaults to True).</span>
+<span class="sd">        improvements_only : bool, optional</span>
+<span class="sd">            If only grid points should should be scanned that constitute and improvement in production</span>
+<span class="sd">            over the reference state (defaults to True).</span>
+<span class="sd">        view : SequentialView or MultiprocessingView or ipython.cluster.DirectView, optional</span>
+<span class="sd">            A parallelization view (defaults to SequentialView).</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        pandas.Panel</span>
+<span class="sd">            A pandas Panel containing a results DataFrame for every grid point scanned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+            <span class="c1"># Make sure that the design_space_model is initialized to its original state later</span>
+            <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+                <span class="n">reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+                <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">))</span>
+                <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
+            <span class="n">target_reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">target_reaction</span><span class="p">,</span> <span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="n">target_reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">))</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">target_reaction</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">,</span> <span class="n">target_reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">view</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">default_view</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
+
+            <span class="n">included_reactions</span> <span class="o">=</span> <span class="p">[</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">reactions</span> <span class="k">if</span>
+                                  <span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">]</span>
+            <span class="c1"># FIXME: reference flux ranges should be for a fraction (say 0.75) of the original objective</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span> <span class="o">=</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="n">included_reactions</span><span class="p">,</span>
+                                                                   <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span> <span class="n">remove_cycles</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">data_frame</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_search_grid</span><span class="p">(</span><span class="n">surface_only</span><span class="o">=</span><span class="n">surface_only</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="n">improvements_only</span><span class="p">)</span>
+
+            <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">))</span>
+            <span class="n">func_obj</span> <span class="o">=</span> <span class="n">_DifferentialFvaEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span>
+                                                 <span class="n">included_reactions</span><span class="p">)</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">progress</span><span class="p">(</span><span class="n">view</span><span class="o">.</span><span class="n">imap</span><span class="p">(</span><span class="n">func_obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="o">.</span><span class="n">iterrows</span><span class="p">())))</span>
+
+        <span class="n">solutions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="nb">tuple</span><span class="p">(</span><span class="n">point</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()),</span> <span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="n">fva_result</span><span class="p">)</span> <span class="ow">in</span> <span class="n">results</span><span class="p">)</span>
+        <span class="n">reference_intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="p">[[</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+        <span class="k">for</span> <span class="n">sol</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+            <span class="n">intervals</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[[</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span>
+            <span class="n">gaps</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval_gap</span><span class="p">(</span><span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">)</span> <span class="k">for</span> <span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span> <span class="ow">in</span>
+                    <span class="n">my_zip</span><span class="p">(</span><span class="n">reference_intervals</span><span class="p">,</span> <span class="n">intervals</span><span class="p">)]</span>
+            <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;gaps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaps</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sol</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+                <span class="n">normalized_intervals</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[[</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">sol</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">[</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span><span class="p">]</span>
+                <span class="n">normalized_gaps</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval_gap</span><span class="p">(</span><span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">)</span> <span class="k">for</span> <span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span> <span class="ow">in</span>
+                                   <span class="n">my_zip</span><span class="p">(</span><span class="n">reference_intervals</span><span class="p">,</span> <span class="n">normalized_intervals</span><span class="p">)]</span>
+                <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;normalized_gaps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_gaps</span>
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+            <span class="n">ko_selection</span> <span class="o">=</span> <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
+                              <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
+                              <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
+                              <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;KO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ko_selection</span><span class="o">.</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;KO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+            <span class="n">flux_reversal_selection</span> <span class="o">=</span> <span class="n">df</span><span class="p">[((</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span>
+                                          <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)))]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flux_reversal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">flux_reversal_selection</span><span class="o">.</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;flux_reversal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+            <span class="n">flux_reversal_selection</span> <span class="o">=</span> <span class="n">df</span><span class="p">[((</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">))]</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;suddenly_essential&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">flux_reversal_selection</span><span class="o">.</span><span class="n">index</span><span class="p">][</span><span class="s1">&#39;suddenly_essential&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="c1"># solutions[&#39;reference_flux_ranges&#39;] = self.reference_flux_ranges</span>
+        <span class="k">return</span> <span class="n">DifferentialFVAResult</span><span class="p">(</span><span class="n">pandas</span><span class="o">.</span><span class="n">Panel</span><span class="p">(</span><span class="n">solutions</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">DifferentialFVAResult</span><span class="p">(</span><span class="n">PhenotypicPhasePlaneResult</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solutions</span><span class="p">,</span> <span class="n">phase_plane</span><span class="p">,</span> <span class="n">reference_fva</span><span class="p">,</span> <span class="n">variables_ids</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phase_plane</span><span class="p">,</span> <span class="n">PhenotypicPhasePlaneResult</span><span class="p">):</span>
+            <span class="n">phase_plane</span> <span class="o">=</span> <span class="n">phase_plane</span><span class="o">.</span><span class="n">_phase_plane</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DifferentialFVAResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">phase_plane</span><span class="p">,</span> <span class="n">variables_ids</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_fva</span> <span class="o">=</span> <span class="n">reference_fva</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span> <span class="o">=</span> <span class="n">solutions</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="s2">&quot;upper_bound&quot;</span><span class="p">,</span> <span class="s2">&quot;gaps&quot;</span><span class="p">,</span> <span class="s2">&quot;normalized_gaps&quot;</span><span class="p">,</span> <span class="s2">&quot;KO&quot;</span><span class="p">,</span> <span class="s2">&quot;flux_reversal&quot;</span><span class="p">,</span> <span class="s2">&quot;suddenly_essential&quot;</span><span class="p">]</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="p">)))</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">rows</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">columns</span><span class="p">)))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="n">values</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">item</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;KO&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;KO&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flux_reversal&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;flux_reversal&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;suddenly_essential&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;suddenly_essential&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">notice</span><span class="p">(</span><span class="s2">&quot;Multi-dimensional plotting is not supported&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_fva</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Compare WT solution </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span>
+            <span class="n">fva_res1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_fva</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
+            <span class="n">fva_res2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
+            <span class="n">plotting</span><span class="o">.</span><span class="n">plot_2_flux_variability_analysis</span><span class="p">(</span><span class="n">fva_res1</span><span class="p">,</span> <span class="n">fva_res2</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span>
+                                                      <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;DifferentialFVA Result&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">title</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+            <span class="n">plotting</span><span class="o">.</span><span class="n">plot_production_envelope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phase_plane</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                              <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+                                              <span class="n">points</span><span class="o">=</span><span class="nb">zip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">points_colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">_data_frame</span><span class="p">(</span><span class="n">solution</span><span class="p">):</span>
+            <span class="n">notice</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">solution</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">notice</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%f</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">solution</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">solution</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">interact</span><span class="p">(</span><span class="n">_data_frame</span><span class="p">,</span> <span class="n">solution</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="p">)])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span>
+
+    <span class="k">def</span> <span class="nf">display_on_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">_MapView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="p">,</span> <span class="n">map_name</span><span class="p">)</span>
+        <span class="n">slider</span> <span class="o">=</span> <span class="n">IntSlider</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="p">),</span> <span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">slider</span><span class="o">.</span><span class="n">on_trait_change</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">view</span><span class="p">(</span><span class="n">slider</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="s2">&quot;value&quot;</span><span class="p">)[</span><span class="s2">&quot;value&quot;</span><span class="p">]))</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">slider</span><span class="p">)</span>
+        <span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_MapView</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solutions</span><span class="p">,</span> <span class="n">map_name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span> <span class="o">=</span> <span class="n">solutions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">map_name</span> <span class="o">=</span> <span class="n">map_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">reaction_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">gaps</span><span class="p">)</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_builder</span><span class="p">(</span><span class="n">reaction_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">reaction_data</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_header</span><span class="p">(</span><span class="n">axis</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">update_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">Javascript</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            jQuery(&quot;#objective-</span><span class="si">%s</span><span class="s2">&quot;).text(&quot;</span><span class="si">%f</span><span class="s2">&quot;);</span><span class="se">\n</span><span class="s2"></span>
+<span class="s2">            jQuery(&quot;#variable-</span><span class="si">%s</span><span class="s2">&quot;).text(&quot;</span><span class="si">%f</span><span class="s2">&quot;);</span>
+<span class="s2">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header_id</span><span class="p">,</span> <span class="n">objective</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_id</span><span class="p">,</span> <span class="n">variable</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+    <span class="k">def</span> <span class="nf">_init_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_data</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">variable</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">uuid4</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">)</span>
+        <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;p&gt;</span>
+<span class="s2">            </span><span class="si">%s</span><span class="s2">&amp;nbsp;&lt;span id=&quot;objective-</span><span class="si">%s</span><span class="s2">&quot;&gt;</span><span class="si">%f</span><span class="s2">&lt;/span&gt;&lt;/br&gt;</span>
+<span class="s2">            </span><span class="si">%s</span><span class="s2">&amp;nbsp;&lt;span id=&quot;variable-</span><span class="si">%s</span><span class="s2">&quot;&gt;</span><span class="si">%f</span><span class="s2">&lt;/span&gt;</span>
+<span class="s2">        &lt;/p&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">objective</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_id</span><span class="p">,</span> <span class="n">objective</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+               <span class="n">variable</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_id</span><span class="p">,</span> <span class="n">variable</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="n">NotebookBuilder</span><span class="p">(</span><span class="n">map_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">map_name</span><span class="p">,</span>
+                                       <span class="n">reaction_data</span><span class="o">=</span><span class="n">reaction_data</span><span class="p">,</span>
+                                       <span class="n">reaction_scale</span><span class="o">=</span><span class="p">[</span>
+                                           <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+                                           <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;median&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;grey&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">7</span><span class="p">),</span>
+                                           <span class="nb">dict</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;max&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">20</span><span class="p">)])</span>
+        <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">display_in_notebook</span><span class="p">())</span>
+
+
+<span class="k">class</span> <span class="nc">_DifferentialFvaEvaluator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">included_reactions</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="n">variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">objective</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">included_reactions</span> <span class="o">=</span> <span class="n">included_reactions</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_bounds</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">included_reactions</span><span class="p">,</span> <span class="n">remove_cycles</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                    <span class="n">view</span><span class="o">=</span><span class="n">SequentialView</span><span class="p">()))</span>
+
+    <span class="k">def</span> <span class="nf">_set_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
+            <span class="n">reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
+            <span class="n">bound</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">bound</span><span class="p">,</span> <span class="n">bound</span>
+        <span class="n">target_reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+        <span class="n">target_bound</span> <span class="o">=</span> <span class="n">point</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">]</span>
+        <span class="n">target_reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">target_reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">target_bound</span><span class="p">,</span> <span class="n">target_bound</span>
+
+
+<div class="viewcode-block" id="FSEOF"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.FSEOF">[docs]</a><span class="k">class</span> <span class="nc">FSEOF</span><span class="p">(</span><span class="n">StrainDesignMethod</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Performs a Flux Scanning based on Enforced Objective Flux (FSEOF) analysis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : SolverBasedModel</span>
+<span class="sd">    enforced_reaction : Reaction</span>
+<span class="sd">        The flux that will be enforced. Reaction object or reaction id string.</span>
+<span class="sd">    primary_objective : Reaction</span>
+<span class="sd">        The primary objective flux (defaults to model.objective).</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] H. S. Choi, S. Y. Lee, T. Y. Kim, and H. M. Woo, &#39;In silico identification of gene amplification targets</span>
+<span class="sd">    for improvement of lycopene production.,&#39; Appl Environ Microbiol, vol. 76, no. 10, pp. 3097–3105, May 2010.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="p">,</span> <span class="n">primary_objective</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FSEOF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enforced_reaction</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">enforced_reaction</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enforced_reaction</span> <span class="o">=</span> <span class="n">enforced_reaction</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The reaction &quot;</span><span class="o">+</span><span class="n">enforced_reaction</span><span class="o">.</span><span class="n">id</span><span class="o">+</span><span class="s2">&quot; does not belong to the model&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">enforced_reaction</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">enforced_reaction</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">enforced_reaction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">enforced_reaction</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No reaction &quot;</span><span class="o">+</span><span class="n">enforced_reaction</span><span class="o">+</span><span class="s2">&quot; found in model&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Enforced reaction must be a Reaction or reaction id&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">primary_objective</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">primary_objective</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">primary_objective</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span> <span class="o">=</span> <span class="n">primary_objective</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The reaction &quot;</span><span class="o">+</span><span class="n">primary_objective</span><span class="o">.</span><span class="n">id</span><span class="o">+</span><span class="s2">&quot; does not belong to the model&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">primary_objective</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">primary_objective</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">primary_objective</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No reaction &quot;</span><span class="o">+</span><span class="n">primary_objective</span><span class="o">+</span><span class="s2">&quot; found in the model&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">primary_objective</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span> <span class="o">=</span> <span class="n">primary_objective</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Primary objective must be an Objective, Reaction or a string&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="FSEOF.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.FSEOF.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_enforced_flux</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">granularity</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="n">solution_method</span><span class="o">=</span><span class="n">fba</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs a Flux Scanning based on Enforced Objective Flux (FSEOF) analysis.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_enforced_flux : float, optional</span>
+<span class="sd">            The maximal flux of secondary_objective that will be enforced, relative to the theoretical maximum (defaults to 0.9).</span>
+<span class="sd">        granularity : int, optional</span>
+<span class="sd">            The number of enforced flux levels (defaults to 10).</span>
+<span class="sd">        exclude : Iterable of reactions or reaction ids that will not be included in the output.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        FseofResult</span>
+<span class="sd">            An object containing the identified reactions and the used parameters.</span>
+
+<span class="sd">        References</span>
+<span class="sd">        ----------</span>
+<span class="sd">        .. [1] H. S. Choi, S. Y. Lee, T. Y. Kim, and H. M. Woo, &#39;In silico identification of gene amplification targets</span>
+<span class="sd">        for improvement of lycopene production.,&#39; Appl Environ Microbiol, vol. 76, no. 10, pp. 3097–3105, May 2010.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="n">primary_objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span>
+        <span class="n">enforced_reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">enforced_reaction</span>
+
+        <span class="n">ndecimals</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">ndecimals</span>
+
+        <span class="c1"># Exclude list</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">exclude</span><span class="p">)</span> <span class="o">+</span> <span class="n">model</span><span class="o">.</span><span class="n">exchanges</span>
+        <span class="n">exclude_ids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">enforced_reaction</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reaction</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
+                <span class="n">exclude_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">exclude_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s2">&quot;objective&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">))</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="p">,</span> <span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">))</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="p">,</span> <span class="s2">&quot;upper_bound&quot;</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
+
+            <span class="c1"># Find initial flux of enforced reaction</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">primary_objective</span>
+            <span class="n">initial_solution</span> <span class="o">=</span> <span class="n">solution_method</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+            <span class="n">initial_fluxes</span> <span class="o">=</span> <span class="n">initial_solution</span><span class="o">.</span><span class="n">fluxes</span>
+            <span class="n">initial_flux</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">initial_fluxes</span><span class="p">[</span><span class="n">enforced_reaction</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">ndecimals</span><span class="p">)</span>
+
+            <span class="c1"># Find theoretical maximum of enforced reaction</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">enforced_reaction</span>
+            <span class="n">max_theoretical_flux</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">solution_method</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">fluxes</span><span class="p">[</span><span class="n">enforced_reaction</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">ndecimals</span><span class="p">)</span>
+
+            <span class="n">max_flux</span> <span class="o">=</span> <span class="n">max_theoretical_flux</span> <span class="o">*</span> <span class="n">max_enforced_flux</span>
+
+            <span class="c1"># Calculate enforcement levels</span>
+            <span class="n">enforcements</span> <span class="o">=</span> <span class="p">[</span><span class="n">initial_flux</span> <span class="o">+</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_flux</span> <span class="o">-</span> <span class="n">initial_flux</span><span class="p">)</span> <span class="o">/</span> <span class="n">granularity</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">granularity</span><span class="p">)]</span>
+
+            <span class="c1"># FSEOF results</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="p">{</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="p">[</span><span class="nb">round</span><span class="p">(</span><span class="n">initial_fluxes</span><span class="p">[</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">],</span> <span class="n">ndecimals</span><span class="p">)]</span> <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">}</span>
+
+            <span class="c1"># Scan fluxes for different levels of enforcement</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">primary_objective</span>
+            <span class="k">for</span> <span class="n">enforcement</span> <span class="ow">in</span> <span class="n">enforcements</span><span class="p">:</span>
+                <span class="n">enforced_reaction</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">enforcement</span>
+                <span class="n">enforced_reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">enforcement</span>
+                <span class="n">solution</span> <span class="o">=</span> <span class="n">solution_method</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">reaction_id</span><span class="p">,</span> <span class="n">flux</span> <span class="ow">in</span> <span class="n">solution</span><span class="o">.</span><span class="n">fluxes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">results</span><span class="p">[</span><span class="n">reaction_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">flux</span><span class="p">,</span> <span class="n">ndecimals</span><span class="p">))</span>
+
+        <span class="c1"># Test each reaction</span>
+        <span class="n">fseof_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">reaction_id</span><span class="p">,</span> <span class="n">fluxes</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">reaction_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exclude_ids</span> \
+                    <span class="ow">and</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)),</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)))</span> <span class="o">&gt;</span> <span class="nb">abs</span><span class="p">(</span><span class="n">fluxes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> \
+                    <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="n">fluxes</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">fseof_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reaction_id</span><span class="p">))</span>
+
+        <span class="n">reaction_results</span> <span class="o">=</span> <span class="p">{</span><span class="n">rea</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">results</span><span class="p">[</span><span class="n">rea</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="k">for</span> <span class="n">rea</span> <span class="ow">in</span> <span class="n">fseof_reactions</span><span class="p">}</span>
+        <span class="n">run_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">max_enforced_flux</span><span class="o">=</span><span class="n">max_enforced_flux</span><span class="p">,</span>
+                        <span class="n">granularity</span><span class="o">=</span><span class="n">granularity</span><span class="p">,</span>
+                        <span class="n">solution_method</span><span class="o">=</span><span class="n">solution_method</span><span class="p">,</span>
+                        <span class="n">exclude</span><span class="o">=</span><span class="n">exclude</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">FSEOFResult</span><span class="p">(</span><span class="n">fseof_reactions</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">primary_objective</span><span class="p">,</span> <span class="p">[</span><span class="n">initial_flux</span><span class="p">]</span><span class="o">+</span><span class="n">enforcements</span><span class="p">,</span> <span class="n">reaction_results</span><span class="p">,</span> <span class="n">run_args</span><span class="p">)</span></div></div>
+
+
+<span class="k">class</span> <span class="nc">FSEOFResult</span><span class="p">(</span><span class="n">StrainDesignResult</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Object for storing a FSEOF result.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    reactions: A list of the reactions that are found to increase with product formation.</span>
+<span class="sd">    enforced_levels: A list of the fluxes that the enforced reaction was constrained to.</span>
+<span class="sd">    data_frame: A pandas DataFrame containing the fluxes for every reaction for each enforced flux.</span>
+<span class="sd">    run_args: The arguments that the analysis was run with. To repeat do &#39;FSEOF.run(**FSEOFResult.run_args)&#39;.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reactions</span><span class="p">,</span> <span class="n">enforced_reaction</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">primary_objective</span><span class="p">,</span> <span class="n">enforced_levels</span><span class="p">,</span> <span class="n">reaction_results</span><span class="p">,</span> <span class="n">run_args</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FSEOFResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span> <span class="o">=</span> <span class="n">reactions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enforced_reaction</span> <span class="o">=</span> <span class="n">enforced_reaction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_primary_objective</span> <span class="o">=</span> <span class="n">primary_objective</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_run_args</span> <span class="o">=</span> <span class="n">run_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enforced_levels</span> <span class="o">=</span> <span class="n">enforced_levels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reaction_results</span> <span class="o">=</span> <span class="n">reaction_results</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">)</span>
+
+    <span class="c1"># TODO: Make an iterator that returns designs from the different enforced levels</span>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">level</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enforced_levels</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">knockouts</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reaction_results</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">over_expression</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reaction_results</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+                <span class="n">down_regulation</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">r</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reaction_results</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]}</span>
+                <span class="k">yield</span> <span class="n">StrainDesign</span><span class="p">(</span><span class="n">knockouts</span><span class="o">=</span><span class="n">knockouts</span><span class="p">,</span> <span class="n">over_expression</span><span class="o">=</span><span class="n">over_expression</span><span class="p">,</span>
+                                   <span class="n">down_regulation</span><span class="o">=</span><span class="n">down_regulation</span><span class="p">,</span> <span class="n">manipulation_type</span><span class="o">=</span><span class="s2">&quot;reactions&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">enforced_reaction</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">enforced_reaction</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">reactions</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">reactions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">enforced_reaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enforced_reaction</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">primary_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primary_objective</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">run_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_args</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">enforced_levels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enforced_levels</span>
+
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">&lt;strong&gt;Model:&lt;/strong&gt; </span><span class="si">%(model)s</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">&lt;strong&gt;Enforced objective:&lt;/strong&gt; </span><span class="si">%(objective)s</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">&lt;strong&gt;Primary objective:&lt;/strong&gt; </span><span class="si">%(primary)s</span><span class="s2">&lt;/br&gt;</span>
+<span class="s2">&lt;br&gt;</span>
+<span class="s2">&lt;strong&gt;Reaction fluxes&lt;/strong&gt;&lt;br&gt;&lt;br&gt;</span>
+<span class="si">%(df)s</span><span class="s2"></span>
+<span class="s2">&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">template</span> <span class="o">%</span> <span class="p">{</span><span class="s1">&#39;objective&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enforced_reaction</span><span class="p">),</span>
+                           <span class="s1">&#39;reactions&#39;</span><span class="p">:</span> <span class="s2">&quot;&lt;br&gt;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">),</span>
+                           <span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+                           <span class="s1">&#39;primary&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_primary_objective</span><span class="p">),</span>
+                           <span class="s1">&#39;df&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reaction_results</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+        <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">enf</span><span class="p">)</span> <span class="k">for</span> <span class="n">enf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enforced_levels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">df</span>
+
+
+<span class="c1"># if __name__ == &#39;__main__&#39;:</span>
+<span class="c1">#     from cameo.io import load_model</span>
+<span class="c1">#     from cameo.util import Timer</span>
+<span class="c1">#</span>
+<span class="c1">#     model = load_model(</span>
+<span class="c1">#         &#39;/Users/niko/Arbejder/Dev/cameo/tests/data/EcoliCore.xml&#39;)</span>
+<span class="c1">#</span>
+<span class="c1">#     solution = model.solve()</span>
+<span class="c1">#     max_growth = solution.f</span>
+<span class="c1">#</span>
+<span class="c1">#     reference_model = model.copy()</span>
+<span class="c1">#     biomass_rxn = model.reactions.get_by_id(&#39;Biomass_Ecoli_core_N_LPAREN_w_FSLASH_GAM_RPAREN__Nmet2&#39;)</span>
+<span class="c1">#     reference_model.reactions.get_by_id(</span>
+<span class="c1">#         &#39;Biomass_Ecoli_core_N_LPAREN_w_FSLASH_GAM_RPAREN__Nmet2&#39;).lower_bound = max_growth</span>
+<span class="c1">#</span>
+<span class="c1">#     diffFVA = DifferentialFVA(design_space_model=model,</span>
+<span class="c1">#                               reference_model=reference_model,</span>
+<span class="c1">#                               objective=&#39;EX_succ_LPAREN_e_RPAREN_&#39;,</span>
+<span class="c1">#                               variables=[&#39;Biomass_Ecoli_core_N_LPAREN_w_FSLASH_GAM_RPAREN__Nmet2&#39;,</span>
+<span class="c1">#                                          &#39;EX_o2_LPAREN_e_RPAREN_&#39;],</span>
+<span class="c1">#                               normalize_ranges_by=&#39;Biomass_Ecoli_core_N_LPAREN_w_FSLASH_GAM_RPAREN__Nmet2&#39;,</span>
+<span class="c1">#                               points=10</span>
+<span class="c1">#                               )</span>
+<span class="c1">#     result = diffFVA.run(surface_only=True, view=SequentialView())</span>
+<span class="c1">#</span>
+<span class="c1">#     with Timer(&#39;Sequential&#39;):</span>
+<span class="c1">#         result = diffFVA.run(surface_only=True, view=SequentialView())</span>
+<span class="c1">#     with Timer(&#39;Multiprocessing&#39;):</span>
+<span class="c1">#         result = diffFVA.run(surface_only=True, view=MultiprocessingView())</span>
+        <span class="c1"># try:</span>
+        <span class="c1"># from IPython.parallel import Client</span>
+        <span class="c1">#     client = Client()</span>
+        <span class="c1">#     view = client.load_balanced_view()</span>
+        <span class="c1">#     view.block = True</span>
+        <span class="c1"># except:</span>
+        <span class="c1">#     pass</span>
+        <span class="c1"># else:</span>
+        <span class="c1">#     with Timer(&#39;IPython&#39;):</span>
+        <span class="c1">#         result = diffFVA.run(surface_only=False, view=view)</span>
+
+        <span class="c1"># model = load_model(</span>
+        <span class="c1">#     &#39;/Users/niko/Arbejder/Dev/cameo/tests/data/iJO1366.xml&#39;)</span>
+        <span class="c1">#</span>
+        <span class="c1"># reference_model = model.copy()</span>
+        <span class="c1"># biomass_rxn = reference_model.reactions.get_by_id(&#39;Ec_biomass_iJO1366_core_53p95M&#39;)</span>
+        <span class="c1"># biomass_rxn.lower_bound = .9 * reference_model.solve().f</span>
+        <span class="c1">#</span>
+        <span class="c1">#</span>
+        <span class="c1"># diffFVA = DifferentialFVA(model, reference_model, &#39;EX_trp_DASH_L_LPAREN_e_RPAREN_&#39;, [&#39;Ec_biomass_iJO1366_core_53p95M&#39;],</span>
+        <span class="c1">#                       normalize_ranges_by=&#39;Ec_biomass_iJO1366_core_53p95M&#39;, points=10)</span>
+        <span class="c1"># with Timer(&#39;Sequential&#39;):</span>
+        <span class="c1">#     result = diffFVA.run(surface_only=True, view=SequentialView())</span>
+        <span class="c1"># with Timer(&#39;Multiprocessing&#39;):</span>
+        <span class="c1">#     result = diffFVA.run(surface_only=True, view=MultiprocessingView())</span>
+        <span class="c1"># try:</span>
+        <span class="c1">#     from IPython.parallel import Client</span>
+        <span class="c1">#     client = Client()</span>
+        <span class="c1">#     view = client.load_balanced_view()</span>
+        <span class="c1">#     with Timer(&#39;IPython&#39;):</span>
+        <span class="c1">#         result = diffFVA.run(surface_only=True, view=())</span>
+        <span class="c1"># except:</span>
+        <span class="c1">#     pass</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../../index.html">
+    <img class="logo" src="../../../../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../API.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

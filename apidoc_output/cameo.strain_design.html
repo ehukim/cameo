@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.strain_design package &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../index.html" />
+    <link rel="up" title="cameo package" href="cameo.html" />
+    <link rel="next" title="cameo.strain_design.deterministic package" href="cameo.strain_design.deterministic.html" />
+    <link rel="prev" title="cameo.network_analysis package" href="cameo.network_analysis.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cameo-strain-design-package">
+<h1>cameo.strain_design package<a class="headerlink" href="#cameo-strain-design-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cameo.strain_design.deterministic.html">cameo.strain_design.deterministic package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.deterministic.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.deterministic.html#module-cameo.strain_design.deterministic.flux_variability_based">cameo.strain_design.deterministic.flux_variability_based module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.deterministic.html#module-cameo.strain_design.deterministic.linear_programming">cameo.strain_design.deterministic.linear_programming module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.deterministic.html#module-cameo.strain_design.deterministic">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cameo.strain_design.heuristic.html">cameo.strain_design.heuristic package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html">cameo.strain_design.heuristic.evolutionary package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html">cameo.strain_design.heuristic.evolutionary.multiprocess package</a><ul>
+<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#submodules">Submodules</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module">cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module">cameo.strain_design.heuristic.evolutionary.multiprocess.observers module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module">cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module</a></li>
+<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.archives">cameo.strain_design.heuristic.evolutionary.archives module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.decoders">cameo.strain_design.heuristic.evolutionary.decoders module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.generators">cameo.strain_design.heuristic.evolutionary.generators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.genomes">cameo.strain_design.heuristic.evolutionary.genomes module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.metrics">cameo.strain_design.heuristic.evolutionary.metrics module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.objective_functions">cameo.strain_design.heuristic.evolutionary.objective_functions module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.observers">cameo.strain_design.heuristic.evolutionary.observers module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.optimization">cameo.strain_design.heuristic.evolutionary.optimization module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.plotters">cameo.strain_design.heuristic.evolutionary.plotters module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.processing">cameo.strain_design.heuristic.evolutionary.processing module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.stats">cameo.strain_design.heuristic.evolutionary.stats module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.variators">cameo.strain_design.heuristic.evolutionary.variators module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.html#module-cameo.strain_design.heuristic.evolutionary_based">cameo.strain_design.heuristic.evolutionary_based module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.html#module-cameo.strain_design.heuristic">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cameo.strain_design.pathway_prediction.html">cameo.strain_design.pathway_prediction package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.pathway_prediction.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.pathway_prediction.html#module-cameo.strain_design.pathway_prediction.pathway_predictor">cameo.strain_design.pathway_prediction.pathway_predictor module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.pathway_prediction.html#module-cameo.strain_design.pathway_prediction.util">cameo.strain_design.pathway_prediction.util module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.pathway_prediction.html#module-cameo.strain_design.pathway_prediction">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cameo.strain_design.strain_design">
+<span id="cameo-strain-design-strain-design-module"></span><h2>cameo.strain_design.strain_design module<a class="headerlink" href="#module-cameo.strain_design.strain_design" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.strain_design.StrainDesignMethod">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.strain_design.</code><code class="descname">StrainDesignMethod</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.strain_design.StrainDesignMethod.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignMethod.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignMethod.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.strain_design.StrainDesign">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.strain_design.</code><code class="descname">StrainDesign</code><span class="sig-paren">(</span><em>knockouts=None</em>, <em>knock_ins=None</em>, <em>over_expression=None</em>, <em>down_regulation=None</em>, <em>manipulation_type='gene'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesign"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesign" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.strain_design.StrainDesignResult">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.strain_design.</code><code class="descname">StrainDesignResult</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignResult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignResult" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="cameo.core.html#cameo.core.result.Result" title="cameo.core.result.Result"><code class="xref py py-class docutils literal"><span class="pre">cameo.core.result.Result</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.strain_design.StrainDesignResult.__len__">
+<code class="descname">__len__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignResult.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignResult.__len__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of designs found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.strain_design.StrainDesignResult.__iter__">
+<code class="descname">__iter__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignResult.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignResult.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an iterator that yields StrainDesign objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.strain_design.StrainDesignResult.data_frame">
+<code class="descname">data_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignResult.data_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignResult.data_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.strain_design.StrainDesignResult.display_on_map">
+<code class="descname">display_on_map</code><span class="sig-paren">(</span><em>map_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignResult.display_on_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignResult.display_on_map" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.strain_design.StrainDesignEnsemble">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.strain_design.</code><code class="descname">StrainDesignEnsemble</code><span class="sig-paren">(</span><em>designs</em>, <em>methods</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignEnsemble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignEnsemble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cameo.strain_design.strain_design.StrainDesignResult" title="cameo.strain_design.strain_design.StrainDesignResult"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignResult</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.strain_design.StrainDesignEnsemble.data_frame">
+<code class="descname">data_frame</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/strain_design.html#StrainDesignEnsemble.data_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.strain_design.StrainDesignEnsemble.data_frame" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.strain_design" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cameo.html">cameo package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cameo.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.config">cameo.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.exceptions">cameo.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.io">cameo.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.parallel">cameo.parallel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.util">cameo.util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API</a><ul>
+  <li><a href="cameo.html">cameo package</a><ul>
+      <li>Previous: <a href="cameo.network_analysis.html" title="previous chapter">cameo.network_analysis package</a></li>
+      <li>Next: <a href="cameo.strain_design.deterministic.html" title="next chapter">cameo.strain_design.deterministic package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/apidoc_output/cameo.strain_design.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

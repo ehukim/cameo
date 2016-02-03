@@ -1,0 +1,30 @@
+cameo.stuff package
+===================
+
+Submodules
+----------
+
+cameo.stuff.distance module
+---------------------------
+
+.. automodule:: cameo.stuff.distance
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.stuff.stuff module
+------------------------
+
+.. automodule:: cameo.stuff.stuff
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cameo.stuff
+    :members:
+    :undoc-members:
+    :show-inheritance:

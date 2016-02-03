@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.stuff package &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../index.html" />
+    <link rel="up" title="cameo package" href="cameo.html" />
+    <link rel="next" title="cameo.ui package" href="cameo.ui.html" />
+    <link rel="prev" title="cameo.strain_design.pathway_prediction package" href="cameo.strain_design.pathway_prediction.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cameo-stuff-package">
+<h1>cameo.stuff package<a class="headerlink" href="#cameo-stuff-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cameo.stuff.distance">
+<span id="cameo-stuff-distance-module"></span><h2>cameo.stuff.distance module<a class="headerlink" href="#module-cameo.stuff.distance" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.stuff.distance.Distance">
+<em class="property">class </em><code class="descclassname">cameo.stuff.distance.</code><code class="descname">Distance</code><span class="sig-paren">(</span><em>model</em>, <em>reference=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#Distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.Distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Abstract distance base class.</p>
+<dl class="attribute">
+<dt id="cameo.stuff.distance.Distance.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.stuff.distance.Distance.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.stuff.distance.Distance.reference">
+<code class="descname">reference</code><a class="headerlink" href="#cameo.stuff.distance.Distance.reference" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.stuff.distance.Distance.minimize">
+<code class="descname">minimize</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#Distance.minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.Distance.minimize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.stuff.distance.Distance.maximize">
+<code class="descname">maximize</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#Distance.maximize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.Distance.maximize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.stuff.distance.ManhattanDistance">
+<em class="property">class </em><code class="descclassname">cameo.stuff.distance.</code><code class="descname">ManhattanDistance</code><span class="sig-paren">(</span><em>model</em>, <em>reference=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#ManhattanDistance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.ManhattanDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cameo.stuff.distance.Distance" title="cameo.stuff.distance.Distance"><code class="xref py py-class docutils literal"><span class="pre">cameo.stuff.distance.Distance</span></code></a></p>
+<p>Compute steady-state fluxes that minimizes the Manhattan distance (L1 norm)
+to a reference flux distribution.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<em>Model</em>) &#8211; </li>
+<li><strong>reference</strong> (<em>dict or Solution</em>) &#8211; A reference flux distribution.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cameo.stuff.distance.ManhattanDistance.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.stuff.distance.ManhattanDistance.model" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Model</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.stuff.distance.ManhattanDistance.reference">
+<code class="descname">reference</code><a class="headerlink" href="#cameo.stuff.distance.ManhattanDistance.reference" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.stuff.distance.ManhattanDistance.minimize">
+<code class="descname">minimize</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#ManhattanDistance.minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.ManhattanDistance.minimize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.stuff.distance.RegulatoryOnOffDistance">
+<em class="property">class </em><code class="descclassname">cameo.stuff.distance.</code><code class="descname">RegulatoryOnOffDistance</code><span class="sig-paren">(</span><em>model</em>, <em>reference=None</em>, <em>delta=0.03</em>, <em>epsilon=0.001</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#RegulatoryOnOffDistance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.RegulatoryOnOffDistance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cameo.stuff.distance.Distance" title="cameo.stuff.distance.Distance"><code class="xref py py-class docutils literal"><span class="pre">cameo.stuff.distance.Distance</span></code></a></p>
+<p>Minimize the number of reactions that need to be activated in order for a model
+to compute fluxes that are close to a provided reference flux distribution (none need to be activated
+if, for example, the model itself had been used to produce the reference flux distribution).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<em>Model</em>) &#8211; </li>
+<li><strong>reference</strong> (<em>dict or Solution</em>) &#8211; A reference flux distribution.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cameo.stuff.distance.RegulatoryOnOffDistance.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.stuff.distance.RegulatoryOnOffDistance.model" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>Model</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.stuff.distance.RegulatoryOnOffDistance.reference">
+<code class="descname">reference</code><a class="headerlink" href="#cameo.stuff.distance.RegulatoryOnOffDistance.reference" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.stuff.distance.RegulatoryOnOffDistance.minimize">
+<code class="descname">minimize</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/distance.html#RegulatoryOnOffDistance.minimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.distance.RegulatoryOnOffDistance.minimize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.stuff.stuff">
+<span id="cameo-stuff-stuff-module"></span><h2>cameo.stuff.stuff module<a class="headerlink" href="#module-cameo.stuff.stuff" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cameo.stuff.stuff.gene_knockout_growth">
+<code class="descclassname">cameo.stuff.stuff.</code><code class="descname">gene_knockout_growth</code><span class="sig-paren">(</span><em>gene_id</em>, <em>model</em>, <em>threshold=1e-06</em>, <em>simulation_method=&lt;function fba&gt;</em>, <em>normalize=True</em>, <em>biomass=None</em>, <em>biomass_flux=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/stuff.html#gene_knockout_growth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.stuff.gene_knockout_growth" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cameo.stuff.stuff.reaction_component_production">
+<code class="descclassname">cameo.stuff.stuff.</code><code class="descname">reaction_component_production</code><span class="sig-paren">(</span><em>model</em>, <em>reaction</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/stuff/stuff.html#reaction_component_production"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.stuff.stuff.reaction_component_production" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cameo.stuff">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.stuff" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cameo.html">cameo package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cameo.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.config">cameo.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.exceptions">cameo.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.io">cameo.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.parallel">cameo.parallel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.util">cameo.util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API</a><ul>
+  <li><a href="cameo.html">cameo package</a><ul>
+      <li>Previous: <a href="cameo.strain_design.pathway_prediction.html" title="previous chapter">cameo.strain_design.pathway_prediction package</a></li>
+      <li>Next: <a href="cameo.ui.html" title="next chapter">cameo.ui package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/apidoc_output/cameo.stuff.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

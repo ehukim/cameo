@@ -1,0 +1,46 @@
+cameo.strain_design.heuristic.evolutionary.multiprocess package
+===============================================================
+
+Submodules
+----------
+
+cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module
+------------------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.multiprocess.migrators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.multiprocess.observers module
+------------------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.multiprocess.observers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module
+---------------------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.multiprocess.optimization
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module
+-----------------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.multiprocess.plotters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.multiprocess
+    :members:
+    :undoc-members:
+    :show-inheritance:

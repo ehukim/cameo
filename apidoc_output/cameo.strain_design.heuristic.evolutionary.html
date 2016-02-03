@@ -1,0 +1,854 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.strain_design.heuristic.evolutionary package &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../index.html" />
+    <link rel="up" title="cameo.strain_design.heuristic package" href="cameo.strain_design.heuristic.html" />
+    <link rel="next" title="cameo.strain_design.heuristic.evolutionary.multiprocess package" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html" />
+    <link rel="prev" title="cameo.strain_design.heuristic package" href="cameo.strain_design.heuristic.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="cameo-strain-design-heuristic-evolutionary-package">
+<h1>cameo.strain_design.heuristic.evolutionary package<a class="headerlink" href="#cameo-strain-design-heuristic-evolutionary-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html">cameo.strain_design.heuristic.evolutionary.multiprocess package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module">cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module">cameo.strain_design.heuristic.evolutionary.multiprocess.observers module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module">cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.archives">
+<span id="cameo-strain-design-heuristic-evolutionary-archives-module"></span><h2>cameo.strain_design.heuristic.evolutionary.archives module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.archives" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.archives.</code><code class="descname">BestSolutionArchive</code><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/archives.html#BestSolutionArchive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>candidate</em>, <em>fitness</em>, <em>birthdate</em>, <em>maximize</em>, <em>max_size</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/archives.html#BestSolutionArchive.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive.length">
+<code class="descname">length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/archives.html#BestSolutionArchive.length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>index</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/archives.html#BestSolutionArchive.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.archives.BestSolutionArchive.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.decoders">
+<span id="cameo-strain-design-heuristic-evolutionary-decoders-module"></span><h2>cameo.strain_design.heuristic.evolutionary.decoders module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.decoders" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.decoders.ReactionKnockoutDecoder">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.decoders.</code><code class="descname">ReactionKnockoutDecoder</code><span class="sig-paren">(</span><em>representation</em>, <em>model</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/decoders.html#ReactionKnockoutDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.decoders.ReactionKnockoutDecoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.decoders.KnockoutDecoder</span></code></p>
+<p>Decoder for set representation. Converts an integer set into reactions available for knockout</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>representation</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; reactions to knockout</li>
+<li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.decoders.ReactionKnockoutDecoder.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>individual</em>, <em>flat=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/decoders.html#ReactionKnockoutDecoder.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.decoders.ReactionKnockoutDecoder.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>individual</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; a list of integers</li>
+<li><strong>flat</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; if True, returns strings. Otherwise returns Reaction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">[knockouts, decoded representation]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.decoders.GeneKnockoutDecoder">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.decoders.</code><code class="descname">GeneKnockoutDecoder</code><span class="sig-paren">(</span><em>representation</em>, <em>model</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/decoders.html#GeneKnockoutDecoder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.decoders.GeneKnockoutDecoder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.decoders.KnockoutDecoder</span></code></p>
+<p>Decoder for set representation. Converts an integer set into genes available for knockout
+:param representation: genes to knockout
+:type representation: list
+:param model:
+:type model: SolverBasedModel</p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.decoders.GeneKnockoutDecoder.__call__">
+<code class="descname">__call__</code><span class="sig-paren">(</span><em>individual</em>, <em>flat=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/decoders.html#GeneKnockoutDecoder.__call__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.decoders.GeneKnockoutDecoder.__call__" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>individual</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; a list of integers</li>
+<li><strong>flat</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; if True, returns strings. Otherwise returns Gene</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">[knockouts, decoded representation]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.generators">
+<span id="cameo-strain-design-heuristic-evolutionary-generators-module"></span><h2>cameo.strain_design.heuristic.evolutionary.generators module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.generators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.generators.set_generator">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.generators.</code><code class="descname">set_generator</code><span class="sig-paren">(</span><em>random</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/generators.html#set_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.generators.set_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a list containing non-repeated elements of a discrete or
+continuous representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>random</strong> (<em>Random</em>) &#8211; </li>
+<li><strong>args</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; representation: set containing the possible values
+max_candidate_size: int, default: 9
+variable_candidate_size: bool, default: True</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list containing a sample of the elements. If variable_candidate_size is
+True the list size is up to max_candidate_size, otherwise the candidate
+size equals candidate_size</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.genomes">
+<span id="cameo-strain-design-heuristic-evolutionary-genomes-module"></span><h2>cameo.strain_design.heuristic.evolutionary.genomes module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.genomes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.genomes.MultipleChromosomeGenome">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.genomes.</code><code class="descname">MultipleChromosomeGenome</code><span class="sig-paren">(</span><em>keys=[]</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/genomes.html#MultipleChromosomeGenome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.genomes.MultipleChromosomeGenome" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.genomes.MultipleChromosomeGenome.copy">
+<code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/genomes.html#MultipleChromosomeGenome.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.genomes.MultipleChromosomeGenome.copy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.metrics">
+<span id="cameo-strain-design-heuristic-evolutionary-metrics-module"></span><h2>cameo.strain_design.heuristic.evolutionary.metrics module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.metrics" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.metrics.euclidean_distance">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.metrics.</code><code class="descname">euclidean_distance</code><span class="sig-paren">(</span><em>wt</em>, <em>mutant</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/metrics.html#euclidean_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.metrics.euclidean_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.metrics.manhattan_distance">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.metrics.</code><code class="descname">manhattan_distance</code><span class="sig-paren">(</span><em>wt</em>, <em>mutant</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/metrics.html#manhattan_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.metrics.manhattan_distance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.objective_functions">
+<span id="cameo-strain-design-heuristic-evolutionary-objective-functions-module"></span><h2>cameo.strain_design.heuristic.evolutionary.objective_functions module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.objective_functions" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.biomass_product_coupled_yield">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.objective_functions.</code><code class="descname">biomass_product_coupled_yield</code><span class="sig-paren">(</span><em>biomass</em>, <em>product</em>, <em>substrate</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/objective_functions.html#biomass_product_coupled_yield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.biomass_product_coupled_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.objective_functions.ObjectiveFunction</span></code></p>
+<p>Biomass-Product Coupled Yield: (v[biomass] * v[product]) / v[substrate] [1]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>biomass</strong> (<em>str or Reaction</em>) &#8211; biomass reaction identifier</li>
+<li><strong>product</strong> (<em>str or Reaction</em>) &#8211; product reaction identifier</li>
+<li><strong>substrate</strong> (<em>str or Reaction</em>) &#8211; substrate reaction identifier</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">fitness value</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<p>[1] Patil, K. R., Rocha, I., Förster, J., &amp; Nielsen, J. (2005). &#8220;Evolutionary programming as a
+platform for in silico metabolic engineering&#8221;. BMC Bioinformatics, 6, 308.
+doi:10.1186/1471-2105-6-308</p>
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.biomass_product_coupled_yield.name">
+<code class="descname">name</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.biomass_product_coupled_yield.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.biomass_product_coupled_yield.reactions">
+<code class="descname">reactions</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.biomass_product_coupled_yield.reactions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.product_yield">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.objective_functions.</code><code class="descname">product_yield</code><span class="sig-paren">(</span><em>product</em>, <em>substrate</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/objective_functions.html#product_yield"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.product_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.objective_functions.ObjectiveFunction</span></code></p>
+<p>Product Yield Objective function: v[product]/v[substrate]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>product</strong> (<em>str or Reaction</em>) &#8211; product reaction identifier</li>
+<li><strong>substrate</strong> (<em>str or Reaction</em>) &#8211; substrate reaction identifier</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">fitness value</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.product_yield.name">
+<code class="descname">name</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.product_yield.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.product_yield.reactions">
+<code class="descname">reactions</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.product_yield.reactions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.number_of_knockouts">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.objective_functions.</code><code class="descname">number_of_knockouts</code><span class="sig-paren">(</span><em>sense='min'</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/objective_functions.html#number_of_knockouts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.number_of_knockouts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.objective_functions.ObjectiveFunction</span></code></p>
+<p>Number of Knockouts objective function.
+If sense is maximize then fitness is the number of knockouts, otherwise 1/#knockouts</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>sense</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; &#8216;max&#8217; or &#8216;min&#8217;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">fitness value</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)">float</a></td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.objective_functions.number_of_knockouts.name">
+<code class="descname">name</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.objective_functions.number_of_knockouts.name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.observers">
+<span id="cameo-strain-design-heuristic-evolutionary-observers-module"></span><h2>cameo.strain_design.heuristic.evolutionary.observers module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.observers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.observers.ProgressObserver">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.observers.</code><code class="descname">ProgressObserver</code><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/observers.html#ProgressObserver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.observers.ProgressObserver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Progress bar to in command line. It keeps track of the progress during heuristic optimization.</p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.observers.ProgressObserver.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/observers.html#ProgressObserver.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.observers.ProgressObserver.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.observers.ProgressObserver.end">
+<code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/observers.html#ProgressObserver.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.observers.ProgressObserver.end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.optimization">
+<span id="cameo-strain-design-heuristic-evolutionary-optimization-module"></span><h2>cameo.strain_design.heuristic.evolutionary.optimization module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.optimization" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.optimization.</code><code class="descname">ReactionKnockoutOptimization</code><span class="sig-paren">(</span><em>reactions=None</em>, <em>essential_reactions=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/optimization.html#ReactionKnockoutOptimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.optimization.KnockoutOptimization</span></code></p>
+<p>Knockout optimization using reactions.</p>
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.model" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>SolverBasedModel</em></p>
+<p>A constraint-based model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.heuristic_method">
+<code class="descname">heuristic_method</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.heuristic_method" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>inspyred.ec.EvolutionaryComputation</em></p>
+<p>An evolutionary algorithm.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.objective_function">
+<code class="descname">objective_function</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>objective function or list(objective function)</em></p>
+<p>The objectives for the algorithm to maximize.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.seed">
+<code class="descname">seed</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>A seed for random. It is auto-generated if None is given.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.termination">
+<code class="descname">termination</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.termination" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>inspyred.ec.terminators</em></p>
+<p>A termination criteria for the algorithm. The default is inspyred.ec.terminators.evaluation_termination.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.simulation_method">
+<code class="descname">simulation_method</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.simulation_method" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>flux_analysis.simulation</em></p>
+<p>The method used to simulate the model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.wt_reference">
+<code class="descname">wt_reference</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.wt_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em></p>
+<p>A reference initial state for the optimization. It is required for flux_analysis.simulation.lmoma and
+flux_analysis.simulation.room. If not given, it will be computed using flux_analysis.simulation.pfba</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.reactions">
+<code class="descname">reactions</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<p>A list of valid reactions to knockout. If None, then all reactions in the model will be knockout candidates
+except the ones defined in essential_reactions</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.essential_reactions">
+<code class="descname">essential_reactions</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.essential_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<p>A list of reactions that cannot be knocked out. If None, then all essential reactions will be removed from
+the valid reactions set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>view=config.default_view</em>, <em>maximize=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a href="#id1"><span class="problematic" id="id2">*</span></a>inspyred.ec
+<a href="#id3"><span class="problematic" id="id4">*</span></a>cameo.config.default_view</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">iJO1366</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary.objective_functions</span> <span class="kn">import</span> <span class="n">biomass_product_coupled_yield</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpcy</span> <span class="o">=</span> <span class="n">biomass_product_coupled_yield</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">Ec_biomass_iJO1366_core_53p95</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                     <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>                                     <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_glc__D_e</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">knockout_optimization</span> <span class="o">=</span> <span class="n">ReactionKnockoutOptimization</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">objective_function</span><span class="o">=</span><span class="n">bpcy</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                                     <span class="n">essential_reactions</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;ATPM&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">knockout_optimization</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">max_evaluations</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.optimization.</code><code class="descname">GeneKnockoutOptimization</code><span class="sig-paren">(</span><em>genes=None</em>, <em>essential_genes=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/optimization.html#GeneKnockoutOptimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.optimization.KnockoutOptimization</span></code></p>
+<p>Knockout optimization using genes.</p>
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.model" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>SolverBasedModel</em></p>
+<p>A constraint-based model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.heuristic_method">
+<code class="descname">heuristic_method</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.heuristic_method" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>inspyred.ec.EvolutionaryComputation</em></p>
+<p>An evolutionary algorithm.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.objective_function">
+<code class="descname">objective_function</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>objective function or list(objective function)</em></p>
+<p>The objectives for the algorithm to maximize.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.seed">
+<code class="descname">seed</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>A seed for random. It is auto-generated if None is given.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.termination">
+<code class="descname">termination</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.termination" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>inspyred.ec.terminators</em></p>
+<p>A termination criteria for the algorithm. The default is inspyred.ec.terminators.evaluation_termination.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.simulation_method">
+<code class="descname">simulation_method</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.simulation_method" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>flux_analysis.simulation</em></p>
+<p>The method used to simulate the model.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.wt_reference">
+<code class="descname">wt_reference</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.wt_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dict</em></p>
+<p>A reference initial state for the optimization. It is required for flux_analysis.simulation.lmoma and
+flux_analysis.simulation.room. If not given, it will be computed using flux_analysis.simulation.pfba</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.genes">
+<code class="descname">genes</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.genes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<dl class="docutils">
+<dt>A list of valid genes to knockout. If None, then all genes in the model will be knockout candidates except the</dt>
+<dd>ones defined in essential_genes</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.essential_genes">
+<code class="descname">essential_genes</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.essential_genes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<p>A list of genes that cannot be knocked out. If None, then all essential genes will be removed from the valid
+genes set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.run">
+<code class="descname">run</code><span class="sig-paren">(</span><em>view=config.default_view</em>, <em>maximize=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a href="#id5"><span class="problematic" id="id6">*</span></a>inspyred.ec
+<a href="#id7"><span class="problematic" id="id8">*</span></a>cameo.config.default_view</p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">iJO1366</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary.objective_functions</span> <span class="kn">import</span> <span class="n">biomass_product_coupled_yield</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bpcy</span> <span class="o">=</span> <span class="n">biomass_product_coupled_yield</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">Ec_biomass_iJO1366_core_53p95</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                     <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">),</span>
+<span class="gp">&gt;&gt;&gt; </span>                                     <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_glc__D_e</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">knockout_optimization</span> <span class="o">=</span> <span class="n">GeneKnockoutOptimization</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">objective_function</span><span class="o">=</span><span class="n">bpcy</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">knockout_optimization</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">max_evaluations</span><span class="o">=</span><span class="mi">50000</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.plotters">
+<span id="cameo-strain-design-heuristic-evolutionary-plotters-module"></span><h2>cameo.strain_design.heuristic.evolutionary.plotters module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.plotters" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehFitnessPlotter">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.plotters.</code><code class="descname">IPythonBokehFitnessPlotter</code><span class="sig-paren">(</span><em>window_size=1000</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#IPythonBokehFitnessPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehFitnessPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehFitnessPlotter.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#IPythonBokehFitnessPlotter.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehFitnessPlotter.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehFitnessPlotter.end">
+<code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#IPythonBokehFitnessPlotter.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehFitnessPlotter.end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehParetoPlotter">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.plotters.</code><code class="descname">IPythonBokehParetoPlotter</code><span class="sig-paren">(</span><em>ofs=None</em>, <em>x=0</em>, <em>y=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#IPythonBokehParetoPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehParetoPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehParetoPlotter.reset">
+<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#IPythonBokehParetoPlotter.reset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehParetoPlotter.reset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehParetoPlotter.end">
+<code class="descname">end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#IPythonBokehParetoPlotter.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.IPythonBokehParetoPlotter.end" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.GeneFrequencyPlotter">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.plotters.</code><code class="descname">GeneFrequencyPlotter</code><span class="sig-paren">(</span><em>solutions</em>, <em>url='default'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#GeneFrequencyPlotter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.GeneFrequencyPlotter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.GeneFrequencyPlotter.frequencies">
+<code class="descname">frequencies</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#GeneFrequencyPlotter.frequencies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.GeneFrequencyPlotter.frequencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.plotters.GeneFrequencyPlotter.plot">
+<code class="descname">plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/plotters.html#GeneFrequencyPlotter.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.plotters.GeneFrequencyPlotter.plot" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.processing">
+<span id="cameo-strain-design-heuristic-evolutionary-processing-module"></span><h2>cameo.strain_design.heuristic.evolutionary.processing module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.processing" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.processing.process_knockout_solution">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.processing.</code><code class="descname">process_knockout_solution</code><span class="sig-paren">(</span><em>model</em>, <em>solution</em>, <em>simulation_method</em>, <em>simulation_kwargs</em>, <em>biomass</em>, <em>target</em>, <em>substrate</em>, <em>objective_functions</em>, <em>cache=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/processing.html#process_knockout_solution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.processing.process_knockout_solution" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; A constraint-based model</li>
+<li><strong>solution</strong> (<em>tuple - (reactions, knockouts)</em>) &#8211; The output of a decoder</li>
+<li><strong>simulation_method</strong> (<em>function</em>) &#8211; See see cameo.flux_analysis.simulation</li>
+<li><strong>simulation_kwargs</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Keyword arguments to run the simulation method</li>
+<li><strong>biomass</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.reaction.Reaction" title="cameo.core.reaction.Reaction"><em>Reaction</em></a>) &#8211; Cellular biomass reaction</li>
+<li><strong>target</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.reaction.Reaction" title="cameo.core.reaction.Reaction"><em>Reaction</em></a>) &#8211; The strain design target</li>
+<li><strong>substrate</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.reaction.Reaction" title="cameo.core.reaction.Reaction"><em>Reaction</em></a>) &#8211; The main carbon source uptake rate</li>
+<li><strong>objective_functions</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; A list of cameo.strain_design.heuristic.evolutionary.objective_functions.ObjectiveFunction</li>
+<li><strong>cache</strong> (<a class="reference internal" href="cameo.html#cameo.util.ProblemCache" title="cameo.util.ProblemCache"><em>ProblemCache</em></a>) &#8211; A problem cache for performance improvment</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list with: reactions, knockouts, size, fva_min, fva_max, fbid, target flux, biomass flux, yield, fitness,
+[fitness, [fitness]]</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.processing.reactions2filter">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.processing.</code><code class="descname">reactions2filter</code><span class="sig-paren">(</span><em>objective_function</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/processing.html#reactions2filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.processing.reactions2filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve from the solvers memory only the reactions required by the objective functions. This is faster then
+reading all reactions from the solver output.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.stats">
+<span id="cameo-strain-design-heuristic-evolutionary-stats-module"></span><h2>cameo.strain_design.heuristic.evolutionary.stats module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.stats" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.stats.</code><code class="descname">GenericStatsData</code><span class="sig-paren">(</span><em>solution</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/stats.html#GenericStatsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/stats.html#GenericStatsData.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData.display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.stats.BokehStatsData">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.stats.</code><code class="descname">BokehStatsData</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/stats.html#BokehStatsData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.stats.BokehStatsData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData" title="cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.stats.GenericStatsData</span></code></a></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.stats.BokehStatsData.display">
+<code class="descname">display</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/stats.html#BokehStatsData.display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.stats.BokehStatsData.display" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.variators">
+<span id="cameo-strain-design-heuristic-evolutionary-variators-module"></span><h2>cameo.strain_design.heuristic.evolutionary.variators module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.variators" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.variators.set_mutation">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.variators.</code><code class="descname">set_mutation</code><span class="sig-paren">(</span><em>random</em>, <em>individual</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/variators.html#set_mutation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.variators.set_mutation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mutates a given set based on the entries available on the representation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>random</strong> (<em>Random</em>) &#8211; </li>
+<li><strong>individual</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; with unique integers</li>
+<li><strong>args</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; must contain the representation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">created based on an ordered set</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="cameo.strain_design.heuristic.evolutionary.variators.set_indel">
+<code class="descclassname">cameo.strain_design.heuristic.evolutionary.variators.</code><code class="descname">set_indel</code><span class="sig-paren">(</span><em>random</em>, <em>individual</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/variators.html#set_indel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.variators.set_indel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a random insertion or deletion in the individual.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>random</strong> (<em>Random</em>) &#8211; </li>
+<li><strong>individual</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; with unique integers</li>
+<li><strong>args</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; must contain the representation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">created based on an ordered set</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cameo.html">cameo package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="cameo.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.config">cameo.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.exceptions">cameo.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.io">cameo.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.parallel">cameo.parallel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.util">cameo.util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="../API.html">API</a><ul>
+  <li><a href="cameo.html">cameo package</a><ul>
+  <li><a href="cameo.strain_design.html">cameo.strain_design package</a><ul>
+  <li><a href="cameo.strain_design.heuristic.html">cameo.strain_design.heuristic package</a><ul>
+      <li>Previous: <a href="cameo.strain_design.heuristic.html" title="previous chapter">cameo.strain_design.heuristic package</a></li>
+      <li>Next: <a href="cameo.strain_design.heuristic.evolutionary.multiprocess.html" title="next chapter">cameo.strain_design.heuristic.evolutionary.multiprocess package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="../_sources/apidoc_output/cameo.strain_design.heuristic.evolutionary.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

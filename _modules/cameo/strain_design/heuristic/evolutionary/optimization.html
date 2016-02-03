@@ -1,0 +1,910 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.strain_design.heuristic.evolutionary.optimization &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../../../../../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cameo.strain_design.heuristic.evolutionary.optimization</h1><div class="highlight"><pre>
+<span class="c1"># Copyright 2015 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="nb">reduce</span>
+
+<span class="kn">import</span> <span class="nn">inspyred</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">cameo.core.result</span> <span class="kn">import</span> <span class="n">Result</span>
+<span class="kn">from</span> <span class="nn">cameo.exceptions</span> <span class="kn">import</span> <span class="n">SolveError</span>
+<span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="kn">import</span> <span class="n">pfba</span><span class="p">,</span> <span class="n">lmoma</span><span class="p">,</span> <span class="n">moma</span><span class="p">,</span> <span class="n">room</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">archives</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">decoders</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">generators</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">observers</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">plotters</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">variators</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary.processing</span> <span class="kn">import</span> <span class="n">reactions2filter</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">RandomGenerator</span> <span class="k">as</span> <span class="n">Random</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">in_ipnb</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">partition</span><span class="p">,</span> <span class="n">TimeMachine</span><span class="p">,</span> <span class="n">memoize</span><span class="p">,</span> <span class="n">ProblemCache</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ReactionKnockoutOptimization&#39;</span><span class="p">,</span> <span class="s1">&#39;GeneKnockoutOptimization&#39;</span><span class="p">]</span>
+
+
+<span class="n">REACTION_KNOCKOUT_TYPE</span> <span class="o">=</span> <span class="s2">&quot;reaction&quot;</span>
+<span class="n">GENE_KNOCKOUT_TYPE</span> <span class="o">=</span> <span class="s2">&quot;gene&quot;</span>
+
+<span class="n">SIZE</span> <span class="o">=</span> <span class="s1">&#39;Size&#39;</span>
+<span class="n">BIOMASS</span> <span class="o">=</span> <span class="s1">&#39;Biomass&#39;</span>
+<span class="n">KNOCKOUTS</span> <span class="o">=</span> <span class="s1">&#39;Knockouts&#39;</span>
+<span class="n">REACTIONS</span> <span class="o">=</span> <span class="s1">&#39;Reactions&#39;</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<span class="n">PRE_CONFIGURED</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">GA</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_mutation</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_indel</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_n_point_crossover</span>
+        <span class="p">],</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">tournament_selection</span><span class="p">,</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">replacers</span><span class="o">.</span><span class="n">generational_replacement</span><span class="p">,</span>
+        <span class="n">archives</span><span class="o">.</span><span class="n">BestSolutionArchive</span><span class="p">(),</span>
+    <span class="p">],</span>
+    <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">SA</span><span class="p">:</span> <span class="p">[</span>
+
+        <span class="p">[</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_mutation</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_indel</span>
+        <span class="p">],</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">default_selection</span><span class="p">,</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">replacers</span><span class="o">.</span><span class="n">simulated_annealing_replacement</span><span class="p">,</span>
+        <span class="n">archives</span><span class="o">.</span><span class="n">BestSolutionArchive</span><span class="p">()</span>
+    <span class="p">],</span>
+    <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">emo</span><span class="o">.</span><span class="n">NSGA2</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_mutation</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_indel</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_n_point_crossover</span>
+        <span class="p">],</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">tournament_selection</span><span class="p">,</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">replacers</span><span class="o">.</span><span class="n">nsga_replacement</span><span class="p">,</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">archivers</span><span class="o">.</span><span class="n">population_archiver</span>
+    <span class="p">],</span>
+    <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">emo</span><span class="o">.</span><span class="n">PAES</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">[</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_mutation</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_indel</span><span class="p">,</span>
+            <span class="n">variators</span><span class="o">.</span><span class="n">set_n_point_crossover</span>
+        <span class="p">],</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">default_selection</span><span class="p">,</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">replacers</span><span class="o">.</span><span class="n">paes_replacement</span><span class="p">,</span>
+        <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">archivers</span><span class="o">.</span><span class="n">adaptive_grid_archiver</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">set_distance_function</span><span class="p">(</span><span class="n">candidate1</span><span class="p">,</span> <span class="n">candidate2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">candidate1</span><span class="p">)</span><span class="o">.</span><span class="n">symmetric_difference</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">candidate2</span><span class="p">)))</span>
+
+
+<span class="k">class</span> <span class="nc">HeuristicOptimization</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Blueprint for any model optimization based on heuristic methods.</span>
+
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : SolverBasedModel</span>
+<span class="sd">        A constraint-based model.</span>
+<span class="sd">    heuristic_method : inspyred.ec.EvolutionaryComputation</span>
+<span class="sd">        An evolutionary algorithm.</span>
+<span class="sd">    objective_function : objective function or list(objective function)</span>
+<span class="sd">        The objectives for the algorithm to maximize.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        A seed for random. It is auto-generated if None is given.</span>
+<span class="sd">    termination : inspyred.ec.terminators</span>
+<span class="sd">        A termination criteria for the algorithm. The default is inspyred.ec.terminators.evaluation_termination</span>
+
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    run(view=config.default_view, maximize=True, **kwargs)</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    *inspyred.ec</span>
+<span class="sd">    *cameo.config.default_view</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">heuristic_method</span><span class="o">=</span><span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span> <span class="n">objective_function</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">termination</span><span class="o">=</span><span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">terminators</span><span class="o">.</span><span class="n">evaluation_termination</span><span class="p">,</span> <span class="n">plot</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                 <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">HeuristicOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Seed: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plot</span> <span class="o">=</span> <span class="n">plot</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">progress</span> <span class="o">=</span> <span class="n">progress</span>
+        <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">seed</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">random</span> <span class="o">=</span> <span class="n">Random</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">termination</span> <span class="o">=</span> <span class="n">termination</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span> <span class="o">=</span> <span class="n">objective_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_heuristic_method</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span> <span class="o">=</span> <span class="n">heuristic_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">terminator</span> <span class="o">=</span> <span class="n">termination</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">objective_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span>
+
+    <span class="nd">@objective_function.setter</span>
+    <span class="k">def</span> <span class="nf">objective_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heuristic_method</span><span class="o">.</span><span class="n">__module__</span> <span class="o">==</span> <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">__name__</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">objective_function</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span> <span class="o">=</span> <span class="n">objective_function</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;single objective heuristic do not support multiple objective functions&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heuristic_method</span><span class="o">.</span><span class="n">__module__</span> <span class="o">==</span> <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">emo</span><span class="o">.</span><span class="n">__name__</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span> <span class="o">=</span> <span class="p">[</span><span class="n">objective_function</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span> <span class="o">=</span> <span class="n">objective_function</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">heuristic_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_heuristic_method</span>
+
+    <span class="nd">@heuristic_method.setter</span>
+    <span class="k">def</span> <span class="nf">heuristic_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic_method</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">heuristic_method</span><span class="o">.</span><span class="n">__module__</span> <span class="o">==</span> <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">emo</span><span class="o">.</span><span class="n">__name__</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mo</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">heuristic_method</span><span class="o">.</span><span class="n">__module__</span> <span class="o">==</span> <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">__name__</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mo</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_objective_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;single objective heuristics do not support multiple objective functions&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_heuristic_method</span> <span class="o">=</span> <span class="n">heuristic_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">random</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_evaluator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">default_view</span><span class="p">,</span> <span class="n">maximize</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="p">:</span>
+            <span class="n">observer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;Starting optimization at %a, </span><span class="si">%d</span><span class="s2"> %b %Y %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">localtime</span><span class="p">(</span><span class="n">t</span><span class="p">)))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">generator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_generator</span><span class="p">,</span>
+                                           <span class="n">maximize</span><span class="o">=</span><span class="n">maximize</span><span class="p">,</span>
+                                           <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span>
+                                           <span class="n">evaluator</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluator</span><span class="p">,</span>
+                                           <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="p">:</span>
+            <span class="n">observer</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
+        <span class="n">runtime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;Finished after %H:%M:%S&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">runtime</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="k">def</span> <span class="nf">is_mo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">KnockoutEvaluator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Evaluator for knockouts. It gets a representation, decodes into knockouts and simulates</span>
+<span class="sd">    the model with a given method.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : SolverBasedModel</span>
+<span class="sd">        A constraint-based model</span>
+<span class="sd">    decoder : KnockoutDecoder</span>
+<span class="sd">        A decoder to convert the representation into knockouts</span>
+<span class="sd">    objective_function : objective_function or list(objective_function)</span>
+<span class="sd">        The objectives of the algorithm</span>
+<span class="sd">    simulation_method : see flux_analysis.simulation</span>
+<span class="sd">        The method use to simulate the knockouts</span>
+<span class="sd">    simulation_kwargs : dict</span>
+<span class="sd">        The extra parameters used by the simulation method</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    cameo.strain_design.heuristic.objective_function</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    __call__(population)</span>
+<span class="sd">        calling the object will evaluate a population (see inspyred)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">decoder</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">,</span> <span class="n">simulation_method</span><span class="p">,</span> <span class="n">simulation_kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="n">decoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span> <span class="o">=</span> <span class="n">objective_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span> <span class="o">=</span> <span class="n">simulation_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_kwargs</span> <span class="o">=</span> <span class="n">simulation_kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cache</span> <span class="o">=</span> <span class="n">ProblemCache</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_individual</span><span class="p">(</span><span class="nb">frozenset</span><span class="p">(</span><span class="n">i</span><span class="p">))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">population</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">res</span>
+
+    <span class="nd">@memoize</span>
+    <span class="k">def</span> <span class="nf">_evaluate_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">individual</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evaluates a single individual.</span>
+
+<span class="sd">        Arguments</span>
+<span class="sd">        ---------</span>
+
+<span class="sd">        individual: set</span>
+<span class="sd">            The encoded representation of a single individual.</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        fitness</span>
+<span class="sd">            A single real value or a Pareto, depending on the number of objectives.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">decoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">decoder</span><span class="p">(</span><span class="n">individual</span><span class="p">)</span>
+        <span class="n">reactions</span> <span class="o">=</span> <span class="n">decoded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">:</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">knock_out</span><span class="p">(</span><span class="n">time_machine</span><span class="o">=</span><span class="n">tm</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">solution</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                                                  <span class="n">cache</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cache</span><span class="p">,</span>
+                                                  <span class="n">volatile</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                  <span class="n">raw</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                  <span class="n">reactions</span><span class="o">=</span><span class="n">reactions2filter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">),</span>
+                                                  <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation_kwargs</span><span class="p">)</span>
+                <span class="n">fitness</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_fitness</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">decoded</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SolveError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">fitness</span> <span class="o">=</span> <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">emo</span><span class="o">.</span><span class="n">Pareto</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fitness</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">return</span> <span class="n">fitness</span>
+
+    <span class="k">def</span> <span class="nf">_calculate_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">decoded</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;evaluate multiobjective solution&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">emo</span><span class="o">.</span><span class="n">Pareto</span><span class="p">(</span><span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="n">of</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">decoded</span><span class="p">)</span> <span class="k">for</span> <span class="n">of</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;evaluate single objective solution&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="n">decoded</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">KnockoutOptimization</span><span class="p">(</span><span class="n">HeuristicOptimization</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract class for knockout optimization.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation_method</span><span class="o">=</span><span class="n">pfba</span><span class="p">,</span> <span class="n">wt_reference</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">         Attributes</span>
+<span class="sd">        ----------</span>
+<span class="sd">        same as HeuristicOptimization</span>
+<span class="sd">        simulation_method: see flux_analysis.simulation</span>
+<span class="sd">        wt_reference: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">KnockoutOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">wt_reference</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_method</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span> <span class="o">=</span> <span class="n">simulation_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ko_type</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_generator</span> <span class="o">=</span> <span class="n">generators</span><span class="o">.</span><span class="n">set_generator</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">simulation_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_method</span>
+
+    <span class="nd">@simulation_method.setter</span>
+    <span class="k">def</span> <span class="nf">simulation_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation_method</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">simulation_method</span> <span class="ow">in</span> <span class="p">[</span><span class="n">lmoma</span><span class="p">,</span> <span class="n">moma</span><span class="p">,</span> <span class="n">room</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No WT reference found, generating using pfba.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pfba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">fluxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_method</span> <span class="o">=</span> <span class="n">simulation_method</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">simulation_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span>
+
+    <span class="nd">@simulation_kwargs.setter</span>
+    <span class="k">def</span> <span class="nf">simulation_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">simulation_kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span> <span class="ow">in</span> <span class="p">[</span><span class="n">lmoma</span><span class="p">,</span> <span class="n">moma</span><span class="p">,</span> <span class="n">room</span><span class="p">]</span> <span class="ow">and</span> <span class="n">simulation_kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reference&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No WT reference found, generating using pfba.&quot;</span><span class="p">)</span>
+            <span class="n">simulation_kwargs</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pfba</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span><span class="o">.</span><span class="n">fluxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span> <span class="o">=</span> <span class="n">simulation_kwargs</span>
+
+    <span class="k">def</span> <span class="nf">_evaluator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;view&#39;</span><span class="p">)</span>
+        <span class="n">population_chunks</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">partition</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">view</span><span class="p">)))</span>
+        <span class="n">func_obj</span> <span class="o">=</span> <span class="n">KnockoutEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func_obj</span><span class="p">,</span> <span class="n">population_chunks</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyboardInterrupt</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">view</span><span class="o">.</span><span class="n">shutdown</span><span class="p">()</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="n">fitness</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="nb">list</span><span class="o">.</span><span class="n">__add__</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fitness</span>
+
+    <span class="nd">@HeuristicOptimization.heuristic_method.setter</span>
+    <span class="k">def</span> <span class="nf">heuristic_method</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic_method</span><span class="p">):</span>
+        <span class="n">HeuristicOptimization</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heuristic_method</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_observer</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">configuration</span> <span class="o">=</span> <span class="n">PRE_CONFIGURED</span><span class="p">[</span><span class="n">heuristic_method</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">configuration</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Please verify the variator is compatible with set representation&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variator</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">replacer</span><span class="p">,</span> <span class="n">archiver</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Setting up algorithm: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">variator</span> <span class="o">=</span> <span class="n">variator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">selector</span> <span class="o">=</span> <span class="n">selector</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">replacer</span> <span class="o">=</span> <span class="n">replacer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">archiver</span> <span class="o">=</span> <span class="n">archiver</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">terminator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">termination</span>
+
+    <span class="nd">@HeuristicOptimization.objective_function.setter</span>
+    <span class="k">def</span> <span class="nf">objective_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">):</span>
+        <span class="n">HeuristicOptimization</span><span class="o">.</span><span class="n">objective_function</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">objective_function</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_observer</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_set_observer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">observers</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="n">in_ipnb</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">plot</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">use_bokeh</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_mo</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotters</span><span class="o">.</span><span class="n">IPythonBokehParetoPlotter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">plotters</span><span class="o">.</span><span class="n">IPythonBokehFitnessPlotter</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">use_matplotlib</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">use_bokeh</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">progress</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">observers</span><span class="o">.</span><span class="n">ProgressObserver</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">variable_size</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        max_size: int</span>
+<span class="sd">            Maximum size of a solution.</span>
+<span class="sd">        variable_size: boolean</span>
+<span class="sd">            If true, the solution size can change meaning that the combination of knockouts can have different sizes up to</span>
+<span class="sd">            max_size. Otherwise it only produces knockout solutions with a fixed number of knockouts.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">observer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">KnockoutOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">distance_function</span><span class="o">=</span><span class="n">set_distance_function</span><span class="p">,</span>
+            <span class="n">representation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">representation</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">KnockoutOptimizationResult</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                                          <span class="n">heuristic_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="p">,</span>
+                                          <span class="n">simulation_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="p">,</span>
+                                          <span class="n">simulation_kwargs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_simulation_kwargs</span><span class="p">,</span>
+                                          <span class="n">solutions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">archive</span><span class="p">,</span>
+                                          <span class="n">objective_function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span>
+                                          <span class="n">ko_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ko_type</span><span class="p">,</span>
+                                          <span class="n">decoder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">,</span>
+                                          <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">KnockoutOptimizationResult</span><span class="p">(</span><span class="n">Result</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">heuristic_method</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">simulation_method</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">simulation_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">solutions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">objective_function</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ko_type</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decoder</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">KnockoutOptimizationResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span> <span class="o">=</span> <span class="n">heuristic_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span> <span class="o">=</span> <span class="n">simulation_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_kwargs</span> <span class="o">=</span> <span class="n">simulation_kwargs</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">objective_function</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective_functions</span> <span class="o">=</span> <span class="n">objective_function</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">objective_function</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ko_type</span> <span class="o">=</span> <span class="n">ko_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoder</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decode_solutions</span><span class="p">(</span><span class="n">solutions</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_decode_solutions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solutions</span><span class="p">):</span>
+        <span class="n">decoded_solutions</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;reactions&quot;</span><span class="p">,</span> <span class="s2">&quot;knockouts&quot;</span><span class="p">,</span> <span class="s2">&quot;fitness&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">solution</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+            <span class="n">decoded_solutions</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">(</span><span class="n">solution</span><span class="p">,</span> <span class="n">flat</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="n">solution</span><span class="o">.</span><span class="n">fitness</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">decoded_solutions</span>
+
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;model&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                <span class="s1">&#39;decoder&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">,</span>
+                <span class="s1">&#39;simulation_method&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="p">,</span>
+                <span class="s1">&#39;simulation_kwargs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_kwargs</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.__class__&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.maximize&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">maximize</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.variator&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">variator</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.terminator&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">terminator</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.archiver&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">archiver</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.termination_cause&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">termination_cause</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method._random&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">_random</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method.generator&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">generator</span><span class="p">,</span>
+                <span class="s1">&#39;heuristic_method._kwargs&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">,</span>
+                <span class="s1">&#39;objective_functions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_functions</span><span class="p">,</span>
+                <span class="s1">&#39;ko_type&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ko_type</span><span class="p">,</span>
+                <span class="s1">&#39;solutions&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span><span class="p">,</span>
+                <span class="s1">&#39;seed&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;model&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;simulation_method&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">simulation_kwargs</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;simulation_kwargs&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;seed&#39;</span><span class="p">]</span>
+        <span class="n">random</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method._random&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method.__class__&#39;</span><span class="p">](</span><span class="n">random</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">maximize</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method.maximize&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">terminator</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method.terminator&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">termination_cause</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method.termination_cause&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">archive</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method.archive&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;heuristic_method._kwargs&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective_functions</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;objective_functions&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ko_type</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ko_type&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;solutions&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        &lt;h4&gt;Result:&lt;/h4&gt;</span>
+<span class="s2">        &lt;ul&gt;</span>
+<span class="s2">            &lt;li&gt;model: </span><span class="si">%s</span><span class="s2">&lt;/li&gt;</span>
+<span class="s2">            &lt;li&gt;heuristic: </span><span class="si">%s</span><span class="s2">&lt;/li&gt;</span>
+<span class="s2">            &lt;li&gt;objective function: </span><span class="si">%s</span><span class="s2">&lt;/li&gt;</span>
+<span class="s2">            &lt;li&gt;simulation method: </span><span class="si">%s</span><span class="s2">&lt;/li&gt;</span>
+<span class="s2">            &lt;li&gt;type: </span><span class="si">%s</span><span class="s2">&lt;/li&gt;</span>
+<span class="s2">        &lt;ul&gt;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+        <span class="n">model_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">heuristic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">of_string</span> <span class="o">=</span> <span class="s2">&quot;&lt;br/&gt;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">o</span><span class="o">.</span><span class="n">_repr_latex_</span><span class="p">()</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_functions</span><span class="p">])</span>
+        <span class="n">simulation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">solutions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">_repr_html_</span><span class="p">()</span>
+
+        <span class="n">results</span> <span class="o">=</span> <span class="n">template</span> <span class="o">%</span> <span class="p">(</span><span class="n">model_id</span><span class="p">,</span> <span class="n">heuristic</span><span class="p">,</span> <span class="n">of_string</span><span class="p">,</span> <span class="n">simulation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ko_type</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span> <span class="o">+</span> <span class="n">solutions</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
+            <span class="k">yield</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;reactions&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;knockouts&#39;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s1">&#39;fitness&#39;</span><span class="p">]]</span>
+
+    <span class="k">def</span> <span class="nf">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Cannot merge result with </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">id</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Cannot merge results from different models&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ko_type</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">ko_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Cannot merge results with resulting from different strategies&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;Cannot merge results from different heuristic methods&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">_solutions</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">(</span><span class="n">subset</span><span class="o">=</span><span class="s2">&quot;knockouts&quot;</span><span class="p">,</span> <span class="n">take_last</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="c1"># TODO: find out how to plot an histogram (?) in bokeh</span>
+    <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">stats_data</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">in_ipnb</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">use_bokeh</span><span class="p">:</span>
+                <span class="n">stats_data</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">BokehStatsData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">use_matplotlib</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stats_data</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">CLIStatsData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">stats_data</span><span class="o">.</span><span class="n">display</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">DataFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_solutions</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="ReactionKnockoutOptimization"><a class="viewcode-back" href="../../../../../apidoc_output/cameo.strain_design.heuristic.evolutionary.html#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization">[docs]</a><span class="k">class</span> <span class="nc">ReactionKnockoutOptimization</span><span class="p">(</span><span class="n">KnockoutOptimization</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Knockout optimization using reactions.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : SolverBasedModel</span>
+<span class="sd">        A constraint-based model.</span>
+<span class="sd">    heuristic_method : inspyred.ec.EvolutionaryComputation</span>
+<span class="sd">        An evolutionary algorithm.</span>
+<span class="sd">    objective_function : objective function or list(objective function)</span>
+<span class="sd">        The objectives for the algorithm to maximize.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        A seed for random. It is auto-generated if None is given.</span>
+<span class="sd">    termination : inspyred.ec.terminators</span>
+<span class="sd">        A termination criteria for the algorithm. The default is inspyred.ec.terminators.evaluation_termination.</span>
+<span class="sd">    simulation_method: flux_analysis.simulation</span>
+<span class="sd">        The method used to simulate the model.</span>
+<span class="sd">    wt_reference: dict</span>
+<span class="sd">        A reference initial state for the optimization. It is required for flux_analysis.simulation.lmoma and</span>
+<span class="sd">        flux_analysis.simulation.room. If not given, it will be computed using flux_analysis.simulation.pfba</span>
+<span class="sd">    reactions: list</span>
+<span class="sd">        A list of valid reactions to knockout. If None, then all reactions in the model will be knockout candidates</span>
+<span class="sd">        except the ones defined in essential_reactions</span>
+<span class="sd">    essential_reactions: list</span>
+<span class="sd">        A list of reactions that cannot be knocked out. If None, then all essential reactions will be removed from</span>
+<span class="sd">        the valid reactions set.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    run(view=config.default_view, maximize=True, **kwargs)</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    *inspyred.ec</span>
+<span class="sd">    *cameo.config.default_view</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from cameo import models</span>
+<span class="sd">    &gt;&gt;&gt; model = models.bigg.iJO1366</span>
+<span class="sd">    &gt;&gt;&gt; from cameo.strain_design.heuristic.evolutionary.objective_functions import biomass_product_coupled_yield</span>
+<span class="sd">    &gt;&gt;&gt; bpcy = biomass_product_coupled_yield(model.reactions.Ec_biomass_iJO1366_core_53p95,</span>
+<span class="sd">    &gt;&gt;&gt;                                      model.reactions.EX_succ_e),</span>
+<span class="sd">    &gt;&gt;&gt;                                      model.reactions.EX_glc__D_e)</span>
+<span class="sd">    &gt;&gt;&gt; knockout_optimization = ReactionKnockoutOptimization(model=model, objective_function=bpcy,</span>
+<span class="sd">    &gt;&gt;&gt;                                                      essential_reactions=[&quot;ATPM&quot;])</span>
+<span class="sd">    &gt;&gt;&gt; knockout_optimization.run(max_evaluations=50000)</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">essential_reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">ReactionKnockoutOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">reactions</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span> <span class="o">=</span> <span class="n">reactions</span>
+
+        <span class="k">if</span> <span class="n">essential_reactions</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">essential_reactions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">essential_reactions</span><span class="p">()])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">essential_reactions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">essential_reactions</span><span class="p">()]</span> <span class="o">+</span> <span class="n">essential_reactions</span><span class="p">)</span>
+
+        <span class="n">exchange_reactions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">exchanges</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">essential_reactions</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">exchange_reactions</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ko_type</span> <span class="o">=</span> <span class="n">REACTION_KNOCKOUT_TYPE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoders</span><span class="o">.</span><span class="n">ReactionKnockoutDecoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GeneKnockoutOptimization"><a class="viewcode-back" href="../../../../../apidoc_output/cameo.strain_design.heuristic.evolutionary.html#cameo.strain_design.heuristic.evolutionary.optimization.GeneKnockoutOptimization">[docs]</a><span class="k">class</span> <span class="nc">GeneKnockoutOptimization</span><span class="p">(</span><span class="n">KnockoutOptimization</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Knockout optimization using genes.</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model : SolverBasedModel</span>
+<span class="sd">        A constraint-based model.</span>
+<span class="sd">    heuristic_method : inspyred.ec.EvolutionaryComputation</span>
+<span class="sd">        An evolutionary algorithm.</span>
+<span class="sd">    objective_function : objective function or list(objective function)</span>
+<span class="sd">        The objectives for the algorithm to maximize.</span>
+<span class="sd">    seed : int</span>
+<span class="sd">        A seed for random. It is auto-generated if None is given.</span>
+<span class="sd">    termination : inspyred.ec.terminators</span>
+<span class="sd">        A termination criteria for the algorithm. The default is inspyred.ec.terminators.evaluation_termination.</span>
+<span class="sd">    simulation_method: flux_analysis.simulation</span>
+<span class="sd">        The method used to simulate the model.</span>
+<span class="sd">    wt_reference: dict</span>
+<span class="sd">        A reference initial state for the optimization. It is required for flux_analysis.simulation.lmoma and</span>
+<span class="sd">        flux_analysis.simulation.room. If not given, it will be computed using flux_analysis.simulation.pfba</span>
+<span class="sd">    genes: list</span>
+<span class="sd">        A list of valid genes to knockout. If None, then all genes in the model will be knockout candidates except the</span>
+<span class="sd">         ones defined in essential_genes</span>
+<span class="sd">    essential_genes: list</span>
+<span class="sd">        A list of genes that cannot be knocked out. If None, then all essential genes will be removed from the valid</span>
+<span class="sd">        genes set.</span>
+
+<span class="sd">    Methods</span>
+<span class="sd">    -------</span>
+<span class="sd">    run(view=config.default_view, maximize=True, **kwargs)</span>
+
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    *inspyred.ec</span>
+<span class="sd">    *cameo.config.default_view</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; from cameo import models</span>
+<span class="sd">    &gt;&gt;&gt; model = models.bigg.iJO1366</span>
+<span class="sd">    &gt;&gt;&gt; from cameo.strain_design.heuristic.evolutionary.objective_functions import biomass_product_coupled_yield</span>
+<span class="sd">    &gt;&gt;&gt; bpcy = biomass_product_coupled_yield(model.reactions.Ec_biomass_iJO1366_core_53p95,</span>
+<span class="sd">    &gt;&gt;&gt;                                      model.reactions.EX_succ_e),</span>
+<span class="sd">    &gt;&gt;&gt;                                      model.reactions.EX_glc__D_e)</span>
+<span class="sd">    &gt;&gt;&gt; knockout_optimization = GeneKnockoutOptimization(model=model, objective_function=bpcy)</span>
+<span class="sd">    &gt;&gt;&gt; knockout_optimization.run(max_evaluations=50000)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">genes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">essential_genes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">GeneKnockoutOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">genes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">genes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">g</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">genes</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">genes</span> <span class="o">=</span> <span class="n">genes</span>
+
+        <span class="k">if</span> <span class="n">essential_genes</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">essential_genes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">g</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">essential_genes</span><span class="p">()])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">essential_genes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">g</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">essential_genes</span><span class="p">()]</span> <span class="o">+</span> <span class="n">essential_genes</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">representation</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">genes</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">essential_genes</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ko_type</span> <span class="o">=</span> <span class="n">GENE_KNOCKOUT_TYPE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoders</span><span class="o">.</span><span class="n">GeneKnockoutDecoder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">representation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">KnockinKnockoutEvaluator</span><span class="p">(</span><span class="n">KnockoutEvaluator</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">KnockinKnockoutEvaluator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="n">database</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">KnockinKnockoutOptimizationResult</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">KnockinKnockoutOptimization</span><span class="p">(</span><span class="n">KnockoutOptimization</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">KnockinKnockoutOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_database</span> <span class="o">=</span> <span class="n">database</span>
+
+    <span class="k">def</span> <span class="nf">_evaluator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;view&#39;</span><span class="p">)</span>
+        <span class="n">population_chunks</span> <span class="o">=</span> <span class="p">(</span><span class="n">chunk</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">partition</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">view</span><span class="p">)))</span>
+        <span class="n">func_obj</span> <span class="o">=</span> <span class="n">KnockinKnockoutEvaluator</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="p">,</span>
+                                            <span class="bp">self</span><span class="o">.</span><span class="n">simulation_kwargs</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">view</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func_obj</span><span class="p">,</span> <span class="n">population_chunks</span><span class="p">)</span>
+        <span class="n">fitness</span> <span class="o">=</span> <span class="nb">reduce</span><span class="p">(</span><span class="nb">list</span><span class="o">.</span><span class="n">__add__</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">fitness</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">observer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span><span class="p">:</span>
+            <span class="n">observer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">observer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">observers</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">KnockoutOptimization</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+            <span class="n">keys</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;knockout&#39;</span><span class="p">,</span> <span class="s1">&#39;knockin&#39;</span><span class="p">],</span>
+            <span class="n">knockout_representation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">representation</span><span class="p">,</span>
+            <span class="n">knockin_representation</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_database</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">KnockinKnockoutOptimizationResult</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span>
+                                                 <span class="n">heuristic_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="p">,</span>
+                                                 <span class="n">simulation_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">simulation_method</span><span class="p">,</span>
+                                                 <span class="n">solutions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">heuristic_method</span><span class="o">.</span><span class="n">archive</span><span class="p">,</span>
+                                                 <span class="n">objective_function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective_function</span><span class="p">,</span>
+                                                 <span class="n">ko_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ko_type</span><span class="p">,</span>
+                                                 <span class="n">decoder</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="p">,</span>
+                                                 <span class="n">product</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;product&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
+
+
+<span class="c1"># TODO: implement a knockout knockin approach using a reaction db</span>
+<span class="k">class</span> <span class="nc">ReactionKnockinKnockoutOptimization</span><span class="p">(</span><span class="n">ReactionKnockoutOptimization</span><span class="p">,</span> <span class="n">KnockinKnockoutOptimization</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reaction_db</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">KnockinKnockoutOptimization</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">ReactionKnockoutOptimization</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">KnockinKnockoutOptimization</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../../../index.html">
+    <img class="logo" src="../../../../../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../API.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,148 +1,264 @@
-<!doctype html>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Cameo by biosustain</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to cameo! &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="#" />
+    <link rel="next" title="Dependencies" href="dependencies.html" />
+   
+  
+    <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/github-light.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
   </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <!--<h1>Cameo</h1>-->
-        <img src="cameo_logo.png" width="100%">
-        <p>cameo - computer assisted metabolic engineering &amp; optimization</p>
+  <body role="document">  
 
-        <p class="view"><a href="https://github.com/biosustain/cameo">View the Project on GitHub <small>biosustain/cameo</small></a></p>
-
-
-        <ul>
-          <li><a href="https://github.com/biosustain/cameo/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/biosustain/cameo/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/biosustain/cameo">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h2>
-<a id="cameocomputer-aided-metabolic-engineering-and-optimization" class="anchor" href="#cameocomputer-aided-metabolic-engineering-and-optimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Cameo—Computer Aided Metabolic Engineering and Optimization</h2>
-
-<p><a href="https://readthedocs.org/projects/cameo/?badge=devel"><img src="https://readthedocs.org/projects/cameo/badge/?version=devel" alt="Documentation Status"></a>
-<a href="https://travis-ci.org/biosustain/cameo"><img src="https://travis-ci.org/biosustain/cameo.svg?branch=devel" alt="Build Status"></a>
-<a href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img src="https://coveralls.io/repos/biosustain/cameo/badge.svg?branch=devel" alt="Coverage Status"></a>
-<a href="http://dx.doi.org/10.5281/zenodo.19827"><img src="https://zenodo.org/badge/doi/10.5281/zenodo.19827.svg" alt="DOI"></a></p>
-
-<h3>
-<a id="what-is-cameo" class="anchor" href="#what-is-cameo" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is Cameo?</h3>
-
-<p><strong>Cameo</strong> is a high-level python library developed to aid the strain design process in metabolic engineering projects. The library provides a modular framework of simulation methods, strain design methods, access to models, that targets developers that want  custom analysis workflows. </p>
-
-<p>Computationally heavy methods have been parallelized and can be run on a clusters using the IPython parallelization framework (see example and documentation for more details). The default fallback is python's multiprocessing library.</p>
-
-<p>Furthermore, it exposes a high-level API to users that just want to compute promising strain designs. </p>
-
-<p>You got curious? Head over to <a href="http://try.cameo.bio">try.cameo.bio</a> and give it a try.</p>
-
-<h3>
-<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h3>
-
-<p>Use pip to install Cameo from <a href="https://pypi.python.org/pypi/cameo">PyPI</a> (we recommend doing this inside a <a href="http://docs.python-guide.org/en/latest/dev/virtualenvs/">virtual environment</a>).</p>
-
-<pre><code>pip install cameo
-</code></pre>
-
-<p>We highly recommend updating <code>pip</code> beforehand (<code>pip install pip --upgrade</code>).</p>
-
-<p>In case you downloaded the source code, run</p>
-
-<pre><code>pip install -e .  # recommended
-</code></pre>
-
-<p>while you are in the top level directory. You might need to run these commands with administrative privileges if you're not using a virtual environment (using <code>sudo</code> for example).</p>
-
-<h3>
-<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h3>
-
-<p>A number of examples are available as static (<a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/tree/master/">nbviewer.ipython.org</a>) or executable Jupyter (née IPython) notebooks (<a href="http://try.cameo.bio">try.cameo.bio</a>).</p>
-
-<h4>
-<a id="high-level-api-for-users" class="anchor" href="#high-level-api-for-users" aria-hidden="true"><span class="octicon octicon-link"></span></a>High-level API (for users)</h4>
-
-<p>Compute strain engineering strategies for a desired product in a number of host organisms using the high-level interface.</p>
-
-<pre><code>from cameo.api import design
-design(product='L-Serine')
-</code></pre>
-
-<p><a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/blob/master/8-high-level-API.ipynb">Output</a></p>
-
-<h4>
-<a id="low-level-api-for-developers" class="anchor" href="#low-level-api-for-developers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Low-level API (for developers)</h4>
-
-<p>Find gene knockout targets using evolutionary computation.</p>
-
-<pre><code>from cameo import models
-from cameo.strain_design.heuristic import GeneKnockoutOptimization
-from cameo.strain_design.heuristic.objective_functions import biomass_product_coupled_yield
-
-model = models.bigg.e_coli_core
-obj = biomass_product_coupled_yield(
-    model.reactions.Biomass_Ecoli_core_w_GAM,
-    model.reactions.EX_succ_e,
-    model.reactions.EX_glc_e)
-ko = GeneKnockoutOptimization(model=model, objective_function=obj)
-ko.run(max_evaluations=50000, n=1, mutation_rate=0.15, indel_rate=0.185)
-</code></pre>
-
-<p><a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/blob/master/6-predict-gene-knockout-strategies.ipynb">Output</a></p>
-
-<p>Predict heterologous pathways for a desired chemical.</p>
-
-<pre><code>from cameo.strain_design import pathway_prediction
-predictor = pathway_prediction.PathwayPredictor(model)
-pathways = predictor.run(product="vanillin")
-</code></pre>
-
-<p><a href="http://nbviewer.ipython.org/github/biosustain/cameo-notebooks/blob/master/7-predict-heterologous-pathways.ipynb">Output</a></p>
-
-<h3>
-<a id="dependencies" class="anchor" href="#dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dependencies</h3>
-
-<p>This library depends on:</p>
-
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">These pages are under construction. Feel free to look around ...</p>
+</div>
+<div class="section" id="welcome-to-cameo">
+<h1>Welcome to cameo!<a class="headerlink" href="#welcome-to-cameo" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference external" href="https://readthedocs.org/projects/cameo/?badge=devel"><img alt="Documentation Status" src="https://readthedocs.org/projects/cameo/badge/?version=devel" /></a> <a class="reference external" href="https://travis-ci.org/biosustain/cameo"><img alt="Build Status" src="https://travis-ci.org/biosustain/cameo.svg?branch=master" /></a> <a class="reference external" href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img alt="Coverage Status" src="https://coveralls.io/repos/biosustain/cameo/badge.svg?branch=devel" /></a> <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.19827"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.19827.svg" /></a></p>
+<p><strong>Cameo</strong> is a high-level python library developed to aid the strain
+design process in metabolic engineering projects. The library provides a
+modular framework of simulation methods, strain design methods, access
+to models, that targets developers that want custom analysis workflows.</p>
+<p>Computationally heavy methods have been parallelized and can be run on a
+clusters using the IPython parallelization framework (see example and
+documentation for more details). The default fallback is python&#8217;s
+multiprocessing library.</p>
+<p>Furthermore, it exposes a high-level API to users that just want to compute
+promising strain designs.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">design</span>
+<span class="n">design</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="s1">&#39;L-Serine&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You got curious? Head over to <a class="reference external" href="http://try.cameo.bio">try.cameo.bio</a>
+and give it a try.</p>
+<div class="section" id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
 <ul>
-<li>
-<a href="https://github.com/opencobra/cobrapy">cobrapy</a> for constraint-based modeling</li>
-<li>
-<a href="https://github.com/biosustain/optlang">optlang</a> for heuristic optimization and mathematical programming</li>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#setting-up-a-virtual-environment-first">Setting up a virtual environment first</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#non-python-dependencies">Non-python dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#glpk">GLPK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installation.html#cplex">CPLEX</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#normal-installation">Normal installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#development-setup">Development setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="01-quick-start.html">Getting started with cameo</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="01-quick-start.html#step-1-load-a-model">Step 1: Load a model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-quick-start.html#step-2-simulate-a-model">Step 2: Simulate a model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01-quick-start.html#step-3-exploring-a-model">Step 3: Exploring a model</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="02-import-models.html">Import models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="02-import-models.html#import-models-from-files">Import models from files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-import-models.html#import-models-from-the-internet">Import models from the internet</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="03-simulate-models.html">Simulate models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#primer-constraint-based-modeling">Primer: Constraint-Based Modeling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#flux-balance-analysis">Flux Balance Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#parsimonious-flux-balance-analysis">Parsimonious Flux Balance Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#setp-2-simulate-knockouts-phenotypes">Setp 2: Simulate knockouts phenotypes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html#flux-variability-analysis">Flux Variability Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html#phenotpic-phase-plane">Phenotpic Phase Plane</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html#flux-balance-impact-degree">Flux Balance Impact Degree</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html#optgene">OptGene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html#optknock">OptKnock</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="08-high-level-API.html#ipython-notebook">IPython notebook</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobrapy_difference.html">cameo vs. cobrapy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cobrapy_difference.html#importing-a-model">Importing a model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cobrapy_difference.html#solving-models">Solving models</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apidoc_output/cameo.html">cameo package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#subpackages">Subpackages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.config">cameo.config module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.exceptions">cameo.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.io">cameo.io module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.parallel">cameo.parallel module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.util">cameo.util module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="#">
+    <img class="logo" src="_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
 </ul>
 
-<p>Furthermore, the following dependencies are needed: </p>
-
+<div class="relations">
+<h3>Related Topics</h3>
 <ul>
-<li>
-<a href="http://www.numpy.org/">numpy</a> and <a href="http://www.scipy.org/">scipy</a> for obvious reasons.</li>
-<li>
-<a href="http://ipython.org/">IPython</a> is needed for parallel computations and notebook interface.</li>
-<li>
-<a href="http://bokeh.pydata.org/">bokeh</a> is needed for reporting progress and plotting in the IPython notebook interface.</li>
-<li>
-<a href="http://pandas.pydata.org/">pandas</a> is needed because most functions returns results as pandas DataFrames.</li>
-<li>
-<a href="https://pypi.python.org/pypi/inspyred">inspyred</a> for evolutionary computations.</li>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="dependencies.html" title="next chapter">Dependencies</a></li>
+  </ul></li>
 </ul>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/biosustain">biosustain</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
     </div>
-    <script src="javascripts/scale.fix.js"></script>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
     
   </body>
 </html>

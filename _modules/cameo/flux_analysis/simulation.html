@@ -1,0 +1,643 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.flux_analysis.simulation &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cameo.flux_analysis.simulation</h1><div class="highlight"><pre>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#  Copyright 2014 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Methods for simulating flux distributions.</span>
+<span class="sd">Currently implements:</span>
+<span class="sd">* fba - Flux Balance Analysis</span>
+<span class="sd">* pfba - Parsimonious Flux Balance Analysis</span>
+<span class="sd">* lmoma - (Linear) Minimization of Metabolic Adjustment</span>
+<span class="sd">* room - Regulatory On/Off Minimization</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">optlang.interface</span> <span class="kn">import</span> <span class="n">OptimizationExpression</span>
+<span class="kn">import</span> <span class="nn">pandas</span>
+<span class="kn">from</span> <span class="nn">sympy.parsing.sympy_parser</span> <span class="kn">import</span> <span class="n">parse_expr</span>
+<span class="kn">import</span> <span class="nn">cameo</span>
+<span class="kn">from</span> <span class="nn">cameo.core.result</span> <span class="kn">import</span> <span class="n">Result</span>
+<span class="kn">from</span> <span class="nn">cameo.core.solution</span> <span class="kn">import</span> <span class="n">SolutionBase</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;fba&#39;</span><span class="p">,</span> <span class="s1">&#39;pfba&#39;</span><span class="p">,</span> <span class="s1">&#39;moma&#39;</span><span class="p">,</span> <span class="s1">&#39;lmoma&#39;</span><span class="p">,</span> <span class="s1">&#39;room&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">six</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Add</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Mul</span>
+
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span><span class="p">,</span> <span class="n">ProblemCache</span>
+<span class="kn">from</span> <span class="nn">cameo.exceptions</span> <span class="kn">import</span> <span class="n">SolveError</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+<span class="n">add</span> <span class="o">=</span> <span class="n">Add</span><span class="o">.</span><span class="n">_from_args</span>
+<span class="n">mul</span> <span class="o">=</span> <span class="n">Mul</span><span class="o">.</span><span class="n">_from_args</span>
+<span class="n">NegativeOne</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">singleton</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">NegativeOne</span>
+<span class="n">One</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">singleton</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">One</span>
+<span class="n">FloatOne</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Float</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">RealNumber</span> <span class="o">=</span> <span class="n">sympy</span><span class="o">.</span><span class="n">RealNumber</span>
+
+
+<div class="viewcode-block" id="fba"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.simulation.fba">[docs]</a><span class="k">def</span> <span class="nf">fba</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Flux Balance Analysis.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: SolverBasedModel</span>
+<span class="sd">    objective: a valid objective - see SolverBaseModel.objective (optional)</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FluxDistributionResult</span>
+<span class="sd">        Contains the result of the linear solver.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">objective</span><span class="p">),</span>
+               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">))</span>
+        <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">reactions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="p">({</span><span class="n">r</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">get_primal_by_id</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">},</span> <span class="n">solution</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="o">.</span><span class="n">from_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="pfba"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.simulation.pfba">[docs]</a><span class="k">def</span> <span class="nf">pfba</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parsimonious Enzyme Usage Flux Balance Analysis [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: SolverBasedModel</span>
+<span class="sd">    objective: str or reaction or optlang.Objective</span>
+<span class="sd">        An objective to be minimized/maximized for</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FluxDistributionResult</span>
+<span class="sd">        Contains the result of the linear solver.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Lewis, N. E., Hixson, K. K., Conrad, T. M., Lerman, J. A., Charusanti, P., Polpitiya, A. D., …</span>
+<span class="sd">     Palsson, B. Ø. (2010). Omic data from evolved E. coli are consistent with computed optimal growth from</span>
+<span class="sd">     genome-scale models. Molecular Systems Biology, 6, 390. doi:10.1038/msb.2010.47</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+        <span class="n">original_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span>
+        <span class="k">if</span> <span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">objective</span><span class="p">),</span>
+               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">original_objective</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">obj_val</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span><span class="o">.</span><span class="n">f</span>
+        <span class="k">except</span> <span class="n">SolveError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;pfba could not determine maximum objective value for</span><span class="se">\n</span><span class="si">%s</span><span class="s2">.&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">if</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">direction</span> <span class="o">==</span> <span class="s1">&#39;max&#39;</span><span class="p">:</span>
+            <span class="n">fix_obj_constraint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">obj_val</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">fix_obj_constraint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">obj_val</span><span class="p">)</span>
+        <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">,</span> <span class="n">fix_obj_constraint</span><span class="p">),</span>
+           <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_remove_constraint</span><span class="p">,</span> <span class="n">fix_obj_constraint</span><span class="p">))</span>
+        <span class="n">pfba_obj</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">add</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">mul</span><span class="p">((</span><span class="n">sympy</span><span class="o">.</span><span class="n">singleton</span><span class="o">.</span><span class="n">S</span><span class="o">.</span><span class="n">One</span><span class="p">,</span> <span class="n">variable</span><span class="p">))</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">())]),</span>
+            <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">pfba_obj</span><span class="p">),</span>
+           <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="n">original_objective</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reactions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="p">({</span><span class="n">r</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">get_primal_by_id</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">},</span> <span class="n">solution</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="o">.</span><span class="n">from_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+            <span class="n">tm</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="n">SolveError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;pfba could not determine an optimal solution for objective </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="moma"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.simulation.moma">[docs]</a><span class="k">def</span> <span class="nf">moma</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Minimization of Metabolic Adjustment</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+        <span class="n">aux_vars</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">reac_id</span> <span class="ow">in</span> <span class="n">reference</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s2">&quot;moma_aux_&quot;</span><span class="o">+</span><span class="n">reac_id</span><span class="p">)</span>
+            <span class="n">aux_vars</span><span class="p">[</span><span class="n">reac_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">aux_vars</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+           <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="n">aux_vars</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="n">constraints</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">reac_id</span><span class="p">,</span> <span class="n">aux_var</span> <span class="ow">in</span> <span class="n">aux_vars</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">reac</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reac_id</span><span class="p">)</span>
+            <span class="n">const</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                <span class="n">add</span><span class="p">([</span><span class="n">mul</span><span class="p">([</span><span class="n">One</span><span class="p">,</span> <span class="n">reac</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">]),</span>
+                     <span class="n">mul</span><span class="p">([</span><span class="n">NegativeOne</span><span class="p">,</span> <span class="n">reac</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">]),</span>
+                     <span class="n">mul</span><span class="p">([</span><span class="n">NegativeOne</span><span class="p">,</span> <span class="n">aux_var</span><span class="p">])</span>
+                <span class="p">]),</span>
+                <span class="n">lb</span><span class="o">=</span><span class="n">reference</span><span class="p">[</span><span class="n">reac_id</span><span class="p">],</span>
+                <span class="n">ub</span><span class="o">=</span><span class="n">reference</span><span class="p">[</span><span class="n">reac_id</span><span class="p">],</span>
+                <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span>
+            <span class="p">)</span>
+            <span class="n">constraints</span><span class="p">[</span><span class="n">reac_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">const</span>
+        <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">,</span> <span class="n">constraints</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+           <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="n">constraints</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+
+        <span class="n">obj</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">FloatOne</span><span class="o">*</span><span class="n">var</span><span class="o">**</span><span class="mi">2</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">aux_vars</span><span class="o">.</span><span class="n">values</span><span class="p">())),</span> <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s2">&quot;objective&quot;</span><span class="p">,</span> <span class="n">obj</span><span class="p">),</span>
+           <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="s2">&quot;objective&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">))</span>
+
+        <span class="n">sol</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="o">.</span><span class="n">from_solution</span><span class="p">(</span><span class="n">sol</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="lmoma"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.simulation.lmoma">[docs]</a><span class="k">def</span> <span class="nf">lmoma</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Linear Minimization Of Metabolic Adjustment [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: SolverBasedModel</span>
+<span class="sd">    reference: dict</span>
+<span class="sd">    objective: str or reaction or optlang.Objective</span>
+<span class="sd">        An objective to be minimized/maximized for</span>
+<span class="sd">    volatile: boolean</span>
+<span class="sd">    cache: dict</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FluxDistributionResult</span>
+<span class="sd">        Contains the result of the linear solver.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Becker, S. A., Feist, A. M., Mo, M. L., Hannum, G., Palsson, B. Ø., &amp; Herrgard, M. J. (2007).</span>
+<span class="sd">    Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox.</span>
+<span class="sd">    Nature Protocols, 2(3), 727–38. doi:10.1038/nprot.2007.99</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">volatile</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">volatile</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="n">ProblemCache</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="n">cache</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">FluxDistributionResult</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reference must be a flux distribution (dict or FluxDistributionResult&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">flux_value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
+            <span class="n">reaction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">rid</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">create_variable</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">var_id</span><span class="p">,</span> <span class="n">lb</span><span class="p">):</span>
+                <span class="n">var</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">var_id</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">lb</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">var</span>
+
+            <span class="n">pos_var_id</span> <span class="o">=</span> <span class="s2">&quot;u_</span><span class="si">%s</span><span class="s2">_pos&quot;</span> <span class="o">%</span> <span class="n">rid</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">pos_var_id</span><span class="p">,</span> <span class="n">create_variable</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="n">neg_var_id</span> <span class="o">=</span> <span class="s2">&quot;u_</span><span class="si">%s</span><span class="s2">_neg&quot;</span> <span class="o">%</span> <span class="n">rid</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="n">neg_var_id</span><span class="p">,</span> <span class="n">create_variable</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># ui = vi - wt</span>
+            <span class="k">def</span> <span class="nf">update_upper_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">):</span>
+                <span class="n">constraint</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">flux_value</span>
+
+            <span class="k">def</span> <span class="nf">create_upper_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">):</span>
+                <span class="n">constraint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">flux_expression</span> <span class="o">+</span> <span class="n">var</span><span class="p">,</span>
+                                                               <span class="n">lb</span><span class="o">=</span><span class="n">flux_value</span><span class="p">,</span>
+                                                               <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                               <span class="n">name</span><span class="o">=</span><span class="n">constraint_id</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">constraint</span>
+
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="s2">&quot;c_</span><span class="si">%s</span><span class="s2">_ub&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">,</span> <span class="n">create_upper_constraint</span><span class="p">,</span> <span class="n">update_upper_constraint</span><span class="p">,</span>
+                                 <span class="n">cache</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">pos_var_id</span><span class="p">],</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">update_lower_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">):</span>
+                <span class="n">constraint</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">flux_value</span>
+
+            <span class="k">def</span> <span class="nf">create_lower_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">):</span>
+                <span class="n">constraint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">flux_expression</span> <span class="o">-</span> <span class="n">var</span><span class="p">,</span>
+                                                               <span class="n">ub</span><span class="o">=</span><span class="n">flux_value</span><span class="p">,</span>
+                                                               <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                               <span class="n">name</span><span class="o">=</span><span class="n">constraint_id</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">constraint</span>
+
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="s2">&quot;c_</span><span class="si">%s</span><span class="s2">_lb&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">,</span> <span class="n">create_lower_constraint</span><span class="p">,</span> <span class="n">update_lower_constraint</span><span class="p">,</span>
+                                 <span class="n">cache</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">neg_var_id</span><span class="p">],</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">)</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">add</span><span class="p">([</span><span class="n">mul</span><span class="p">([</span><span class="n">One</span><span class="p">,</span> <span class="n">var</span><span class="p">])</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+                                                           <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reactions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="p">({</span><span class="n">r</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">get_primal_by_id</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">},</span> <span class="n">solution</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="o">.</span><span class="n">from_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="n">SolveError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">e</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">cache</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">volatile</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="room"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.simulation.room">[docs]</a><span class="k">def</span> <span class="nf">room</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Regulatory On/Off Minimization [1].</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    model: SolverBasedModel</span>
+<span class="sd">    reference: dict</span>
+<span class="sd">    cache: ProblemCache</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    FluxDistributionResult</span>
+<span class="sd">        Contains the result of the linear solver.</span>
+
+<span class="sd">    References</span>
+<span class="sd">    ----------</span>
+<span class="sd">    .. [1] Tomer Shlomi, Omer Berkman and Eytan Ruppin, &quot;Regulatory on/off minimization of metabolic</span>
+<span class="sd">    flux changes after genetic perturbations&quot;, PNAS 2005 102 (21) 7695-7700; doi:10.1073/pnas.0406346102</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">volatile</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">cache</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">volatile</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="n">ProblemCache</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cache</span><span class="p">,</span> <span class="n">ProblemCache</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Invalid cache object (must be a cameo.util.ProblemCache)&quot;</span><span class="p">)</span>
+
+    <span class="n">cache</span><span class="o">.</span><span class="n">begin_transaction</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">FluxDistributionResult</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;reference must be a flux distribution (dict or FluxDistributionResult&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">rid</span><span class="p">,</span> <span class="n">flux_value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span>
+            <span class="n">reaction</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">rid</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">create_variable</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">var_id</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">var_id</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;binary&quot;</span><span class="p">)</span>
+
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_variable</span><span class="p">(</span><span class="s2">&quot;y_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">,</span> <span class="n">create_variable</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">create_upper_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+                <span class="n">w_u</span> <span class="o">=</span> <span class="n">flux_value</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">flux_value</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span>
+                <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                    <span class="n">reaction</span><span class="o">.</span><span class="n">flux_expression</span> <span class="o">-</span> <span class="n">variable</span> <span class="o">*</span> <span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">-</span> <span class="n">w_u</span><span class="p">),</span>
+                    <span class="n">ub</span><span class="o">=</span><span class="n">w_u</span><span class="p">,</span>
+                    <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">constraint_id</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">update_upper_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+                <span class="n">w_u</span> <span class="o">=</span> <span class="n">flux_value</span> <span class="o">+</span> <span class="n">delta</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">flux_value</span><span class="p">)</span> <span class="o">+</span> <span class="n">epsilon</span>
+                <span class="n">constraint</span><span class="o">.</span><span class="n">_set_coefficients_low_level</span><span class="p">({</span><span class="n">variable</span><span class="p">:</span> <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">-</span> <span class="n">w_u</span><span class="p">})</span>
+                <span class="n">constraint</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">w_u</span>
+
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="s2">&quot;c_</span><span class="si">%s</span><span class="s2">_upper&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">,</span> <span class="n">create_upper_constraint</span><span class="p">,</span> <span class="n">update_upper_constraint</span><span class="p">,</span>
+                                 <span class="n">reaction</span><span class="p">,</span> <span class="n">cache</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;y_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">],</span> <span class="n">flux_value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">create_lower_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint_id</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+                <span class="n">w_l</span> <span class="o">=</span> <span class="n">flux_value</span> <span class="o">-</span> <span class="n">delta</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">flux_value</span><span class="p">)</span> <span class="o">-</span> <span class="n">epsilon</span>
+                <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                    <span class="n">reaction</span><span class="o">.</span><span class="n">flux_expression</span> <span class="o">-</span> <span class="n">variable</span> <span class="o">*</span> <span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">-</span> <span class="n">w_l</span><span class="p">),</span>
+                    <span class="n">lb</span><span class="o">=</span><span class="n">w_l</span><span class="p">,</span>
+                    <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">constraint_id</span><span class="p">)</span>
+
+            <span class="k">def</span> <span class="nf">update_lower_constraint</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">constraint</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">variable</span><span class="p">,</span> <span class="n">flux_value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">):</span>
+                <span class="n">w_l</span> <span class="o">=</span> <span class="n">flux_value</span> <span class="o">-</span> <span class="n">delta</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">flux_value</span><span class="p">)</span> <span class="o">-</span> <span class="n">epsilon</span>
+                <span class="n">constraint</span><span class="o">.</span><span class="n">_set_coefficients_low_level</span><span class="p">({</span><span class="n">variable</span><span class="p">:</span> <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">-</span> <span class="n">w_l</span><span class="p">})</span>
+                <span class="n">constraint</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">w_l</span>
+
+            <span class="n">cache</span><span class="o">.</span><span class="n">add_constraint</span><span class="p">(</span><span class="s2">&quot;c_</span><span class="si">%s</span><span class="s2">_lower&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">,</span> <span class="n">create_lower_constraint</span><span class="p">,</span> <span class="n">update_lower_constraint</span><span class="p">,</span>
+                                 <span class="n">reaction</span><span class="p">,</span> <span class="n">cache</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="s2">&quot;y_</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">rid</span><span class="p">],</span> <span class="n">flux_value</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+
+        <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">add</span><span class="p">([</span><span class="n">mul</span><span class="p">([</span><span class="n">One</span><span class="p">,</span> <span class="n">var</span><span class="p">])</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">()]),</span>
+                                                           <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">reactions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="p">({</span><span class="n">r</span><span class="p">:</span> <span class="n">solution</span><span class="o">.</span><span class="n">get_primal_by_id</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">},</span> <span class="n">solution</span><span class="o">.</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">FluxDistributionResult</span><span class="o">.</span><span class="n">from_solution</span><span class="p">(</span><span class="n">solution</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">except</span> <span class="n">SolveError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;room could not determine an optimal solution for objective </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">cache</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">e</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">volatile</span><span class="p">:</span>
+            <span class="n">cache</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span></div>
+
+
+<span class="k">class</span> <span class="nc">FluxDistributionResult</span><span class="p">(</span><span class="n">Result</span><span class="p">):</span>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_solution</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">solution</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span>  <span class="n">cls</span><span class="p">(</span><span class="n">solution</span><span class="o">.</span><span class="n">fluxes</span><span class="p">,</span> <span class="n">solution</span><span class="o">.</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fluxes</span><span class="p">,</span> <span class="n">objective_value</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">FluxDistributionResult</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span> <span class="o">=</span> <span class="n">fluxes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_objective_value</span> <span class="o">=</span> <span class="n">objective_value</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">Reaction</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="p">[</span><span class="n">item</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="n">exp</span> <span class="o">=</span> <span class="n">parse_expr</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">OptimizationExpression</span><span class="p">):</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">expression</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">sympy</span><span class="o">.</span><span class="n">Expr</span><span class="p">):</span>
+            <span class="n">exp</span> <span class="o">=</span> <span class="n">item</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">exp</span><span class="o">.</span><span class="n">evalf</span><span class="p">(</span><span class="n">subs</span><span class="o">=</span><span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">exp</span><span class="o">.</span><span class="n">atoms</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Symbol</span><span class="p">)})</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">pandas</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span> <span class="n">index</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;flux&#39;</span><span class="p">])</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">fluxes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fluxes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">objective_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective_value</span>
+
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c1"># TODO: Add barchart or something similar.</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">items</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">values</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fluxes</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;&lt;strong&gt;objective value: </span><span class="si">%s</span><span class="s2">&lt;/strong&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_value</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">time</span>
+    <span class="kn">from</span> <span class="nn">cobra.io</span> <span class="kn">import</span> <span class="n">read_sbml_model</span>
+    <span class="kn">from</span> <span class="nn">cobra.flux_analysis.parsimonious</span> <span class="kn">import</span> <span class="n">optimize_minimal_flux</span>
+    <span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+
+    <span class="c1"># sbml_path = &#39;../../tests/data/EcoliCore.xml&#39;</span>
+    <span class="n">sbml_path</span> <span class="o">=</span> <span class="s1">&#39;../../tests/data/iJO1366.xml&#39;</span>
+
+    <span class="n">cb_model</span> <span class="o">=</span> <span class="n">read_sbml_model</span><span class="p">(</span><span class="n">sbml_path</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">sbml_path</span><span class="p">)</span>
+
+    <span class="c1"># model.solver = &#39;glpk&#39;</span>
+
+    <span class="c1"># print(&quot;cobra fba&quot;)</span>
+    <span class="c1"># tic = time.time()</span>
+    <span class="c1"># cb_model.optimize(solver=&#39;cglpk&#39;)</span>
+    <span class="c1"># print(&quot;flux sum:&quot;, sum([abs(val) for val in list(cb_model.solution.x_dict.values())]))</span>
+    <span class="c1"># print(&quot;cobra fba runtime:&quot;, time.time() - tic)</span>
+
+    <span class="c1"># print(&quot;cobra pfba&quot;)</span>
+    <span class="c1"># tic = time.time()</span>
+    <span class="c1"># optimize_minimal_flux(cb_model, solver=&#39;cglpk&#39;)</span>
+    <span class="c1"># print(&quot;flux sum:&quot;, sum([abs(val) for val in list(cb_model.solution.x_dict.values())]))</span>
+    <span class="c1"># print(&quot;cobra pfba runtime:&quot;, time.time() - tic)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;pfba&quot;</span><span class="p">)</span>
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">ref</span> <span class="o">=</span> <span class="n">pfba</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;flux sum:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">ref</span><span class="o">.</span><span class="n">values</span><span class="p">())]))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;cameo pfba runtime:&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tic</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;lmoma&quot;</span><span class="p">)</span>
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">ProblemCache</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">lmoma</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">ref</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;flux distance:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">())]))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;cameo lmoma runtime:&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tic</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;room&quot;</span><span class="p">)</span>
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">room</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">ref</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">())]))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;cameo room runtime:&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tic</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;flux distance:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">())]))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;sum yi:&quot;</span><span class="p">,</span> <span class="n">res</span><span class="o">.</span><span class="n">objective_value</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;cameo room runtime:&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tic</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;lmoma w/ ko&quot;</span><span class="p">)</span>
+    <span class="n">tic</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">lmoma</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">ref</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;flux distance:&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="nb">sum</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-</span> <span class="n">ref</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">keys</span><span class="p">())]))</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;cameo lmoma runtime:&quot;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tic</span><span class="p">)</span>
+
+    <span class="c1"># print model.solver</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

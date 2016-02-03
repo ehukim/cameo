@@ -1,0 +1,117 @@
+cameo.strain_design.heuristic.evolutionary package
+==================================================
+
+Subpackages
+-----------
+
+.. toctree::
+
+    cameo.strain_design.heuristic.evolutionary.multiprocess
+
+Submodules
+----------
+
+cameo.strain_design.heuristic.evolutionary.archives module
+----------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.archives
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.decoders module
+----------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.decoders
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.generators module
+------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.generators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.genomes module
+---------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.genomes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.metrics module
+---------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.metrics
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.objective_functions module
+---------------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.objective_functions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.observers module
+-----------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.observers
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.optimization module
+--------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.optimization
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.plotters module
+----------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.plotters
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.processing module
+------------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.processing
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.stats module
+-------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.stats
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cameo.strain_design.heuristic.evolutionary.variators module
+-----------------------------------------------------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary.variators
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: cameo.strain_design.heuristic.evolutionary
+    :members:
+    :undoc-members:
+    :show-inheritance:

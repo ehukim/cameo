@@ -1,0 +1,234 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.5.0+183.g9170526.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="index.html" />
+    <link rel="next" title="Getting started with cameo" href="01-quick-start.html" />
+    <link rel="prev" title="Dependencies" href="dependencies.html" />
+   
+  
+    <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="setting-up-a-virtual-environment-first">
+<h2>Setting up a virtual environment first<a class="headerlink" href="#setting-up-a-virtual-environment-first" title="Permalink to this headline">¶</a></h2>
+<p>We highly recommended installing cameo inside a virtual environment (<a class="reference external" href="https://pypi.python.org/pypi/virtualenv">virtualenv</a>).
+<a class="reference external" href="https://pypi.python.org/pypi/virtualenvwrapper">virtualenvwrapper</a> tremendously simplifies using <a class="reference external" href="https://pypi.python.org/pypi/virtualenv">virtualenv</a> and can easily
+be installed using <a class="reference external" href="https://github.com/brainsik/virtualenv-burrito">virtualenv-burrito</a>. Once you installed <a class="reference external" href="https://pypi.python.org/pypi/virtualenv">virtualenv</a> and <a class="reference external" href="https://pypi.python.org/pypi/virtualenvwrapper">virtualenvwrapper</a>, run</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ mkvirtualenv cameo  <span class="c1"># or whatever you&#39;d like to call your virtual environment</span>
+$ workon cameo
+</pre></div>
+</div>
+<p>and then continue with the installation instructions described below.</p>
+</div>
+<div class="section" id="non-python-dependencies">
+<h2>Non-python dependencies<a class="headerlink" href="#non-python-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>cameo relies on <a class="reference external" href="https://github.com/biosustain/optlang">optlang</a> to solve optimization problems. Currently, optlang supports either <a class="reference external" href="https://www.gnu.org/software/glpk/">glpk</a> (open source) or <a class="reference external" href="http://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/">cplex</a>
+(academic licenses available), which are not python tools. At least one of them has to be installed before one can proceed
+with the cameo installation.</p>
+<div class="section" id="glpk">
+<h3>GLPK<a class="headerlink" href="#glpk" title="Permalink to this headline">¶</a></h3>
+<p>Using cameo with <a class="reference external" href="https://www.gnu.org/software/glpk/">glpk</a> also requires <a class="reference external" href="http://www.swig.org/">swig</a> to be installed (in order to generate python bindings).
+On ubuntu (or other similar linux platforms) we recommend using <code class="code docutils literal"><span class="pre">apt-get</span></code>:</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ sudo apt-get install libglpk-dev glpk-utils swig
+</pre></div>
+</div>
+<p>On macs we recommend using <a class="reference external" href="http://brew.sh/">homebrew</a>.</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ brew install swig
+$ brew install glpk
+</pre></div>
+</div>
+</div>
+<div class="section" id="cplex">
+<h3>CPLEX<a class="headerlink" href="#cplex" title="Permalink to this headline">¶</a></h3>
+<p>The <a class="reference external" href="http://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/">cplex</a> contains a python directory (similar to <code class="code docutils literal"><span class="pre">IBM/ILOG/CPLEX_Studio1251/cplex/python/x86-64_osx</span></code>). Inside
+this directory run</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ python setup.py install
+</pre></div>
+</div>
+<p>to install the python bindings.</p>
+</div>
+</div>
+<div class="section" id="normal-installation">
+<h2>Normal installation<a class="headerlink" href="#normal-installation" title="Permalink to this headline">¶</a></h2>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">cameo is still under heavy development. We recommend installing the development version (see below)
+if you would like to stay up-to-date with the latest changes.</p>
+</div>
+<p>cameo can be installed using <code class="xref py py-obj docutils literal"><span class="pre">pip</span></code>.</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ pip install cameo
+</pre></div>
+</div>
+</div>
+<div class="section" id="development-setup">
+<h2>Development setup<a class="headerlink" href="#development-setup" title="Permalink to this headline">¶</a></h2>
+<p><code class="xref py py-obj docutils literal"><span class="pre">pip</span></code> can also be used to install cameo directly from the <a class="reference external" href="https://github.com/biosustain/cameo">github repository</a>.</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ pip install -e git+https://github.com/biosustain/cameo.git@devel#egg<span class="o">=</span>cameo
+</pre></div>
+</div>
+<p>Alternatively, you can clone the repository (or your fork) and then run</p>
+<div class="highlight-bash"><div class="highlight"><pre>$ python setup.py install
+</pre></div>
+</div>
+<p>From withing the cameo directory.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-a-virtual-environment-first">Setting up a virtual environment first</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#non-python-dependencies">Non-python dependencies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#glpk">GLPK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cplex">CPLEX</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#normal-installation">Normal installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-setup">Development setup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="01-quick-start.html">Getting started with cameo</a></li>
+<li class="toctree-l1"><a class="reference internal" href="02-import-models.html">Import models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l1"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cobrapy_difference.html">cameo vs. cobrapy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="dependencies.html" title="previous chapter">Dependencies</a></li>
+      <li>Next: <a href="01-quick-start.html" title="next chapter">Getting started with cameo</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+      |
+      <a href="_sources/installation.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
