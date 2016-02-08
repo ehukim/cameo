@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.core.solver_based_model &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    <title>cameo.core.solver_based_model &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.5.0+183.g9170526.dirty',
+        VERSION:     '0.5.0+223.gd37a580.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../../../index.html" />
     <link rel="up" title="Module code" href="../../index.html" />
    
   
@@ -163,7 +163,7 @@
         <span class="n">model_copy</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">SolverBasedModel</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">model_copy</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>
-        <span class="k">except</span><span class="p">:</span>  <span class="c1"># pragma: no cover # Cplex has an issue with deep copies</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover # Cplex has an issue with deep copies</span>
             <span class="n">model_copy</span><span class="o">.</span><span class="n">_solver</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
         <span class="k">return</span> <span class="n">model_copy</span></div>
 
@@ -353,6 +353,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">metabolite</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Exchange </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metabolite</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;EX_&quot;</span> <span class="k">else</span> <span class="s2">&quot;Demand </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">metabolite</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="nb">id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The metabolite already has a demand reaction.&quot;</span><span class="p">)</span>
 
         <span class="n">demand_reaction</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">()</span>
         <span class="n">demand_reaction</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
@@ -746,20 +748,16 @@
 </p>
 <h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../01-quick-start.html">Getting started with cameo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../02-import-models.html">Import models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../03-simulate-models.html">Simulate models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../04-analyze-models.html">Analyzing models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../08-high-level-API.html">High-level interface for users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../09-vanillin-production.html">Vanillin production</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cobrapy_difference.html">cameo vs. cobrapy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to cameo</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API Docs</a></li>
 </ul>
 
 <div class="relations">

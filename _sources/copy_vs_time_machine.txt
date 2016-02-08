@@ -1,0 +1,12 @@
+===============
+Avoiding copies
+===============
+
+Cameo users are encouraged to avoid making expensive copies of models (on the order seconds) and other data structures. Instead, we put forward a design pattern based on transactions (see ...)
+
+.. code-block:: python
+
+    from cameo.util import TimeMachine
+    with TimeMachine() as tm:
+        model.reactions.knock_out(time_machine=tm)
+

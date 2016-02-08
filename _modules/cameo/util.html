@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.util &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    <title>cameo.util &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.0+183.g9170526.dirty',
+        VERSION:     '0.5.0+223.gd37a580.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../../index.html" />
+    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" />
    
   
@@ -99,7 +99,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">original_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">original_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span> <span class="o">=</span> <span class="n">TimeMachine</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -448,32 +448,6 @@
 <span class="n">doc_inherit</span> <span class="o">=</span> <span class="n">DocInherit</span>
 
 
-<span class="c1"># class DisplayItemsWidget(progressbar.widgets.Widget):</span>
-<span class="c1">#     &quot;&quot;&quot;Display an items[pbar.currval]</span>
-<span class="c1">#</span>
-<span class="c1">#     Examples</span>
-<span class="c1">#     --------</span>
-<span class="c1">#     import time</span>
-<span class="c1">#     from progressbar import Progressbar, widges</span>
-<span class="c1">#     pbar = ProgressBar(widgets=[DisplayItemsWidget([&quot;asdf&quot;+str(i) for i in range(10)]), widgets.Bar()])</span>
-<span class="c1">#     pbar.maxval = 10</span>
-<span class="c1">#     pbar.start()</span>
-<span class="c1">#     for i in range(10):</span>
-<span class="c1">#         time.sleep(.2)</span>
-<span class="c1">#         pbar.update(i)</span>
-<span class="c1">#     pbar.finish()</span>
-<span class="c1">#     &quot;&quot;&quot;</span>
-<span class="c1">#</span>
-<span class="c1">#     def __init__(self, items):</span>
-<span class="c1">#         self.items = items</span>
-<span class="c1">#</span>
-<span class="c1">#     def update(self, pbar):</span>
-<span class="c1">#         try:</span>
-<span class="c1">#             return &quot;%s&quot; % self.items[pbar.currval]</span>
-<span class="c1">#         except IndexError:</span>
-<span class="c1">#             return &quot;&quot;</span>
-
-
 <div class="viewcode-block" id="partition_"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.partition_">[docs]</a><span class="k">def</span> <span class="nf">partition_</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Partition a list into n bite size chunks.&quot;&quot;&quot;</span>
     <span class="n">division</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span> <span class="o">/</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
@@ -641,20 +615,16 @@
 </p>
 <h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../01-quick-start.html">Getting started with cameo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../02-import-models.html">Import models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../03-simulate-models.html">Simulate models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../04-analyze-models.html">Analyzing models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../08-high-level-API.html">High-level interface for users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../09-vanillin-production.html">Vanillin production</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../cobrapy_difference.html">cameo vs. cobrapy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing to cameo</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../API.html">API Docs</a></li>
 </ul>
 
 <div class="relations">

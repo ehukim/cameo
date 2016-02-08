@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to cameo! &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    <title>Welcome to cameo! &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0+183.g9170526.dirty',
+        VERSION:     '0.5.0+223.gd37a580.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="#" />
-    <link rel="next" title="Dependencies" href="dependencies.html" />
+    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="#" />
+    <link rel="next" title="Installation" href="installation.html" />
    
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
@@ -40,13 +40,9 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">These pages are under construction. Feel free to look around ...</p>
-</div>
-<div class="section" id="welcome-to-cameo">
+  <div class="section" id="welcome-to-cameo">
 <h1>Welcome to cameo!<a class="headerlink" href="#welcome-to-cameo" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://readthedocs.org/projects/cameo/?badge=devel"><img alt="Documentation Status" src="https://readthedocs.org/projects/cameo/badge/?version=devel" /></a> <a class="reference external" href="https://travis-ci.org/biosustain/cameo"><img alt="Build Status" src="https://travis-ci.org/biosustain/cameo.svg?branch=master" /></a> <a class="reference external" href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img alt="Coverage Status" src="https://coveralls.io/repos/biosustain/cameo/badge.svg?branch=devel" /></a> <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.19827"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.19827.svg" /></a></p>
+<p><a class="reference external" href="https://travis-ci.org/biosustain/cameo"><img alt="Build Status" src="https://travis-ci.org/biosustain/cameo.svg?branch=master" /></a> <a class="reference external" href="https://codecov.io/github/biosustain/cameo?branch=devel"><img alt="Coverage Status" src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=devel" /></a> <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.19827"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.19827.svg" /></a></p>
 <p><strong>Cameo</strong> is a high-level python library developed to aid the strain
 design process in metabolic engineering projects. The library provides a
 modular framework of simulation methods, strain design methods, access
@@ -55,7 +51,7 @@ to models, that targets developers that want custom analysis workflows.</p>
 clusters using the IPython parallelization framework (see example and
 documentation for more details). The default fallback is python&#8217;s
 multiprocessing library.</p>
-<p>Furthermore, it exposes a high-level API to users that just want to compute
+<p>Furthermore, it exposes a high-level API to users that simply want to compute
 promising strain designs.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">design</span>
 <span class="n">design</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="s1">&#39;L-Serine&#39;</span><span class="p">)</span>
@@ -63,77 +59,59 @@ promising strain designs.</p>
 </div>
 <p>You got curious? Head over to <a class="reference external" href="http://try.cameo.bio">try.cameo.bio</a>
 and give it a try.</p>
-<div class="section" id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="user-s-guide">
+<h2>User&#8217;s guide<a class="headerlink" href="#user-s-guide" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#setting-up-a-virtual-environment-first">Setting up a virtual environment first</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#non-python-dependencies">Non-python dependencies</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="installation.html#glpk">GLPK</a></li>
-<li class="toctree-l3"><a class="reference internal" href="installation.html#cplex">CPLEX</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#non-python-dependencies">Non-python dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#hard-dependencies">Hard dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#normal-installation">Normal installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#soft-dependencies">Soft dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#development-setup">Development setup</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="01-quick-start.html">Getting started with cameo</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="01-quick-start.html#step-1-load-a-model">Step 1: Load a model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01-quick-start.html#step-2-simulate-a-model">Step 2: Simulate a model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="01-quick-start.html#step-3-exploring-a-model">Step 3: Exploring a model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="FAQ.html#how-does-one-change-the-solver-interface">How does one change the solver interface?</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="02-import-models.html">Import models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="02-import-models.html#import-models-from-files">Import models from files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="02-import-models.html#import-models-from-the-internet">Import models from the internet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02-import-models.html">Import models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
+<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
+<li class="toctree-l2"><a class="reference internal" href="12-advanced-usage-of-heuristic-optimization.html">Using meta-heuristics to search for knockout strategies.</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="03-simulate-models.html">Simulate models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#primer-constraint-based-modeling">Primer: Constraint-Based Modeling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#flux-balance-analysis">Flux Balance Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#parsimonious-flux-balance-analysis">Parsimonious Flux Balance Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html#setp-2-simulate-knockouts-phenotypes">Setp 2: Simulate knockouts phenotypes</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="developers-s-guide">
+<h2>Developers&#8217;s guide<a class="headerlink" href="#developers-s-guide" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="development.html#cameo-vs-cobrapy">cameo vs. cobrapy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#the-optlang-solver-interface">The optlang solver interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#avoiding-copies">Avoiding copies</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html#flux-variability-analysis">Flux Variability Analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html#phenotpic-phase-plane">Phenotpic Phase Plane</a></li>
-<li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html#flux-balance-impact-degree">Flux Balance Impact Degree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html#optgene">OptGene</a></li>
-<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html#optknock">OptKnock</a></li>
-<li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html#references">References</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
-<li class="toctree-l1"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="08-high-level-API.html#ipython-notebook">IPython notebook</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cobrapy_difference.html">cameo vs. cobrapy</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cobrapy_difference.html#importing-a-model">Importing a model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cobrapy_difference.html#solving-models">Solving models</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="API.html">API</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="apidoc_output/cameo.html">cameo package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#subpackages">Subpackages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.config">cameo.config module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.exceptions">cameo.exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.io">cameo.io module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.parallel">cameo.parallel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo.util">cameo.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="apidoc_output/cameo.html#module-cameo">Module contents</a></li>
-</ul>
-</li>
+</div>
+</div>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Docs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apidoc_output/cameo.html">cameo package</a></li>
 </ul>
 </li>
 </ul>
@@ -200,27 +178,23 @@ and give it a try.</p>
 </p>
 <h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="dependencies.html">Dependencies</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="01-quick-start.html">Getting started with cameo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="02-import-models.html">Import models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
-<li class="toctree-l1"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cobrapy_difference.html">cameo vs. cobrapy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="API.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="API.html">API Docs</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="#">Documentation overview</a><ul>
-      <li>Next: <a href="dependencies.html" title="next chapter">Dependencies</a></li>
+      <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
   </ul></li>
 </ul>
 </div>

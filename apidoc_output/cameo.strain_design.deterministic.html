@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.deterministic package &mdash; cameo 0.5.0+183.g9170526.dirty documentation</title>
+    <title>cameo.strain_design.deterministic package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+183.g9170526.dirty',
+        VERSION:     '0.5.0+223.gd37a580.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+183.g9170526.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design package" href="cameo.strain_design.html" />
     <link rel="next" title="cameo.strain_design.heuristic package" href="cameo.strain_design.heuristic.html" />
     <link rel="prev" title="cameo.strain_design package" href="cameo.strain_design.html" />
@@ -135,7 +135,7 @@ over the reference state (defaults to True).</li>
 
 <dl class="class">
 <dt id="cameo.strain_design.deterministic.flux_variability_based.FSEOF">
-<em class="property">class </em><code class="descclassname">cameo.strain_design.deterministic.flux_variability_based.</code><code class="descname">FSEOF</code><span class="sig-paren">(</span><em>model</em>, <em>enforced_reaction</em>, <em>primary_objective=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/flux_variability_based.html#FSEOF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.flux_variability_based.FSEOF" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cameo.strain_design.deterministic.flux_variability_based.</code><code class="descname">FSEOF</code><span class="sig-paren">(</span><em>model</em>, <em>primary_objective=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/flux_variability_based.html#FSEOF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.flux_variability_based.FSEOF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="cameo.strain_design.html#cameo.strain_design.strain_design.StrainDesignMethod" title="cameo.strain_design.strain_design.StrainDesignMethod"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignMethod</span></code></a></p>
 <p>Performs a Flux Scanning based on Enforced Objective Flux (FSEOF) analysis.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -167,15 +167,16 @@ over the reference state (defaults to True).</li>
 <p>for improvement of lycopene production.,&#8217; Appl Environ Microbiol, vol. 76, no. 10, pp. 3097–3105, May 2010.</p>
 <dl class="method">
 <dt id="cameo.strain_design.deterministic.flux_variability_based.FSEOF.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>max_enforced_flux=0.9</em>, <em>granularity=10</em>, <em>exclude=()</em>, <em>solution_method=&lt;function fba&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/flux_variability_based.html#FSEOF.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.flux_variability_based.FSEOF.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>target=None</em>, <em>max_enforced_flux=0.9</em>, <em>number_of_results=10</em>, <em>exclude=()</em>, <em>simulation_method=&lt;function fba&gt;</em>, <em>simulation_kwargs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/flux_variability_based.html#FSEOF.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.flux_variability_based.FSEOF.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Performs a Flux Scanning based on Enforced Objective Flux (FSEOF) analysis.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>target</strong> (<em>str, Reaction, Metabolite</em>) &#8211; The target for optimization.</li>
 <li><strong>max_enforced_flux</strong> (<em>float, optional</em>) &#8211; The maximal flux of secondary_objective that will be enforced, relative to the theoretical maximum (defaults to 0.9).</li>
-<li><strong>granularity</strong> (<em>int, optional</em>) &#8211; The number of enforced flux levels (defaults to 10).</li>
+<li><strong>number_of_results</strong> (<em>int, optional</em>) &#8211; The number of enforced flux levels (defaults to 10).</li>
 <li><strong>exclude</strong> (<em>Iterable of reactions or reaction ids that will not be included in the output.</em>) &#8211; </li>
 </ul>
 </td>
@@ -261,59 +262,12 @@ This reduces running time significantly.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult" title="cameo.strain_design.deterministic.linear_programming.OptKnockResult">OptKnockResult</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">OptKnockResult</p>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="cameo.strain_design.deterministic.linear_programming.RobustKnock">
-<em class="property">class </em><code class="descclassname">cameo.strain_design.deterministic.linear_programming.</code><code class="descname">RobustKnock</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/linear_programming.html#RobustKnock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.RobustKnock" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="cameo.strain_design.html#cameo.strain_design.strain_design.StrainDesignMethod" title="cameo.strain_design.strain_design.StrainDesignMethod"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignMethod</span></code></a></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult">
-<em class="property">class </em><code class="descclassname">cameo.strain_design.deterministic.linear_programming.</code><code class="descname">OptKnockResult</code><span class="sig-paren">(</span><em>model</em>, <em>designs</em>, <em>fluxes</em>, <em>production_fluxes</em>, <em>biomass_fluxes</em>, <em>target</em>, <em>biomass</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/linear_programming.html#OptKnockResult"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="cameo.strain_design.html#cameo.strain_design.strain_design.StrainDesignResult" title="cameo.strain_design.strain_design.StrainDesignResult"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignResult</span></code></a></p>
-<dl class="attribute">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.knockouts">
-<code class="descname">knockouts</code><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.knockouts" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.fluxes">
-<code class="descname">fluxes</code><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.fluxes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.production">
-<code class="descname">production</code><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.production" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.biomass">
-<code class="descname">biomass</code><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.biomass" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.target">
-<code class="descname">target</code><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.target" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.plot">
-<code class="descname">plot</code><span class="sig-paren">(</span><em>index</em>, <em>grid=None</em>, <em>width=None</em>, <em>height=None</em>, <em>title=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/linear_programming.html#OptKnockResult.plot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.plot" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="cameo.strain_design.deterministic.linear_programming.OptKnockResult.data_frame">
-<code class="descname">data_frame</code><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnockResult.data_frame" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 
@@ -373,32 +327,18 @@ This reduces running time significantly.</li>
 </a>
 </p>
 <h3>Navigation</h3>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../dependencies.html">Dependencies</a></li>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../01-quick-start.html">Getting started with cameo</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../02-import-models.html">Import models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../03-simulate-models.html">Simulate models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../04-analyze-models.html">Analyzing models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../08-high-level-API.html">High-level interface for users</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html">Vanillin production</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../cobrapy_difference.html">cameo vs. cobrapy</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="cameo.html">cameo package</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="cameo.html#subpackages">Subpackages</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.config">cameo.config module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.exceptions">cameo.exceptions module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.io">cameo.io module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.parallel">cameo.parallel module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo.util">cameo.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="cameo.html#module-cameo">Module contents</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Docs</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="cameo.html">cameo package</a></li>
 </ul>
 </li>
 </ul>
@@ -407,7 +347,7 @@ This reduces running time significantly.</li>
 <h3>Related Topics</h3>
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
-  <li><a href="../API.html">API</a><ul>
+  <li><a href="../API.html">API Docs</a><ul>
   <li><a href="cameo.html">cameo package</a><ul>
   <li><a href="cameo.strain_design.html">cameo.strain_design package</a><ul>
       <li>Previous: <a href="cameo.strain_design.html" title="previous chapter">cameo.strain_design package</a></li>
