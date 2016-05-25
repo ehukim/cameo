@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Welcome to cameo! &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>Welcome to cameo! &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="#" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="#" />
     <link rel="next" title="Installation" href="installation.html" />
    
   
@@ -42,7 +43,7 @@
             
   <div class="section" id="welcome-to-cameo">
 <h1>Welcome to cameo!<a class="headerlink" href="#welcome-to-cameo" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="https://travis-ci.org/biosustain/cameo"><img alt="Build Status" src="https://travis-ci.org/biosustain/cameo.svg?branch=master" /></a> <a class="reference external" href="https://codecov.io/github/biosustain/cameo?branch=devel"><img alt="Coverage Status" src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=devel" /></a> <a class="reference external" href="http://dx.doi.org/10.5281/zenodo.19827"><img alt="DOI" src="https://zenodo.org/badge/doi/10.5281/zenodo.19827.svg" /></a></p>
+<p><a class="reference external" href="https://pypi.python.org/pypi/cameo"><img alt="PyPI" src="https://img.shields.io/pypi/v/cameo.svg" /></a> <a class="reference external" href="http://img.shields.io/badge/license-APACHE2-blue.svg"><img alt="License" src="http://img.shields.io/badge/license-APACHE2-blue.svg" /></a> <a class="reference external" href="https://travis-ci.org/biosustain/cameo"><img alt="Build Status" src="https://travis-ci.org/biosustain/cameo.svg?branch=master" /></a> <a class="reference external" href="https://coveralls.io/r/biosustain/cameo?branch=devel"><img alt="Coverage Status" src="https://coveralls.io/repos/biosustain/cameo/badge.svg?branch=devel" /></a> <a class="reference external" href="https://zenodo.org/badge/latestdoi/5031/biosustain/cameo"><img alt="DOI" src="https://zenodo.org/badge/5031/biosustain/cameo.svg" /></a></p>
 <p><strong>Cameo</strong> is a high-level python library developed to aid the strain
 design process in metabolic engineering projects. The library provides a
 modular framework of simulation methods, strain design methods, access
@@ -53,7 +54,7 @@ documentation for more details). The default fallback is python&#8217;s
 multiprocessing library.</p>
 <p>Furthermore, it exposes a high-level API to users that simply want to compute
 promising strain designs.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">design</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">design</span>
 <span class="n">design</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="s1">&#39;L-Serine&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -82,6 +83,7 @@ and give it a try.</p>
 <li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06-predict-gene-modulation-targets.html">Predict expression modulation targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
@@ -96,10 +98,10 @@ and give it a try.</p>
 <h2>Developers&#8217;s guide<a class="headerlink" href="#developers-s-guide" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="development.html#cameo-vs-cobrapy">cameo vs. cobrapy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#the-optlang-solver-interface">The optlang solver interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="development.html#avoiding-copies">Avoiding copies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#good-coding-practices">Good coding practices</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
@@ -183,7 +185,7 @@ and give it a try.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul>

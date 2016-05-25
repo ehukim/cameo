@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>Installation &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
     <link rel="next" title="Frequently asked questions" href="FAQ.html" />
     <link rel="prev" title="Welcome to cameo!" href="index.html" />
    
@@ -48,7 +49,7 @@
 <p>We highly recommended installing cameo inside a virtual environment (<a class="reference external" href="https://pypi.python.org/pypi/virtualenv">virtualenv</a>).
 <a class="reference external" href="https://pypi.python.org/pypi/virtualenvwrapper">virtualenvwrapper</a> tremendously simplifies using <a class="reference external" href="https://pypi.python.org/pypi/virtualenv">virtualenv</a> and can easily
 be installed using <a class="reference external" href="https://github.com/brainsik/virtualenv-burrito">virtualenv-burrito</a>. Once you installed <a class="reference external" href="https://pypi.python.org/pypi/virtualenv">virtualenv</a> and <a class="reference external" href="https://pypi.python.org/pypi/virtualenvwrapper">virtualenvwrapper</a>, run</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ mkvirtualenv cameo  <span class="c1"># or whatever you&#39;d like to call your virtual environment</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ mkvirtualenv cameo  <span class="c1"># or whatever you&#39;d like to call your virtual environment</span>
 $ workon cameo
 </pre></div>
 </div>
@@ -63,11 +64,11 @@ with the cameo installation.</p>
 <h3>GLPK<a class="headerlink" href="#glpk" title="Permalink to this headline">¶</a></h3>
 <p>Using cameo with <a class="reference external" href="https://www.gnu.org/software/glpk/">glpk</a> also requires <a class="reference external" href="http://www.swig.org/">swig</a> to be installed (in order to generate python bindings).
 On ubuntu (or other similar linux platforms) we recommend using <code class="code docutils literal"><span class="pre">apt-get</span></code>:</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ sudo apt-get install libglpk-dev glpk-utils swig
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ sudo apt-get install libglpk-dev glpk-utils swig
 </pre></div>
 </div>
 <p>On macs we recommend using <a class="reference external" href="http://brew.sh/">homebrew</a>.</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ brew install swig
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ brew install swig
 $ brew install glpk
 </pre></div>
 </div>
@@ -76,7 +77,7 @@ $ brew install glpk
 <h3>CPLEX<a class="headerlink" href="#cplex" title="Permalink to this headline">¶</a></h3>
 <p>The <a class="reference external" href="http://www-01.ibm.com/software/commerce/optimization/cplex-optimizer/">cplex</a> contains a python directory (similar to <code class="code docutils literal"><span class="pre">IBM/ILOG/CPLEX_Studio1251/cplex/python/x86-64_osx</span></code>). Inside
 this directory run</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ python setup.py install
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ python setup.py install
 </pre></div>
 </div>
 <p>to install the python bindings.</p>
@@ -102,7 +103,7 @@ this directory run</p>
 if you would like to stay up-to-date with the latest changes.</p>
 </div>
 <p>cameo can be installed using <code class="xref py py-obj docutils literal"><span class="pre">pip</span></code>.</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ pip install cameo
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ pip install cameo
 </pre></div>
 </div>
 <p>This will also install the hard dependencies mentioned above.</p>
@@ -116,7 +117,7 @@ if you would like to stay up-to-date with the latest changes.</p>
 <li>[escher](<a class="reference external" href="https://pypi.python.org/pypi/escher">https://pypi.python.org/pypi/escher</a>)) &gt;= 1.2.1 (for pathway visualizations)</li>
 </ul>
 <p>All of these soft dependencies can be installed using pip.</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ pip install jupyter bokeh escher
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ pip install jupyter bokeh escher
 </pre></div>
 </div>
 <p>Furthermore, the following dependencies are needed for developing and contributing to cameo.</p>
@@ -131,11 +132,11 @@ if you would like to stay up-to-date with the latest changes.</p>
 <div class="section" id="development-setup">
 <h2>Development setup<a class="headerlink" href="#development-setup" title="Permalink to this headline">¶</a></h2>
 <p><code class="xref py py-obj docutils literal"><span class="pre">pip</span></code> can also be used to install cameo directly from the <a class="reference external" href="https://github.com/biosustain/cameo">github repository</a>.</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ pip install -e git+https://github.com/biosustain/cameo.git@devel#egg<span class="o">=</span>cameo
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ pip install -e git+https://github.com/biosustain/cameo.git@devel#egg<span class="o">=</span>cameo
 </pre></div>
 </div>
 <p>Alternatively, you can clone the repository (or your fork) and then run</p>
-<div class="highlight-bash"><div class="highlight"><pre>$ pip install -e .
+<div class="highlight-bash"><div class="highlight"><pre><span></span>$ pip install -e .
 </pre></div>
 </div>
 <p>within the cameo directory.</p>
@@ -206,7 +207,7 @@ if you would like to stay up-to-date with the latest changes.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul>

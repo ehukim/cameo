@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.strain_design.heuristic.evolutionary.multiprocess.migrators &mdash; cameo 0.5.0+299.g3ea055b.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../../',
+        VERSION:     '0.5.0+299.g3ea055b.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="cameo 0.5.0+299.g3ea055b.dirty documentation" href="../../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../../index.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../../../../../../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cameo.strain_design.heuristic.evolutionary.multiprocess.migrators</h1><div class="highlight"><pre>
+<span class="c1"># Copyright 2014 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;MultiprocessingMigrator&#39;</span><span class="p">]</span>
+
+<span class="kn">import</span> <span class="nn">six.moves.queue</span>
+<span class="kn">from</span> <span class="nn">cameo.parallel</span> <span class="kn">import</span> <span class="n">RedisQueue</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MultiprocessingMigrator"><a class="viewcode-back" href="../../../../../../apidoc_output/cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo.strain_design.heuristic.evolutionary.multiprocess.migrators.MultiprocessingMigrator">[docs]</a><span class="k">class</span> <span class="nc">MultiprocessingMigrator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Migrate among processes on multiple machines. This is possible by</span>
+<span class="sd">    having a Queue implemented on redis.</span>
+
+<span class="sd">    This callable class allows individuals to migrate from one process</span>
+<span class="sd">    to another. It maintains a queue of migrants whose maximum length</span>
+<span class="sd">    can be fixed via the ``max_migrants`` parameter in the constructor.</span>
+<span class="sd">    If the number of migrants in the queue reaches this value, new migrants</span>
+<span class="sd">    are not added until earlier ones are consumed. The unreliability of a</span>
+<span class="sd">    multiprocessing environment makes it difficult to provide guarantees.</span>
+<span class="sd">    However, migrants are theoretically added and consumed at the same rate,</span>
+<span class="sd">    so this value should determine the &quot;freshness&quot; of individuals, where</span>
+<span class="sd">    smaller queue sizes provide more recency.</span>
+
+<span class="sd">    An optional keyword argument in ``args`` requires the migrant to be</span>
+<span class="sd">    evaluated by the current evolutionary computation before being inserted</span>
+<span class="sd">    into the population. This can be important when different populations</span>
+<span class="sd">    use different evaluation functions and you need to be able to compare</span>
+<span class="sd">    &quot;apples with apples,&quot; so to speak.</span>
+
+<span class="sd">    The migration takes the current individual *I* out of the queue, if</span>
+<span class="sd">    one exists. It then randomly chooses an individual *E* from the population</span>
+<span class="sd">    to insert into the queue. Finally, if *I* exists, it replaces *E* in the</span>
+<span class="sd">    population (re-evaluating fitness if necessary). Otherwise, *E* remains in</span>
+<span class="sd">    the population and also exists in the queue as a migrant.</span>
+
+<span class="sd">    Optional keyword arguments in args:</span>
+
+<span class="sd">    - *evaluate_migrant* -- should new migrants be evaluated before</span>
+<span class="sd">      adding them to the population (default False)</span>
+
+<span class="sd">    Arguments</span>
+<span class="sd">    ---------</span>
+<span class="sd">    max_migrants: int</span>
+<span class="sd">        Number of migrants in the queue at the same time.</span>
+<span class="sd">    connection_kwargs: keyword arguments:</span>
+<span class="sd">        see parallel.RedisQueue</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">max_migrants</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">connection_kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_migrants</span> <span class="o">=</span> <span class="n">max_migrants</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">migrants</span> <span class="o">=</span> <span class="n">RedisQueue</span><span class="p">(</span><span class="n">uuid4</span><span class="p">(),</span> <span class="o">**</span><span class="n">connection_kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">random</span><span class="p">,</span> <span class="n">population</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">evaluate_migrant</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;evaluate_migrant&#39;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+        <span class="n">migrant_index</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">old_migrant</span> <span class="o">=</span> <span class="n">population</span><span class="p">[</span><span class="n">migrant_index</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">migrant</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">migrants</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">block</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">evaluate_migrant</span><span class="p">:</span>
+                <span class="n">fit</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;_ec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">evaluator</span><span class="p">([</span><span class="n">migrant</span><span class="o">.</span><span class="n">candidate</span><span class="p">],</span> <span class="n">args</span><span class="p">)</span>
+                <span class="n">migrant</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">fit</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">args</span><span class="p">[</span><span class="s2">&quot;_ec&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">num_evaluations</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">population</span><span class="p">[</span><span class="n">migrant_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">migrant</span>
+        <span class="k">except</span> <span class="n">six</span><span class="o">.</span><span class="n">moves</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">Empty</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Empty queue&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">migrants</span><span class="o">.</span><span class="n">put_nowait</span><span class="p">(</span><span class="n">old_migrant</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">six</span><span class="o">.</span><span class="n">moves</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">Full</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Full queue&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">population</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../../../../index.html">
+    <img class="logo" src="../../../../../../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../contributing.html">Contributing to cameo</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../../../API.html">API Docs</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../../../../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

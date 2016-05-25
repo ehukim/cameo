@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.deterministic package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.strain_design.deterministic package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design package" href="cameo.strain_design.html" />
     <link rel="next" title="cameo.strain_design.heuristic package" href="cameo.strain_design.heuristic.html" />
     <link rel="prev" title="cameo.strain_design package" href="cameo.strain_design.html" />
@@ -58,7 +59,7 @@
 have been parameterized to lie on a grid of evenly spaced points in the
 n-dimensional production envelope (n being the number of reaction bounds
 to be varied).</p>
-<div class="highlight-python"><div class="highlight"><pre>production
+<div class="highlight-python"><div class="highlight"><pre><span></span>production
 ^
 |---------.          * reference_model
 | . . . . .\         . design_space_model
@@ -90,7 +91,7 @@ will be normalized by.</li>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic</span> <span class="kn">import</span> <span class="n">DifferentialFVA</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">reference_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -212,7 +213,7 @@ over the reference state (defaults to True).</li>
 <span id="cameo-strain-design-deterministic-linear-programming-module"></span><h2>cameo.strain_design.deterministic.linear_programming module<a class="headerlink" href="#module-cameo.strain_design.deterministic.linear_programming" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cameo.strain_design.deterministic.linear_programming.OptKnock">
-<em class="property">class </em><code class="descclassname">cameo.strain_design.deterministic.linear_programming.</code><code class="descname">OptKnock</code><span class="sig-paren">(</span><em>model</em>, <em>exclude_reactions=None</em>, <em>remove_blocked=True</em>, <em>fraction_of_optimum=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/linear_programming.html#OptKnock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnock" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cameo.strain_design.deterministic.linear_programming.</code><code class="descname">OptKnock</code><span class="sig-paren">(</span><em>model</em>, <em>exclude_reactions=None</em>, <em>remove_blocked=True</em>, <em>fraction_of_optimum=0.1</em>, <em>exclude_non_gene_reactions=True</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/deterministic/linear_programming.html#OptKnock"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.deterministic.linear_programming.OptKnock" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="cameo.strain_design.html#cameo.strain_design.strain_design.StrainDesignMethod" title="cameo.strain_design.strain_design.StrainDesignMethod"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignMethod</span></code></a></p>
 <p>OptKnock.</p>
 <p>OptKnock solves a bi-level optimization problem, finding the set of knockouts that allows maximal
@@ -228,13 +229,16 @@ biomass reaction before using OptKnock.</li>
 and decrease running time. Essential reactions and exchanges are always excluded.</li>
 <li><strong>remove_blocked</strong> (<em>boolean (default True)</em>) &#8211; If True, reactions that cannot carry flux (determined by FVA) will be removed from the model.
 This reduces running time significantly.</li>
+<li><strong>fraction_of_optimum</strong> (<em>If not None, this value will be used to constrain the inner objective (e.g. growth) to</em>) &#8211; a fraction of the optimal inner objective value. If inner objective is not constrained manually
+this argument should be used. (Default: None)</li>
+<li><strong>exclude_non_gene_reactions</strong> (<em>If True (default), reactions that are not associated with genes will not be</em>) &#8211; knocked out. This results in more practically relevant solutions as well as shorter running times.</li>
 </ul>
 </td>
 </tr>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic</span> <span class="kn">import</span> <span class="n">OptKnock</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">Biomass_Ecoli_core_w_GAM</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mf">0.1</span>
@@ -333,7 +337,7 @@ This reduces running time significantly.</li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">

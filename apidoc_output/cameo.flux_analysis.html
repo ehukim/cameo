@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.flux_analysis package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.flux_analysis package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo package" href="cameo.html" />
     <link rel="next" title="cameo.models package" href="cameo.models.html" />
     <link rel="prev" title="cameo.data package" href="cameo.data.html" />
@@ -223,8 +224,37 @@ genome-scale models. Molecular Systems Biology, 6, 390. doi:10.1038/msb.2010.47<
 
 <dl class="function">
 <dt id="cameo.flux_analysis.simulation.moma">
-<code class="descclassname">cameo.flux_analysis.simulation.</code><code class="descname">moma</code><span class="sig-paren">(</span><em>model</em>, <em>reference=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/flux_analysis/simulation.html#moma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.flux_analysis.simulation.moma" title="Permalink to this definition">¶</a></dt>
-<dd><p>Minimization of Metabolic Adjustment</p>
+<code class="descclassname">cameo.flux_analysis.simulation.</code><code class="descname">moma</code><span class="sig-paren">(</span><em>model</em>, <em>reference=None</em>, <em>cache=None</em>, <em>reactions=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/flux_analysis/simulation.html#moma"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.flux_analysis.simulation.moma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Minimization of Metabolic Adjustment[1]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; </li>
+<li><strong>reference</strong> (<em>FluxDistributionResult, dict</em>) &#8211; </li>
+<li><strong>cache</strong> (<a class="reference internal" href="cameo.html#cameo.util.ProblemCache" title="cameo.util.ProblemCache"><em>ProblemCache</em></a>) &#8211; </li>
+<li><strong>reactions</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Contains the result of the solver.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">FluxDistributionResult</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">References</p>
+<table class="docutils footnote" frame="void" id="id2" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[1]</td><td>Segrè, D., Vitkup, D., &amp; Church, G. M. (2002). Analysis of optimality in natural and perturbed metabolic
+networks. Proceedings of the National Academy of Sciences of the United States of America, 99(23), 15112–7.
+doi:10.1073/pnas.232349399</td></tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
@@ -237,14 +267,13 @@ genome-scale models. Molecular Systems Biology, 6, 390. doi:10.1038/msb.2010.47<
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; </li>
-<li><strong>reference</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; </li>
-<li><strong>objective</strong> (<em>str or reaction or optlang.Objective</em>) &#8211; An objective to be minimized/maximized for</li>
-<li><strong>volatile</strong> (<em>boolean</em>) &#8211; </li>
-<li><strong>cache</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; </li>
+<li><strong>reference</strong> (<em>FluxDistributionResult, dict</em>) &#8211; </li>
+<li><strong>cache</strong> (<a class="reference internal" href="cameo.html#cameo.util.ProblemCache" title="cameo.util.ProblemCache"><em>ProblemCache</em></a>) &#8211; </li>
+<li><strong>reactions</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; </li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Contains the result of the linear solver.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Contains the result of the solver.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">FluxDistributionResult</p>
@@ -253,14 +282,14 @@ genome-scale models. Molecular Systems Biology, 6, 390. doi:10.1038/msb.2010.47<
 </tbody>
 </table>
 <p class="rubric">References</p>
-<table class="docutils footnote" frame="void" id="id2" rules="none">
+<table class="docutils footnote" frame="void" id="id3" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td>Becker, S. A., Feist, A. M., Mo, M. L., Hannum, G., Palsson, B. Ø., &amp; Herrgard, M. J. (2007).</td></tr>
+<tr><td class="label">[1]</td><td>Becker, S. A., Feist, A. M., Mo, M. L., Hannum, G., Palsson, B. Ø., &amp; Herrgard, M. J. (2007).
+Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox.
+Nature Protocols, 2(3), 727–38. doi:10.1038/nprot.2007.99</td></tr>
 </tbody>
 </table>
-<p>Quantitative prediction of cellular metabolism with constraint-based models: the COBRA Toolbox.
-Nature Protocols, 2(3), 727–38. doi:10.1038/nprot.2007.99</p>
 </dd></dl>
 
 <dl class="function">
@@ -273,7 +302,9 @@ Nature Protocols, 2(3), 727–38. doi:10.1038/nprot.2007.99</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; </li>
-<li><strong>reference</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; </li>
+<li><strong>reference</strong> (<em>FluxDistributionResult, dict</em>) &#8211; </li>
+<li><strong>delta</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; </li>
+<li><strong>epsilon</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; </li>
 <li><strong>cache</strong> (<a class="reference internal" href="cameo.html#cameo.util.ProblemCache" title="cameo.util.ProblemCache"><em>ProblemCache</em></a>) &#8211; </li>
 </ul>
 </td>
@@ -287,13 +318,45 @@ Nature Protocols, 2(3), 727–38. doi:10.1038/nprot.2007.99</p>
 </tbody>
 </table>
 <p class="rubric">References</p>
-<table class="docutils footnote" frame="void" id="id3" rules="none">
+<table class="docutils footnote" frame="void" id="id4" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
-<tr><td class="label">[1]</td><td>Tomer Shlomi, Omer Berkman and Eytan Ruppin, &#8220;Regulatory on/off minimization of metabolic</td></tr>
+<tr><td class="label">[1]</td><td>Tomer Shlomi, Omer Berkman and Eytan Ruppin, &#8220;Regulatory on/off minimization of metabolic
+flux changes after genetic perturbations&#8221;, PNAS 2005 102 (21) 7695-7700; doi:10.1073/pnas.0406346102</td></tr>
 </tbody>
 </table>
-<p>flux changes after genetic perturbations&#8221;, PNAS 2005 102 (21) 7695-7700; doi:10.1073/pnas.0406346102</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.flux_analysis.structural">
+<span id="cameo-flux-analysis-structural-module"></span><h2>cameo.flux_analysis.structural module<a class="headerlink" href="#module-cameo.flux_analysis.structural" title="Permalink to this headline">¶</a></h2>
+<p>Methods for stoichiometric analaysis</p>
+<dl class="function">
+<dt id="cameo.flux_analysis.structural.find_dead_end_reactions">
+<code class="descclassname">cameo.flux_analysis.structural.</code><code class="descname">find_dead_end_reactions</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/flux_analysis/structural.html#find_dead_end_reactions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.flux_analysis.structural.find_dead_end_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify reactions that are structurally prevented from carrying flux (dead ends).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="cameo.flux_analysis.structural.find_coupled_reactions">
+<code class="descclassname">cameo.flux_analysis.structural.</code><code class="descname">find_coupled_reactions</code><span class="sig-paren">(</span><em>model</em>, <em>return_dead_ends=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/flux_analysis/structural.html#find_coupled_reactions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.flux_analysis.structural.find_coupled_reactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find reaction sets that are structurally forced to carry equal flux</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.flux_analysis.structural.ShortestElementaryFluxModes">
+<em class="property">class </em><code class="descclassname">cameo.flux_analysis.structural.</code><code class="descname">ShortestElementaryFluxModes</code><span class="sig-paren">(</span><em>model</em>, <em>reactions=None</em>, <em>c=1e-05</em>, <em>copy=True</em>, <em>change_bounds=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/flux_analysis/structural.html#ShortestElementaryFluxModes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.flux_analysis.structural.ShortestElementaryFluxModes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dl class="attribute">
+<dt id="cameo.flux_analysis.structural.ShortestElementaryFluxModes.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.flux_analysis.structural.ShortestElementaryFluxModes.model" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.flux_analysis.structural.ShortestElementaryFluxModes.indicator_variables">
+<code class="descname">indicator_variables</code><a class="headerlink" href="#cameo.flux_analysis.structural.ShortestElementaryFluxModes.indicator_variables" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -322,7 +385,7 @@ Nature Protocols, 2(3), 727–38. doi:10.1038/nprot.2007.99</p>
 </tbody>
 </table>
 <p class="rubric">References</p>
-<table class="docutils footnote" frame="void" id="id4" rules="none">
+<table class="docutils footnote" frame="void" id="id5" rules="none">
 <colgroup><col class="label" /><col /></colgroup>
 <tbody valign="top">
 <tr><td class="label">[1]</td><td>A. A. Desouki, F. Jarre, G. Gelius-Dietrich, and M. J. Lercher, “CycleFreeFlux: efficient removal of
@@ -334,6 +397,7 @@ thermodynamically infeasible loops from flux distributions.”</td></tr>
 </div>
 <div class="section" id="module-cameo.flux_analysis">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.flux_analysis" title="Permalink to this headline">¶</a></h2>
+<p>This package provides methods for simulating and analyzing models.</p>
 </div>
 </div>
 
@@ -393,7 +457,7 @@ thermodynamically infeasible loops from flux distributions.”</td></tr>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">

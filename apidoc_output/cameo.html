@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="API Docs" href="../API.html" />
     <link rel="next" title="cameo.api package" href="cameo.api.html" />
     <link rel="prev" title="API Docs" href="../API.html" />
@@ -58,6 +59,8 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cameo.core.html">cameo.core package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cameo.core.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.core.html#module-cameo.core.gene">cameo.core.gene module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.core.html#module-cameo.core.metabolite">cameo.core.metabolite module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.core.html#module-cameo.core.pathway">cameo.core.pathway module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.core.html#module-cameo.core.reaction">cameo.core.reaction module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.core.html#module-cameo.core.result">cameo.core.result module</a></li>
@@ -77,6 +80,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cameo.flux_analysis.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.flux_analysis.html#module-cameo.flux_analysis.analysis">cameo.flux_analysis.analysis module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.flux_analysis.html#module-cameo.flux_analysis.simulation">cameo.flux_analysis.simulation module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.flux_analysis.html#module-cameo.flux_analysis.structural">cameo.flux_analysis.structural module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.flux_analysis.html#module-cameo.flux_analysis.util">cameo.flux_analysis.util module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.flux_analysis.html#module-cameo.flux_analysis">Module contents</a></li>
 </ul>
@@ -108,38 +112,6 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="cameo.strain_design.heuristic.html">cameo.strain_design.heuristic package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l5"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html">cameo.strain_design.heuristic.evolutionary package</a><ul>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l7"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html">cameo.strain_design.heuristic.evolutionary.multiprocess package</a><ul>
-<li class="toctree-l8"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#submodules">Submodules</a></li>
-<li class="toctree-l8"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module">cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module</a></li>
-<li class="toctree-l8"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module">cameo.strain_design.heuristic.evolutionary.multiprocess.observers module</a></li>
-<li class="toctree-l8"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module</a></li>
-<li class="toctree-l8"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module">cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module</a></li>
-<li class="toctree-l8"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#submodules">Submodules</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.archives">cameo.strain_design.heuristic.evolutionary.archives module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.decoders">cameo.strain_design.heuristic.evolutionary.decoders module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.generators">cameo.strain_design.heuristic.evolutionary.generators module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.genomes">cameo.strain_design.heuristic.evolutionary.genomes module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.metrics">cameo.strain_design.heuristic.evolutionary.metrics module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.objective_functions">cameo.strain_design.heuristic.evolutionary.objective_functions module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.observers">cameo.strain_design.heuristic.evolutionary.observers module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.optimization">cameo.strain_design.heuristic.evolutionary.optimization module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.plotters">cameo.strain_design.heuristic.evolutionary.plotters module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.processing">cameo.strain_design.heuristic.evolutionary.processing module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.stats">cameo.strain_design.heuristic.evolutionary.stats module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.variators">cameo.strain_design.heuristic.evolutionary.variators module</a></li>
-<li class="toctree-l6"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.html#module-cameo.strain_design.heuristic.evolutionary_based">cameo.strain_design.heuristic.evolutionary_based module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.html#module-cameo.strain_design.heuristic">Module contents</a></li>
@@ -159,13 +131,6 @@
 <li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.html#module-cameo.strain_design">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cameo.stuff.html">cameo.stuff package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cameo.stuff.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.stuff.html#module-cameo.stuff.distance">cameo.stuff.distance module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.stuff.html#module-cameo.stuff.stuff">cameo.stuff.stuff module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.stuff.html#module-cameo.stuff">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="cameo.ui.html">cameo.ui package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cameo.ui.html#module-cameo.ui">Module contents</a></li>
 </ul>
@@ -173,7 +138,8 @@
 <li class="toctree-l1"><a class="reference internal" href="cameo.visualization.html">cameo.visualization package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization.escher_ext">cameo.visualization.escher_ext module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization.plotting">cameo.visualization.plotting module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization.palette">cameo.visualization.palette module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization.plotting_old">cameo.visualization.plotting_old module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization.sympy_ext">cameo.visualization.sympy_ext module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization.visualization">cameo.visualization.visualization module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cameo.visualization.html#module-cameo.visualization">Module contents</a></li>
@@ -225,7 +191,7 @@
 <span id="cameo-io-module"></span><h2>cameo.io module<a class="headerlink" href="#module-cameo.io" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="cameo.io.load_model">
-<code class="descclassname">cameo.io.</code><code class="descname">load_model</code><span class="sig-paren">(</span><em>path_or_handle</em>, <em>solver_interface=&lt;module 'optlang.glpk_interface' from '/Users/niko/.virtualenvs/cameo3.5/lib/python3.5/site-packages/optlang/glpk_interface.py'&gt;</em>, <em>sanitize=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/io.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.io.load_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">cameo.io.</code><code class="descname">load_model</code><span class="sig-paren">(</span><em>path_or_handle</em>, <em>solver_interface=&lt;module 'optlang' from '/Users/niso/anaconda/envs/cameo3.4/lib/python3.4/site-packages/optlang/__init__.py'&gt;</em>, <em>sanitize=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/io.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.io.load_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a metabolic model .</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -256,7 +222,7 @@ that provides the original ID, i.e., EX_glc(d).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> (<a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.model" title="cameo.strain_design.heuristic.evolutionary.optimization.ReactionKnockoutOptimization.model"><em>model</em></a>) &#8211; </td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>model</strong> (<a class="reference internal" href="#cameo.util.ProblemCache.model" title="cameo.util.ProblemCache.model"><em>model</em></a>) &#8211; </td>
 </tr>
 </tbody>
 </table>
@@ -300,6 +266,107 @@ that provides the original ID, i.e., EX_glc(d).</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="cameo.parallel.RedisQueue">
+<em class="property">class </em><code class="descclassname">cameo.parallel.</code><code class="descname">RedisQueue</code><span class="sig-paren">(</span><em>name</em>, <em>maxsize=0</em>, <em>namespace='queue'</em>, <em>**connection_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Queue with Redis Backend
+<a class="reference external" href="http://peter-hoffmann.com/2012/python-simple-queue-redis-queue.html">http://peter-hoffmann.com/2012/python-simple-queue-redis-queue.html</a></p>
+<dl class="attribute">
+<dt id="cameo.parallel.RedisQueue.MAX_REDIS_LIST_SIZE">
+<code class="descname">MAX_REDIS_LIST_SIZE</code><em class="property"> = 4294967295</em><a class="headerlink" href="#cameo.parallel.RedisQueue.MAX_REDIS_LIST_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.parallel.RedisQueue.default_host">
+<code class="descname">default_host</code><em class="property"> = 'localhost'</em><a class="headerlink" href="#cameo.parallel.RedisQueue.default_host" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.parallel.RedisQueue.default_port">
+<code class="descname">default_port</code><em class="property"> = '6379'</em><a class="headerlink" href="#cameo.parallel.RedisQueue.default_port" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.parallel.RedisQueue.default_db">
+<code class="descname">default_db</code><em class="property"> = 0</em><a class="headerlink" href="#cameo.parallel.RedisQueue.default_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.parallel.RedisQueue.length">
+<code class="descname">length</code><a class="headerlink" href="#cameo.parallel.RedisQueue.length" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.parallel.RedisQueue.empty">
+<code class="descname">empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue.empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.parallel.RedisQueue.put">
+<code class="descname">put</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts an object in the queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; An object to put in the queue</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.parallel.RedisQueue.put_nowait">
+<code class="descname">put_nowait</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue.put_nowait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue.put_nowait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as put, for backward compatibility with Python Queue.</p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#cameo.parallel.RedisQueue.put" title="cameo.parallel.RedisQueue.put"><code class="xref py py-meth docutils literal"><span class="pre">put()</span></code></a></p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; An object to put in the queue.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.parallel.RedisQueue.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>block=True</em>, <em>timeout=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieves the next item in the queue.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>block</strong> (<em>bool, default is True</em>) &#8211; If true, the queue is blocked until it an object is retrieved reaches the timeout.</li>
+<li><strong>timeout</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#long" title="(in Python v2.7)"><em>long</em></a>) &#8211; The timeout (in seconds) that the method should wait for the queue to return an item. If block is False,
+time wil ignored.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>item</strong></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.parallel.RedisQueue.get_nowait">
+<code class="descname">get_nowait</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue.get_nowait"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue.get_nowait" title="Permalink to this definition">¶</a></dt>
+<dd><p>Equivalent to get(False).</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="cameo.parallel.SequentialView">
 <em class="property">class </em><code class="descclassname">cameo.parallel.</code><code class="descname">SequentialView</code><a class="reference internal" href="../_modules/cameo/parallel.html#SequentialView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.SequentialView" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
@@ -333,6 +400,32 @@ that provides the original ID, i.e., EX_glc(d).</p>
 </div>
 <div class="section" id="module-cameo.util">
 <span id="cameo-util-module"></span><h2>cameo.util module<a class="headerlink" href="#module-cameo.util" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.util.frozendict">
+<em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">frozendict</code><span class="sig-paren">(</span><em>iterable</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
+<dl class="method">
+<dt id="cameo.util.frozendict.popitem">
+<code class="descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict.popitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict.popitem" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.util.frozendict.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>k</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict.pop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.util.frozendict.setdefault">
+<code class="descname">setdefault</code><span class="sig-paren">(</span><em>k</em>, <em>d=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict.setdefault"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict.setdefault" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.util.frozendict.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>E=None</em>, <em>**F</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="cameo.util.ProblemCache">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">ProblemCache</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#ProblemCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.ProblemCache" title="Permalink to this definition">¶</a></dt>
@@ -398,6 +491,11 @@ generates an invalid state.</p>
 </tbody>
 </table>
 </dd></dl>
+
+<dl class="method">
+<dt id="cameo.util.ProblemCache.add_objective">
+<code class="descname">add_objective</code><span class="sig-paren">(</span><em>create</em>, <em>update</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#ProblemCache.add_objective"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.ProblemCache.add_objective" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="cameo.util.ProblemCache.reset">
@@ -493,34 +591,11 @@ generates an invalid state.</p>
 <dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 </dd></dl>
 
-<dl class="class">
-<dt id="cameo.util.DocInherit">
-<em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">DocInherit</code><span class="sig-paren">(</span><em>mthd</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#DocInherit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.DocInherit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-<p>Adapted from <a class="reference external" href="http://code.activestate.com/recipes/576862/">http://code.activestate.com/recipes/576862/</a> (licensed under MIT)
-Docstring inheriting method descriptor</p>
-<p>The class itself is also used as a decorator</p>
-<dl class="method">
-<dt id="cameo.util.DocInherit.get_with_inst">
-<code class="descname">get_with_inst</code><span class="sig-paren">(</span><em>obj</em>, <em>cls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#DocInherit.get_with_inst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.DocInherit.get_with_inst" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="cameo.util.DocInherit.get_no_inst">
-<code class="descname">get_no_inst</code><span class="sig-paren">(</span><em>cls</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#DocInherit.get_no_inst"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.DocInherit.get_no_inst" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="cameo.util.DocInherit.use_parent_doc">
-<code class="descname">use_parent_doc</code><span class="sig-paren">(</span><em>func</em>, <em>source</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#DocInherit.use_parent_doc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.DocInherit.use_parent_doc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="attribute">
-<dt id="cameo.util.doc_inherit">
-<code class="descclassname">cameo.util.</code><code class="descname">doc_inherit</code><a class="headerlink" href="#cameo.util.doc_inherit" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#cameo.util.DocInherit" title="cameo.util.DocInherit"><code class="xref py py-class docutils literal"><span class="pre">DocInherit</span></code></a></p>
+<dl class="function">
+<dt id="cameo.util.inheritdocstring">
+<code class="descclassname">cameo.util.</code><code class="descname">inheritdocstring</code><span class="sig-paren">(</span><em>name</em>, <em>bases</em>, <em>attrs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#inheritdocstring"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.inheritdocstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use as metaclass to inherit class and method docstrings from parent.
+Adapted from <a class="reference external" href="http://stackoverflow.com/questions/13937500/inherit-a-parent-class-docstring-as-doc-attribute">http://stackoverflow.com/questions/13937500/inherit-a-parent-class-docstring-as-doc-attribute</a></p>
 </dd></dl>
 
 <dl class="function">
@@ -601,6 +676,30 @@ zero.</li>
 <dd><p>Adapted from <a class="reference external" href="http://stackoverflow.com/a/3303361/280182">http://stackoverflow.com/a/3303361/280182</a></p>
 </dd></dl>
 
+<dl class="function">
+<dt id="cameo.util.zip_repeat">
+<code class="descclassname">cameo.util.</code><code class="descname">zip_repeat</code><span class="sig-paren">(</span><em>long_iter</em>, <em>short_iter</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#zip_repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.zip_repeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Zips two iterable objects but repeats the second one if it is shorter than the first one.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>long_iter</strong> (<em>iterable</em>) &#8211; </li>
+<li><strong>short_iter</strong> (<em>iterable</em>) &#8211; </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">generator</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-cameo">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo" title="Permalink to this headline">¶</a></h2>
@@ -630,6 +729,11 @@ from cameo.flux_analysis.simulation import fba</p>
 <dd>mutation_rate=0.3, view=cameo.parallel.SequentialView(),
 product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_rp_</span></a>&#8221;, num_elites=1)</dd>
 </dl>
+<dl class="function">
+<dt id="cameo.find_module">
+<code class="descclassname">cameo.</code><code class="descname">find_module</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo.html#find_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.find_module" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 </div>
 
@@ -689,7 +793,7 @@ product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">

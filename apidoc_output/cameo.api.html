@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.api package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.api package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo package" href="cameo.html" />
     <link rel="next" title="cameo.core package" href="cameo.core.html" />
     <link rel="prev" title="cameo package" href="cameo.html" />
@@ -49,15 +50,29 @@
 </div>
 <div class="section" id="module-cameo.api.designer">
 <span id="cameo-api-designer-module"></span><h2>cameo.api.designer module<a class="headerlink" href="#module-cameo.api.designer" title="Permalink to this headline">¶</a></h2>
+<p>This module implements the high-level interface function <code class="xref py py-obj docutils literal"><span class="pre">design</span></code>.</p>
 </div>
 <div class="section" id="module-cameo.api.hosts">
 <span id="cameo-api-hosts-module"></span><h2>cameo.api.hosts module<a class="headerlink" href="#module-cameo.api.hosts" title="Permalink to this headline">¶</a></h2>
+<p>This module provides reference models for a number of supported host organisms (currently Escherichia coli and
+Sacharomyces cerevisiae).</p>
 </div>
 <div class="section" id="module-cameo.api.products">
 <span id="cameo-api-products-module"></span><h2>cameo.api.products module<a class="headerlink" href="#module-cameo.api.products" title="Permalink to this headline">¶</a></h2>
+<p>This module provides access to supported target products.</p>
 </div>
 <div class="section" id="module-cameo.api">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.api" title="Permalink to this headline">¶</a></h2>
+<p>This package implement the high-level user interface of cameo.</p>
+<p class="rubric">Examples</p>
+<dl class="docutils">
+<dt>Compute strain designs for the target product vanillin.</dt>
+<dd>$ api.design(product=&#8217;vanillin&#8217;)</dd>
+<dt>Search in the list of available target products.</dt>
+<dd>$ api.products.search(&#8216;vanillin&#8217;)</dd>
+<dt>The available host organism models for E. coli.</dt>
+<dd>$ api.hosts.ecoli.models</dd>
+</dl>
 </div>
 </div>
 
@@ -117,7 +132,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">

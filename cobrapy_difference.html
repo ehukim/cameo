@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo vs. cobrapy &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo vs. cobrapy &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
    
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
@@ -44,12 +45,12 @@
 <div class="section" id="importing-a-model">
 <h2>Importing a model<a class="headerlink" href="#importing-a-model" title="Permalink to this headline">¶</a></h2>
 <p>cobrapy (load a model in SBML format):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cobra.io</span> <span class="kn">import</span> <span class="n">read_sbml_model</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cobra.io</span> <span class="kn">import</span> <span class="n">read_sbml_model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">read_sbml_model</span><span class="p">(</span><span class="s1">&#39;path/to/model.xml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>cameo (load models from different formats):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
 <span class="c1"># read SBML model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;path/to/model.xml&#39;</span><span class="p">)</span>
 <span class="c1"># ... or read a pickled model</span>
@@ -62,12 +63,12 @@
 <div class="section" id="solving-models">
 <h2>Solving models<a class="headerlink" href="#solving-models" title="Permalink to this headline">¶</a></h2>
 <p>cobrapy:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
 <span class="k">if</span> <span class="n">solution</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;optimal&#39;</span><span class="p">:</span>
     <span class="c1"># proceed</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 <span class="k">except</span> <span class="n">cameo</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">SolverError</span><span class="p">:</span>
     <span class="k">print</span> <span class="s2">&quot;A non-optimal solution was returned by the solver&quot;</span>
@@ -136,7 +137,7 @@ compatibility with cobrapy but we discourage its use.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul>

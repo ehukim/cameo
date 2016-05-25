@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Design principles &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>Development &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
     <link rel="next" title="Contributing to cameo" href="contributing.html" />
     <link rel="prev" title="Using meta-heuristics to search for knockout strategies." href="12-advanced-usage-of-heuristic-optimization.html" />
    
@@ -41,21 +42,37 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="design-principles">
-<h1>Design principles<a class="headerlink" href="#design-principles" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="development">
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this headline">¶</a></h1>
 <p>The following documentation is intended for people that want to use cameo to develop new methods
 and/or that would like to contribute to its development.</p>
 <div class="section" id="cameo-vs-cobrapy">
 <h2>cameo vs. cobrapy<a class="headerlink" href="#cameo-vs-cobrapy" title="Permalink to this headline">¶</a></h2>
+<p>The following provides a comprehensive side-by-side comparison of cobrapy and cameo aiming to make it easier for users
+who are already familiar with cobrapy to get started with cameo. While cameo uses and extends the same data structures
+as provided by cobrapy (<code class="xref py py-obj docutils literal"><span class="pre">Reaction</span></code>, <code class="xref py py-obj docutils literal"><span class="pre">SolverBasedModel</span></code>, etc.) and is thus backwards-compatible to it, it deviates</p>
+<div class="section" id="solver-interface">
+<h3>Solver interface<a class="headerlink" href="#solver-interface" title="Permalink to this headline">¶</a></h3>
+<p>Cameo deviates from cobrapy in the way optimization problems are solved by using a separate solver interface provided by
+the optlang package (see <span class="xref std std-ref">optlang_interface</span>). The following benefits ....</p>
+<ul class="simple">
+<li>Methods that require solving multiple succession will run a lot faster since previously found solution will be reused.</li>
+<li>Implementation of novel or published becomes a lot easier since optlang (based on the very popular symbolic math library</li>
+</ul>
+<p>sympy) facilitates the formulation of constraints and objectives using equations (similar to GAMS) instead of matrix formalism.
+* Adding of additional constraints (even non-metabolic ), is straight forwards and eliminates the problem in cobrapy of having
+to define opti (check out the ice cream sandwich ...)
+* The optimization problem is always accessible and has a one-to-one correspondence to the model.</p>
+</div>
 <div class="section" id="importing-a-model">
 <h3>Importing a model<a class="headerlink" href="#importing-a-model" title="Permalink to this headline">¶</a></h3>
 <p>cobrapy (load a model in SBML format):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cobra.io</span> <span class="kn">import</span> <span class="n">read_sbml_model</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cobra.io</span> <span class="kn">import</span> <span class="n">read_sbml_model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">read_sbml_model</span><span class="p">(</span><span class="s1">&#39;path/to/model.xml&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>cameo (load models from different formats):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
 <span class="c1"># read SBML model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;path/to/model.xml&#39;</span><span class="p">)</span>
 <span class="c1"># ... or read a pickled model</span>
@@ -64,16 +81,23 @@ and/or that would like to contribute to its development.</p>
 <span class="n">iAF1260</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;iAF1260&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>Furthermore, cameo provides direct access to a number of other models through <a class="reference internal" href="apidoc_output/cameo.models.html#module-cameo.models" title="cameo.models"><code class="xref py py-obj docutils literal"><span class="pre">cameo.models</span></code></a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="n">models</span><span class="o">.</span><span class="n">e_coli_core</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span><span class="o">.</span><span class="n">f</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="solving-models">
 <h3>Solving models<a class="headerlink" href="#solving-models" title="Permalink to this headline">¶</a></h3>
-<p>cobrapy:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
+<p>When models are optimized with cobrapy, <code class="xref py py-obj docutils literal"><span class="pre">model.optimize()</span></code> returns the status code of the solver and leaves it to the
+user to determine if the problem was successfully solved.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">optimize</span><span class="p">()</span>
 <span class="k">if</span> <span class="n">solution</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s1">&#39;optimal&#39;</span><span class="p">:</span>
     <span class="c1"># proceed</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+<p>In our personal opinion, we believe that the more pythonic way is to raise an Exception if the problem could not be solved.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
     <span class="n">solution</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
 <span class="k">except</span> <span class="n">cameo</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">SolverError</span><span class="p">:</span>
     <span class="k">print</span> <span class="s2">&quot;A non-optimal solution was returned by the solver&quot;</span>
@@ -81,45 +105,59 @@ and/or that would like to contribute to its development.</p>
     <span class="c1"># proceed</span>
 </pre></div>
 </div>
-<p>It is important to note that cameo models maintain <code class="xref py py-obj docutils literal"><span class="pre">optimize</span></code> to maintain
+<p>It is important to note that cameo models still provide the <code class="xref py py-obj docutils literal"><span class="pre">optimize</span></code> method to maintain backwards
 compatibility with cobrapy but we discourage its use.</p>
 <blockquote>
 <div>optlang
 copy_vs_time_machine</div></blockquote>
 </div>
+<div class="section" id="convenience-functions">
+<h3>Convenience functions<a class="headerlink" href="#convenience-functions" title="Permalink to this headline">¶</a></h3>
+<p>Cameo implements a number of convenience functions that are (currently) not available in cobrapy. For example, instead of
+running flux variability analysis, one can quickly obtain the effective lower and upper bound</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reaction</span><span class="o">.</span><span class="n">PGK</span><span class="o">.</span><span class="n">effective_lower_bound</span>
+</pre></div>
+</div>
+</div>
 </div>
 <div class="section" id="the-optlang-solver-interface">
 <h2>The optlang solver interface<a class="headerlink" href="#the-optlang-solver-interface" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="http://biosustain.github.io/optlang/">optlang</a> is a generic interface solver interface to . It is based on the</p>
-<p>For efficiency reasons, cameo does not utilize the cobrapy&#8217;s interface to LP and MILP solver. Instead it utilizes
-optlang.</p>
+<p>For efficiency reasons, cameo does not utilize the cobrapy&#8217;s interface to LP and MILP solver.
+Instead it utilizes <a class="reference external" href="http://biosustain.github.io/optlang/">optlang</a>, which is a generic interface to a number of free and commercial optimization solvers.
+It is based on the popular symbolic math library <a class="reference external" href="http://www.sympy.org/en/index.html">sympy</a> and thus enables the formulation of optimization problems
+using equations instead of matrix formalism.</p>
 <div class="section" id="changing-the-solver">
 <h3>Changing the solver<a class="headerlink" href="#changing-the-solver" title="Permalink to this headline">¶</a></h3>
 <p>The LP/MILP solver can be changed in the following way.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cplex&#39;</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cplex&#39;</span>
 </pre></div>
 </div>
-<p>Currently <code class="xref py py-obj docutils literal"><span class="pre">'cplex'</span></code> and <a href="#id1"><span class="problematic" id="id2">`</span></a>&#8216;glpk&#8217; are supported.</p>
-<p>cameo (load models from different formats):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
-<span class="c1"># read SBML model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;path/to/model.xml&#39;</span><span class="p">)</span>
-<span class="c1"># ... or read a pickled model</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;path/to/model.pickle&#39;</span><span class="p">)</span>
-<span class="c1"># ... or just import a model by ID from http://darwin.di.uminho.pt/models</span>
-<span class="n">iAF1260</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;iAF1260&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
+<p>Currently <code class="xref py py-obj docutils literal"><span class="pre">cplex</span></code> and <code class="xref py py-obj docutils literal"><span class="pre">glpk</span></code> are supported.</p>
 </div>
 <div class="section" id="manipulating-the-solver-object">
 <h3>Manipulating the solver object<a class="headerlink" href="#manipulating-the-solver-object" title="Permalink to this headline">¶</a></h3>
-<p>...</p>
+<p>The solver object in cameo is always accessible through <code class="xref py py-obj docutils literal"><span class="pre">solver</span></code>.
+For example, one can inspect the optimization problem in CPLEX LP format by printing the solver object.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="k">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Having access to the <a class="reference external" href="http://biosustain.github.io/optlang/">optlang</a> solver object provides for a very convenient way for manipulating the optimization problem.
+It is straightforward to add additional constraints, for example, a flux ratio constraint.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">reaction1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
+<span class="n">reaction2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">G6PDH2r</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">flux_ratio_constraint</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">reaction1</span><span class="o">.</span><span class="n">flux_expression</span> <span class="o">-</span> <span class="n">ratio</span> <span class="o">*</span> <span class="n">reaction2</span><span class="o">.</span><span class="n">flux_expression</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">flux_ratio_constraint</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This will constrain the flux split between glycolysis and pentose phosphate patwhay to 20.
+<code class="xref py py-obj docutils literal"><span class="pre">model.solver.interface</span></code> hereby provides access to</p>
 </div>
 </div>
-<div class="section" id="avoiding-copies">
-<h2>Avoiding copies<a class="headerlink" href="#avoiding-copies" title="Permalink to this headline">¶</a></h2>
-<p>Cameo users are encouraged to avoid making expensive copies of models (on the order seconds) and other data structures. Instead, we put forward a design pattern based on transactions (see ...)</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
+<div class="section" id="good-coding-practices">
+<h2>Good coding practices<a class="headerlink" href="#good-coding-practices" title="Permalink to this headline">¶</a></h2>
+<p>Cameo developers and user are encouraged to avoid making expensive copies of models and other data structures. Instead, we put forward a design pattern based on transactions.</p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
 <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
     <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">knock_out</span><span class="p">(</span><span class="n">time_machine</span><span class="o">=</span><span class="n">tm</span><span class="p">)</span>
 </pre></div>
@@ -183,10 +221,10 @@ optlang.</p>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Design principles</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#cameo-vs-cobrapy">cameo vs. cobrapy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-optlang-solver-interface">The optlang solver interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#avoiding-copies">Avoiding copies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#good-coding-practices">Good coding practices</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>

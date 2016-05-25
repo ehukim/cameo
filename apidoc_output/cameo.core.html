@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.core package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.core package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo package" href="cameo.html" />
     <link rel="next" title="cameo.data package" href="cameo.data.html" />
     <link rel="prev" title="cameo.api package" href="cameo.api.html" />
@@ -47,8 +48,81 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-cameo.core.gene">
+<span id="cameo-core-gene-module"></span><h2>cameo.core.gene module<a class="headerlink" href="#module-cameo.core.gene" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.core.gene.Gene">
+<em class="property">class </em><code class="descclassname">cameo.core.gene.</code><code class="descname">Gene</code><span class="sig-paren">(</span><em>id=None</em>, <em>name=''</em>, <em>functional=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/gene.html#Gene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.gene.Gene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cobra.core.Gene.Gene</span></code></p>
+<p>Species is a class for holding information regarding
+a chemical Species</p>
+<dl class="classmethod">
+<dt id="cameo.core.gene.Gene.clone">
+<em class="property">classmethod </em><code class="descname">clone</code><span class="sig-paren">(</span><em>gene</em>, <em>model=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/gene.html#Gene.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.gene.Gene.clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.core.gene.Gene.id">
+<code class="descname">id</code><a class="headerlink" href="#cameo.core.gene.Gene.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.gene.Gene.knock_out">
+<code class="descname">knock_out</code><span class="sig-paren">(</span><em>time_machine=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/gene.html#Gene.knock_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.gene.Gene.knock_out" title="Permalink to this definition">¶</a></dt>
+<dd><p>Knockout gene by setting all its affected reactions&#8217; bounds to zero.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>= TimeMachine</strong> (<em>time_machine</em>) &#8211; A time TimeMachine instance can be provided to undo the knockout eventually.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.python.org/library/constants.html#None" title="(in Python v2.7)">None</a></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-cameo.core.metabolite">
+<span id="cameo-core-metabolite-module"></span><h2>cameo.core.metabolite module<a class="headerlink" href="#module-cameo.core.metabolite" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.core.metabolite.Metabolite">
+<em class="property">class </em><code class="descclassname">cameo.core.metabolite.</code><code class="descname">Metabolite</code><span class="sig-paren">(</span><em>id=None</em>, <em>formula=None</em>, <em>name=''</em>, <em>compartment=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/metabolite.html#Metabolite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.metabolite.Metabolite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cobra.core.Metabolite.Metabolite</span></code></p>
+<p>Metabolite is a class for holding information regarding
+a metabolite in a cobra.Reaction object.</p>
+<dl class="classmethod">
+<dt id="cameo.core.metabolite.Metabolite.clone">
+<em class="property">classmethod </em><code class="descname">clone</code><span class="sig-paren">(</span><em>metabolite</em>, <em>model=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/metabolite.html#Metabolite.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.metabolite.Metabolite.clone" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.metabolite.Metabolite.remove_from_model">
+<code class="descname">remove_from_model</code><span class="sig-paren">(</span><em>method='subtractive'</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/metabolite.html#Metabolite.remove_from_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.metabolite.Metabolite.remove_from_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the association from self.model</p>
+<dl class="docutils">
+<dt>method: &#8216;subtractive&#8217; or &#8216;destructive&#8217;.</dt>
+<dd>If &#8216;subtractive&#8217; then the metabolite is removed from all
+associated reactions.  If &#8216;destructive&#8217; then all associated
+reactions are removed from the Model.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.core.metabolite.Metabolite.id">
+<code class="descname">id</code><a class="headerlink" href="#cameo.core.metabolite.Metabolite.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-cameo.core.pathway">
 <span id="cameo-core-pathway-module"></span><h2>cameo.core.pathway module<a class="headerlink" href="#module-cameo.core.pathway" title="Permalink to this headline">¶</a></h2>
+<p>This module implements a pathway data structure that can be added to a model for example.</p>
 <dl class="class">
 <dt id="cameo.core.pathway.Pathway">
 <em class="property">class </em><code class="descclassname">cameo.core.pathway.</code><code class="descname">Pathway</code><span class="sig-paren">(</span><em>reactions</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/pathway.html#Pathway"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.pathway.Pathway" title="Permalink to this definition">¶</a></dt>
@@ -172,6 +246,12 @@ is added to the model</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="cameo.core.reaction.Reaction.__str__">
+<code class="descname">__str__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/reaction.html#Reaction.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.reaction.Reaction.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return str(self).</p>
+</dd></dl>
+
 <dl class="attribute">
 <dt id="cameo.core.reaction.Reaction.reversibility">
 <code class="descname">reversibility</code><a class="headerlink" href="#cameo.core.reaction.Reaction.reversibility" title="Permalink to this definition">¶</a></dt>
@@ -187,8 +267,7 @@ Representing the net flux if model.reversible_encoding == &#8216;unsplit&#8217;<
 <dl class="attribute">
 <dt id="cameo.core.reaction.Reaction.forward_variable">
 <code class="descname">forward_variable</code><a class="headerlink" href="#cameo.core.reaction.Reaction.forward_variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>An optlang variable representing the forward flux (if associated with model), otherwise None.
-Representing the net flux if model.reversible_encoding == &#8216;unsplit&#8217;</p>
+<dd><p>An optlang variable representing the forward flux (if associated with model), otherwise None.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -205,6 +284,11 @@ Representing the net flux if model.reversible_encoding == &#8216;unsplit&#8217;<
 <dl class="attribute">
 <dt id="cameo.core.reaction.Reaction.upper_bound">
 <code class="descname">upper_bound</code><a class="headerlink" href="#cameo.core.reaction.Reaction.upper_bound" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="cameo.core.reaction.Reaction.model">
+<code class="descname">model</code><a class="headerlink" href="#cameo.core.reaction.Reaction.model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -252,6 +336,11 @@ the reaction is associated with (i.e. self.model)</dd>
 </dl>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="cameo.core.reaction.Reaction.id">
+<code class="descname">id</code><a class="headerlink" href="#cameo.core.reaction.Reaction.id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="cameo.core.reaction.Reaction.knock_out">
 <code class="descname">knock_out</code><span class="sig-paren">(</span><em>time_machine=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/reaction.html#Reaction.knock_out"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.reaction.Reaction.knock_out" title="Permalink to this definition">¶</a></dt>
@@ -268,6 +357,36 @@ the reaction is associated with (i.e. self.model)</dd>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.reaction.Reaction.pop">
+<code class="descname">pop</code><span class="sig-paren">(</span><em>metabolite_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/reaction.html#Reaction.pop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.reaction.Reaction.pop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a given metabolite from the reaction stoichiometry, and returns the coefficient.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.reaction.Reaction.remove_from_model">
+<code class="descname">remove_from_model</code><span class="sig-paren">(</span><em>model=None</em>, <em>remove_orphans=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/reaction.html#Reaction.remove_from_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.reaction.Reaction.remove_from_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the reaction from the model while keeping it intact</p>
+<dl class="docutils">
+<dt>remove_orphans: Boolean</dt>
+<dd>Remove orphaned genes and metabolites from the model as well</dd>
+</dl>
+<p>model: deprecated argument, must be None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.reaction.Reaction.delete">
+<code class="descname">delete</code><span class="sig-paren">(</span><em>remove_orphans=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/reaction.html#Reaction.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.reaction.Reaction.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Completely delete a reaction</p>
+<p>This removes all associations between a reaction the associated
+model, metabolites and genes (unlike remove_from_model which only
+dissociates the reaction from the model).</p>
+<dl class="docutils">
+<dt>remove_orphans: Boolean</dt>
+<dd>Remove orphaned genes and metabolites from the model as well</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -505,7 +624,7 @@ the reaction is associated with (i.e. self.model)</dd>
 <p>A solver-based model class and other extensions of cobrapy objects.</p>
 <dl class="function">
 <dt id="cameo.core.solver_based_model.to_solver_based_model">
-<code class="descclassname">cameo.core.solver_based_model.</code><code class="descname">to_solver_based_model</code><span class="sig-paren">(</span><em>cobrapy_model</em>, <em>solver_interface=&lt;module 'optlang' from '/Users/niko/.virtualenvs/cameo3.5/lib/python3.5/site-packages/optlang/__init__.py'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#to_solver_based_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.to_solver_based_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">cameo.core.solver_based_model.</code><code class="descname">to_solver_based_model</code><span class="sig-paren">(</span><em>cobrapy_model</em>, <em>solver_interface=&lt;module 'optlang' from '/Users/niso/anaconda/envs/cameo3.4/lib/python3.4/site-packages/optlang/__init__.py'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#to_solver_based_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.to_solver_based_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a cobrapy model into a solver-based model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -523,16 +642,14 @@ the reaction is associated with (i.e. self.model)</dd>
 
 <dl class="class">
 <dt id="cameo.core.solver_based_model.SolverBasedModel">
-<em class="property">class </em><code class="descclassname">cameo.core.solver_based_model.</code><code class="descname">SolverBasedModel</code><span class="sig-paren">(</span><em>description=None</em>, <em>solver_interface=&lt;module 'optlang' from '/Users/niko/.virtualenvs/cameo3.5/lib/python3.5/site-packages/optlang/__init__.py'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cameo.core.solver_based_model.</code><code class="descname">SolverBasedModel</code><span class="sig-paren">(</span><em>description=None</em>, <em>solver_interface=&lt;module 'optlang' from '/Users/niso/anaconda/envs/cameo3.4/lib/python3.4/site-packages/optlang/__init__.py'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cobra.core.Model.Model</span></code></p>
 <p>Implements a model with an attached optlang solver instance.</p>
 <p>Every model manipulation is immediately reflected in the solver instance.</p>
 <dl class="method">
 <dt id="cameo.core.solver_based_model.SolverBasedModel.copy">
 <code class="descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Provides a partial &#8216;deepcopy&#8217; of the Model.  All of the Metabolite,
-Gene, and Reaction objects are created anew but in a faster fashion
-than deepcopy</p>
+<dd><p>Needed for compatibility with cobrapy.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -548,7 +665,7 @@ than deepcopy</p>
 <p>Very useful for accessing the optimization problem directly. Furthermore, can be used to define additional
 non-metabolic constraints.</p>
 <p class="rubric">Examples</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">new_constraint_from_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_constraint_from_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mf">0.99</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_constraint</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -596,14 +713,21 @@ recreated with new metabolite and gene objects.</dd>
 <dl class="method">
 <dt id="cameo.core.solver_based_model.SolverBasedModel.add_demand">
 <code class="descname">add_demand</code><span class="sig-paren">(</span><em>metabolite</em>, <em>prefix='DM_'</em>, <em>time_machine=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel.add_demand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel.add_demand" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a demand reaction for a metabolite (metabolite &#8211;&gt; Ø)</p>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.solver_based_model.SolverBasedModel.add_exchange">
+<code class="descname">add_exchange</code><span class="sig-paren">(</span><em>metabolite</em>, <em>demand=True</em>, <em>prefix='DM_'</em>, <em>bound=1000.0</em>, <em>time_machine=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel.add_exchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel.add_exchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an exchange reaction for a metabolite (demand=TRUE: metabolite &#8211;&gt; Ø or demand=False: 0 &#8211;&gt; metabolite )</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>metabolite</strong> (<em>Metabolite</em>) &#8211; </li>
+<li><strong>metabolite</strong> (<a class="reference internal" href="#cameo.core.metabolite.Metabolite" title="cameo.core.metabolite.Metabolite"><em>Metabolite</em></a>) &#8211; </li>
+<li><strong>demand</strong> (<em>bool, optional</em>) &#8211; True for sink type exchange, False for uptake type exchange</li>
 <li><strong>prefix</strong> (<em>str, optional</em>) &#8211; A prefix that will be added to the metabolite ID to be used as the demand reaction&#8217;s ID (defaults to &#8216;<a href="#id1"><span class="problematic" id="id2">DM_</span></a>&#8216;).</li>
+<li><strong>bound</strong> (<em>float, optional</em>) &#8211; Upper bound for sink reaction / lower bound for uptake (multiplied by -1)</li>
 <li><strong>time_machine</strong> (<em>TimeMachine, optional</em>) &#8211; A TimeMachine instance that enables undoing.</li>
 </ul>
 </td>
@@ -670,25 +794,8 @@ print model.solver.constraints[&#8216;ratio_constraint_r1_r2&#8217;]
 <dl class="method">
 <dt id="cameo.core.solver_based_model.SolverBasedModel.optimize">
 <code class="descname">optimize</code><span class="sig-paren">(</span><em>objective_sense=None</em>, <em>solution_type=&lt;class 'cameo.core.solution.Solution'&gt;</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel.optimize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel.optimize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Optimize model using flux balance analysis</p>
-<p>objective_sense: &#8216;maximize&#8217; or &#8216;minimize&#8217;</p>
-<p>solver: &#8216;glpk&#8217;, &#8216;cglpk&#8217;, &#8216;gurobi&#8217;, &#8216;cplex&#8217; or None</p>
-<dl class="docutils">
-<dt>quadratic_component: None or <code class="xref py py-class docutils literal"><span class="pre">scipy.sparse.dok_matrix</span></code></dt>
-<dd><p class="first">The dimensions should be (n, n) where n is the number of reactions.</p>
-<p class="last">This sets the quadratic component (Q) of the objective coefficient,
-adding <span class="math">\(\\frac{1}{2} v^T \cdot Q \cdot v\)</span> to the objective.</p>
-</dd>
-</dl>
-<p>tolerance_feasibility: Solver tolerance for feasibility.</p>
-<p>tolerance_markowitz: Solver threshold during pivot</p>
-<p>time_limit: Maximum solver time (in seconds)</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Only the most commonly used parameters are presented here.
-Additional parameters for cobra.solvers may be available and
-specified with the appropriate keyword argument.</p>
-</div>
+<dd><p>OptlangBasedModel implementation of optimize.</p>
+<p>Exists only for compatibility reasons. Uses model.solve() instead.</p>
 </dd></dl>
 
 <dl class="method">
@@ -707,6 +814,12 @@ specified with the appropriate keyword argument.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.solver_based_model.SolverBasedModel.__dir__">
+<code class="descname">__dir__</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &rarr; list<a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel.__dir__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel.__dir__" title="Permalink to this definition">¶</a></dt>
+<dd><p>default dir() implementation</p>
 </dd></dl>
 
 <dl class="method">
@@ -773,6 +886,13 @@ TODO</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="cameo.core.solver_based_model.SolverBasedModel.change_objective">
+<code class="descname">change_objective</code><span class="sig-paren">(</span><em>value</em>, <em>time_machine=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/core/solver_based_model.html#SolverBasedModel.change_objective"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.core.solver_based_model.SolverBasedModel.change_objective" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the objective of the model to the given value. Allows passing a time machine to
+revert the change later</p>
 </dd></dl>
 
 <dl class="method">
@@ -852,6 +972,7 @@ The objective can be changed subsequently to optimize an outer problem.</p>
 </div>
 <div class="section" id="module-cameo.core">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.core" title="Permalink to this headline">¶</a></h2>
+<p>This package implements the basic data structures (models, reactions etc.) used in cameo.</p>
 </div>
 </div>
 
@@ -911,7 +1032,7 @@ The objective can be changed subsequently to optimize an outer problem.</p>
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">

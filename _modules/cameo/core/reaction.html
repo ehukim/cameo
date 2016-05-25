@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.core.reaction &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.core.reaction &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,9 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="up" title="cameo" href="../../cameo.html" />
    
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
@@ -41,7 +42,7 @@
           <div class="body" role="main">
             
   <h1>Source code for cameo.core.reaction</h1><div class="highlight"><pre>
-<span class="c1"># -*- coding: utf-8 -*-</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1"># Copyright 2013 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
@@ -58,8 +59,6 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">import</span> <span class="nn">warnings</span>
-
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
 <span class="kn">import</span> <span class="nn">cobra</span> <span class="kn">as</span> <span class="nn">_cobrapy</span>
@@ -70,12 +69,13 @@
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">doc_inherit</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">inheritdocstring</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 
+<span class="nd">@six.add_metaclass</span><span class="p">(</span><span class="n">inheritdocstring</span><span class="p">)</span>
 <div class="viewcode-block" id="Reaction"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction">[docs]</a><span class="k">class</span> <span class="nc">Reaction</span><span class="p">(</span><span class="n">_cobrapy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Reaction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This class extends the cobrapy Reaction class to work with SolverBasedModel.</span>
 
@@ -112,12 +112,12 @@
             <span class="n">new_reaction</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">new_reaction</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
-        <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="n">new_reaction</span><span class="o">.</span><span class="n">genes</span><span class="p">:</span>
-            <span class="n">gene</span><span class="o">.</span><span class="n">_reaction</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
-            <span class="n">gene</span><span class="o">.</span><span class="n">_reaction</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_reaction</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">metabolite</span> <span class="ow">in</span> <span class="n">new_reaction</span><span class="o">.</span><span class="n">metabolites</span><span class="p">:</span>
-            <span class="n">metabolite</span><span class="o">.</span><span class="n">_reaction</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
-            <span class="n">metabolite</span><span class="o">.</span><span class="n">_reaction</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_reaction</span><span class="p">)</span>
+        <span class="c1"># for gene in new_reaction.genes:</span>
+        <span class="c1">#     gene._reaction.remove(reaction)</span>
+        <span class="c1">#     gene._reaction.add(new_reaction)</span>
+        <span class="c1"># for metabolite in new_reaction.metabolites:</span>
+        <span class="c1">#     metabolite._reaction.remove(reaction)</span>
+        <span class="c1">#     metabolite._reaction.add(new_reaction)</span>
         <span class="k">return</span> <span class="n">new_reaction</span></div>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">subsystem</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
@@ -130,10 +130,12 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">subsystem</span><span class="o">=</span><span class="n">subsystem</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span> <span class="o">=</span> <span class="n">lower_bound</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span> <span class="o">=</span> <span class="n">upper_bound</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">()))</span>
+<div class="viewcode-block" id="Reaction.__str__"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">()))</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">reversibility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -160,12 +162,10 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">forward_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;An optlang variable representing the forward flux (if associated with model), otherwise None.</span>
-<span class="sd">        Representing the net flux if model.reversible_encoding == &#39;unsplit&#39;&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;An optlang variable representing the forward flux (if associated with model), otherwise None.&quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">aux_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">aux_id</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
 
@@ -174,8 +174,7 @@
         <span class="sd">&quot;&quot;&quot;An optlang variable representing the reverse flux (if associated with model), otherwise None.&quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">aux_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">aux_id</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
 
@@ -298,15 +297,35 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span>
+
+    <span class="nd">@model.setter</span>
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">objective_coefficient</span>  <span class="c1"># Get objective coefficient from model</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SolverBasedModel</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be an instance of cameo.core.SolverBasedModel, not </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">objective_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SolverBasedModel</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">coefficients_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">as_coefficients_dict</span><span class="p">()</span>
+            <span class="n">forw_coef</span> <span class="o">=</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">rev_coef</span> <span class="o">=</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">forw_coef</span> <span class="o">==</span> <span class="o">-</span><span class="n">rev_coef</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">forw_coef</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span>
 
     <span class="nd">@objective_coefficient.setter</span>
     <span class="k">def</span> <span class="nf">objective_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_set_linear_objective_term</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-            <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_set_linear_objective_term</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">coef_difference</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_coefficient</span>
+            <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">+=</span> <span class="n">coef_difference</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_expression</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
@@ -337,7 +356,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">None</span>
 
-    <span class="nd">@doc_inherit</span>
 <div class="viewcode-block" id="Reaction.add_metabolites"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.add_metabolites">[docs]</a>    <span class="k">def</span> <span class="nf">add_metabolites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolites</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
             <span class="n">old_coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolites</span>
@@ -345,6 +363,8 @@
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">metabolite</span><span class="p">,</span> <span class="n">coefficient</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">metabolites</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>  <span class="c1"># support metabolites added as strings.</span>
+                    <span class="n">metabolite</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">metabolite</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">old_coefficient</span> <span class="o">=</span> <span class="n">old_coefficients</span><span class="p">[</span><span class="n">metabolite</span><span class="p">]</span>
@@ -353,6 +373,30 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">coefficient</span> <span class="o">=</span> <span class="n">coefficient</span> <span class="o">-</span> <span class="n">old_coefficient</span>
                 <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="n">metabolite</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">coefficient</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_expression</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c1"># Returns None if _id is not set</span>
+
+    <span class="nd">@id.setter</span>
+    <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;ID must be a string&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>  <span class="c1"># (= if hasattr(self, &quot;_model&quot;) and self._model is not None)</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model already contains a reaction with the id:&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="n">forward_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span>
+            <span class="n">reverse_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">_generate_index</span><span class="p">()</span>
+
+            <span class="n">forward_variable</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()</span>
+            <span class="n">reverse_variable</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">value</span>
 
 <div class="viewcode-block" id="Reaction.knock_out"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.knock_out">[docs]</a>    <span class="k">def</span> <span class="nf">knock_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Knockout reaction by setting its bounds to zero.</span>
@@ -375,6 +419,36 @@
             <span class="n">time_machine</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">knock_out</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Reaction.pop"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolite_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Removes a given metabolite from the reaction stoichiometry, and returns the coefficient.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">metabolite_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite_id</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                <span class="n">met</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">metabolite_id</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">met</span> <span class="o">=</span> <span class="n">metabolite_id</span>
+            <span class="n">coef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolites</span><span class="p">[</span><span class="n">met</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">({</span><span class="n">met</span><span class="p">:</span> <span class="o">-</span><span class="n">coef</span><span class="p">},</span> <span class="n">combine</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">coef</span></div>
+
+<div class="viewcode-block" id="Reaction.remove_from_model"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.remove_from_model">[docs]</a>    <span class="k">def</span> <span class="nf">remove_from_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">reaction_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span>
+        <span class="n">reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">remove_from_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="p">)</span>
+        <span class="n">reaction_model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Reaction.delete"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
+        <span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span>
+        <span class="n">reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">remove_orphans</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">])</span></div>
+        <span class="c1"># if remove_orphans:</span>
+        <span class="c1">#     model.solver.remove([metabolite.model.solver for metabolite in self.metabolites.keys()])</span>
 
     <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -453,7 +527,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul>
@@ -465,6 +539,8 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../cameo.html">cameo</a><ul>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

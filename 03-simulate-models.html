@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Simulate models &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>Simulate models &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="index.html" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
     <link rel="up" title="Tutorials" href="tutorials.html" />
     <link rel="next" title="Analyzing models" href="04-analyze-models.html" />
     <link rel="prev" title="Import models" href="02-import-models.html" />
@@ -92,17 +93,17 @@ balance analysis (FBA):</p>
 <div class="section" id="flux-balance-analysis">
 <h2>Flux Balance Analysis<a class="headerlink" href="#flux-balance-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Load a model.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;iJO1366&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In cameo, flux balance analysis can be performed with the function
 <code class="xref py py-obj docutils literal"><span class="pre">fba</span></code>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre>from cameo import fba
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>from cameo import fba
 %time fba_result = fba(model)
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 410 ms, sys: 6.43 ms, total: 416 ms
+<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 410 ms, sys: 6.43 ms, total: 416 ms
 Wall time: 421 ms
 </pre></div>
 </div>
@@ -110,7 +111,7 @@ Wall time: 421 ms
 solution in a <code class="xref py py-obj docutils literal"><span class="pre">FluxDistributionResult</span></code> object. The maximum objective
 values (corresponding to a maximum growth rate) can obtained throug
 <code class="xref py py-obj docutils literal"><span class="pre">result.objective_value</span></code>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span>
 </pre></div>
 </div>
 <div>
@@ -180,27 +181,27 @@ minimize flux magnitude as well in order to keep protein costs low.</p>
  ~ &amp; ~ \mathbf{v}_{lb} \leq \mathbf{v} \leq \mathbf{v}_{ub} \,.
 \end{align}\end{split}\]</div>
 <p>In cameo, pFBA can be performed with the function <code class="xref py py-obj docutils literal"><span class="pre">pfba</span></code>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre>from cameo import pfba
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>from cameo import pfba
 %time pfba_result = pfba(model)
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 429 ms, sys: 19 ms, total: 448 ms
+<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 429 ms, sys: 19 ms, total: 448 ms
 Wall time: 460 ms
 </pre></div>
 </div>
 <p>The <code class="xref py py-obj docutils literal"><span class="pre">objective_function</span></code> value is <span class="math">\(\lvert \mathbf{v} \rvert\)</span> ...</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">pfba_result</span><span class="o">.</span><span class="n">objective_value</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">pfba_result</span><span class="o">.</span><span class="n">objective_value</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="mf">699.0222751839472</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">699.0222751839472</span>
 </pre></div>
 </div>
 <p>... whis is significantly smaller than flux vector of the original FBA
 solution.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="nb">abs</span><span class="p">(</span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="nb">abs</span><span class="p">(</span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="mf">702.81946544045991</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">702.81946544045991</span>
 </pre></div>
 </div>
 </div>
@@ -215,7 +216,7 @@ ROOM. In <em>cameo</em> we implement a linear version of MOMA.</p>
 <li>Manipulate the bounds of the reaction (or use the shorthand method
 knock_out)</li>
 </ul>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
 </pre></div>
 </div>
 <table>
@@ -234,7 +235,7 @@ knock_out)</li>
     <tr>
         <td><strong>Upper bound</strong></td><td>1000.000000</td>
     </tr>
-</table><div class="code python highlight-python"><div class="highlight"><pre><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span>
+</table><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
 </pre></div>
 </div>
@@ -257,47 +258,47 @@ knock_out)</li>
 </table><ul class="simple">
 <li>Simulate using different methods:</li>
 </ul>
-<div class="code python highlight-python"><div class="highlight"><pre>%time fba_knockout_result = fba(model)
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time fba_knockout_result = fba(model)
 fba_knockout_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 266 ms, sys: 4.96 ms, total: 271 ms
+<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 266 ms, sys: 4.96 ms, total: 271 ms
 Wall time: 272 ms
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="mf">0.9761293262947403</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.9761293262947403</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre>%time pfba_knockout_result = pfba(model)
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time pfba_knockout_result = pfba(model)
 pfba_knockout_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 374 ms, sys: 3.5 ms, total: 378 ms
+<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 374 ms, sys: 3.5 ms, total: 378 ms
 Wall time: 379 ms
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="mf">0.9761293262947374</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.9761293262947374</span>
 </pre></div>
 </div>
 <p>MOMA and ROOM relly on a reference (wild-type) flux distribution and we
 can use the one previously computed.</p>
 <p><strong>Parsimonious FBA references seem to produce better results using this
 methods</strong></p>
-<div class="code python highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="kn">import</span> <span class="n">room</span><span class="p">,</span> <span class="n">lmoma</span>
+<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="kn">import</span> <span class="n">room</span><span class="p">,</span> <span class="n">lmoma</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre>%time lmoma_result = lmoma(model, reference=pfba_result.fluxes)
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time lmoma_result = lmoma(model, reference=pfba_result.fluxes)
 lmoma_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre>CPU times: user 16.3 s, sys: 246 ms, total: 16.6 s
+<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 16.3 s, sys: 246 ms, total: 16.6 s
 Wall time: 16.8 s
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span class="mf">0.8724093536243601</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.8724093536243601</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre>%time room_result = room(model, reference=pfba_result.fluxes)
+<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time room_result = room(model, reference=pfba_result.fluxes)
 room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 </pre></div>
 </div>
@@ -363,6 +364,7 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 <li class="toctree-l2 current"><a class="current reference internal" href="">Simulate models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="06-predict-gene-modulation-targets.html">Predict expression modulation targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
@@ -372,7 +374,7 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 </li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul>

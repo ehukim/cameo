@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.visualization.visualization &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.visualization.visualization &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,9 @@
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" />
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="up" title="cameo" href="../../cameo.html" />
    
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
@@ -41,7 +42,7 @@
           <div class="body" role="main">
             
   <h1>Source code for cameo.visualization.visualization</h1><div class="highlight"><pre>
-<span class="c1"># Copyright 2013 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
+<span></span><span class="c1"># Copyright 2013 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
 <span class="c1"># you may not use this file except in compliance with the License.</span>
@@ -56,7 +57,6 @@
 <span class="c1"># limitations under the License.</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
-
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">six</span>
@@ -73,12 +73,15 @@
 <span class="kn">from</span> <span class="nn">escher</span> <span class="kn">import</span> <span class="n">Builder</span>
 <span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
 
-<span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">SVG</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">SVG</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="k">pass</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;graph_to_svg&#39;</span><span class="p">,</span> <span class="s1">&#39;draw_knockout_result&#39;</span><span class="p">,</span> <span class="s1">&#39;inchi_to_svg&#39;</span><span class="p">]</span>
 
-
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+
 
 <span class="k">def</span> <span class="nf">pathviz_maps</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Return a list of maps available in pathviz.m&quot;&quot;&quot;</span>
@@ -177,7 +180,7 @@
 <span class="sd">    --------</span>
 <span class="sd">    Draw water</span>
 <span class="sd">    &gt;&gt;&gt; inchi_to_svg(&#39;InChI=1S/H2O/h1H2&#39;)</span>
-<span class="sd">    &#39;&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;svg version=&quot;1.1&quot; id=&quot;topsvg&quot;\nxmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;\nxmlns:cml=&quot;http://www.xml-cml.org/schema&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;200px&quot; height=&quot;200px&quot; viewBox=&quot;0 0 100 100&quot;&gt;\n&lt;title&gt;OBDepict&lt;/title&gt;\n&lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;100&quot; height=&quot;100&quot; fill=&quot;white&quot;/&gt;\n&lt;text text-anchor=&quot;middle&quot; font-size=&quot;6&quot; fill =&quot;black&quot; font-family=&quot;sans-serif&quot;\nx=&quot;50&quot; y=&quot;98&quot; &gt;&lt;/text&gt;\n&lt;g transform=&quot;translate(0,0)&quot;&gt;\n&lt;svg width=&quot;100&quot; height=&quot;100&quot; x=&quot;0&quot; y=&quot;0&quot; viewBox=&quot;0 0 80 80&quot;\nfont-family=&quot;sans-serif&quot; stroke=&quot;rgb(0,0,0)&quot; stroke-width=&quot;2&quot;  stroke-linecap=&quot;round&quot;&gt;\n&lt;text x=&quot;36&quot; y=&quot;48&quot; fill=&quot;rgb(255,12,12)&quot;  stroke=&quot;rgb(255,12,12)&quot; stroke-width=&quot;1&quot; font-size=&quot;16&quot; &gt;OH&lt;/text&gt;\n&lt;text x=&quot;60&quot; y=&quot;51.68&quot; fill=&quot;rgb(255,12,12)&quot;  stroke=&quot;rgb(255,12,12)&quot; stroke-width=&quot;1&quot; font-size=&quot;13&quot; &gt;2&lt;/text&gt;\n&lt;/svg&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n\n&#39;</span>
+<span class="sd">    &#39;&lt;?xml version=&quot;1.0&quot;?&gt;\n&lt;svg version=&quot;1.1&quot; id=&quot;topsvg&quot;\nxmlns=&quot;http://www.w3.org/2000/svg&quot; xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;\nxmlns:cml=&quot;http://www.xml-cml.org/schema&quot; x=&quot;0&quot; y=&quot;0&quot; width=&quot;200px&quot; height=&quot;200px&quot; viewBox=&quot;0 0 100 100&quot;&gt;\n&lt;title&gt;OBDepict&lt;/title&gt;\n&lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;100&quot; height=&quot;100&quot; fill=&quot;white&quot;/&gt;\n&lt;text text-anchor=&quot;middle&quot; font-size=&quot;6&quot; fill =&quot;black&quot; font-family=&quot;sans-serif&quot;\nx=&quot;50&quot; y=&quot;98&quot; &gt;&lt;/text&gt;\n&lt;g transform=&quot;translate(0,0)&quot;&gt;\n&lt;svg width=&quot;100&quot; height=&quot;100&quot; x=&quot;0&quot; y=&quot;0&quot; viewBox=&quot;0 0 80 80&quot;\nfont-family=&quot;sans-serif&quot; stroke=&quot;rgb(0,0,0)&quot; stroke-width=&quot;2&quot;  stroke-linecap=&quot;round&quot;&gt;\n&lt;text x=&quot;36&quot; y=&quot;48&quot; fill=&quot;rgb(255,12,12)&quot;  stroke=&quot;rgb(255,12,12)&quot; stroke-width=&quot;1&quot; font-size=&quot;16&quot; &gt;OH&lt;/text&gt;\n&lt;text x=&quot;60&quot; y=&quot;51.68&quot; fill=&quot;rgb(255,12,12)&quot;  stroke=&quot;rgb(255,12,12)&quot; stroke-width=&quot;1&quot; font-size=&quot;13&quot; &gt;2&lt;/text&gt;\n&lt;/svg&gt;\n&lt;/g&gt;\n&lt;/svg&gt;\n\n&#39;  # noqa</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span>
     <span class="n">in_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inchi</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
@@ -192,7 +195,7 @@
                       <span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">error_level</span><span class="p">))</span>
             <span class="k">return</span> <span class="nb">file</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">out_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span>
+            <span class="n">out_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;obabel -iinchi </span><span class="si">%s</span><span class="s2"> -osvg -O </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> -xh 40 ---errorlevel </span><span class="si">%d</span><span class="s2">&quot;</span>
                       <span class="o">%</span> <span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">out_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">error_level</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">out_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -252,7 +255,7 @@
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
     <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
     <span class="c1"># draw reaction nodes</span>
-    <span class="n">rxn_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">Reaction</span><span class="p">)]</span>
+    <span class="c1"># rxn_nodes = [node for node in g.nodes() if isinstance(node, cameo.Reaction)]</span>
     <span class="c1"># draw metabolites</span>
     <span class="n">met_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">Metabolite</span><span class="p">)]</span>
     <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">nodelist</span><span class="o">=</span><span class="n">met_nodes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
@@ -267,8 +270,6 @@
     <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
-
-
 </pre></div>
 
           </div>
@@ -326,7 +327,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul>
@@ -338,6 +339,8 @@
 <ul>
   <li><a href="../../../index.html">Documentation overview</a><ul>
   <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../cameo.html">cameo</a><ul>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>

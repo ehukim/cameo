@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.heuristic package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.strain_design.heuristic package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,9 +24,10 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design package" href="cameo.strain_design.html" />
-    <link rel="next" title="cameo.strain_design.heuristic.evolutionary package" href="cameo.strain_design.heuristic.evolutionary.html" />
+    <link rel="next" title="cameo.strain_design.pathway_prediction package" href="cameo.strain_design.pathway_prediction.html" />
     <link rel="prev" title="cameo.strain_design.deterministic package" href="cameo.strain_design.deterministic.html" />
    
   
@@ -44,42 +45,6 @@
             
   <div class="section" id="cameo-strain-design-heuristic-package">
 <h1>cameo.strain_design.heuristic package<a class="headerlink" href="#cameo-strain-design-heuristic-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html">cameo.strain_design.heuristic.evolutionary package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#subpackages">Subpackages</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html">cameo.strain_design.heuristic.evolutionary.multiprocess package</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module">cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module">cameo.strain_design.heuristic.evolutionary.multiprocess.observers module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module">cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html#module-contents">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.archives">cameo.strain_design.heuristic.evolutionary.archives module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.decoders">cameo.strain_design.heuristic.evolutionary.decoders module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.generators">cameo.strain_design.heuristic.evolutionary.generators module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.genomes">cameo.strain_design.heuristic.evolutionary.genomes module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.metrics">cameo.strain_design.heuristic.evolutionary.metrics module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.objective_functions">cameo.strain_design.heuristic.evolutionary.objective_functions module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.observers">cameo.strain_design.heuristic.evolutionary.observers module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.optimization">cameo.strain_design.heuristic.evolutionary.optimization module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.plotters">cameo.strain_design.heuristic.evolutionary.plotters module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.processing">cameo.strain_design.heuristic.evolutionary.processing module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.stats">cameo.strain_design.heuristic.evolutionary.stats module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary.variators">cameo.strain_design.heuristic.evolutionary.variators module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cameo.strain_design.heuristic.evolutionary.html#module-cameo.strain_design.heuristic.evolutionary">Module contents</a></li>
-</ul>
-</li>
-</ul>
-</div>
-</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -87,8 +52,13 @@
 <span id="cameo-strain-design-heuristic-evolutionary-based-module"></span><h2>cameo.strain_design.heuristic.evolutionary_based module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary_based" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene">
-<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary_based.</code><code class="descname">OptGene</code><span class="sig-paren">(</span><em>model</em>, <em>evolutionary_algorithm=&lt;class 'inspyred.ec.ec.GA'&gt;</em>, <em>manipulation_type='genes'</em>, <em>essential_genes=None</em>, <em>essential_reactions=None</em>, <em>plot=True</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary_based.</code><code class="descname">OptGene</code><span class="sig-paren">(</span><em>model</em>, <em>evolutionary_algorithm=&lt;class 'inspyred.ec.ec.GA'&gt;</em>, <em>manipulation_type='genes'</em>, <em>essential_genes=None</em>, <em>essential_reactions=None</em>, <em>plot=True</em>, <em>exclude_non_gene_reactions=True</em>, <em>seed=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="cameo.strain_design.html#cameo.strain_design.strain_design.StrainDesignMethod" title="cameo.strain_design.strain_design.StrainDesignMethod"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignMethod</span></code></a></p>
+<dl class="attribute">
+<dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene.seed">
+<code class="descname">seed</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.seed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene.plot">
 <code class="descname">plot</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.plot" title="Permalink to this definition">¶</a></dt>
@@ -101,7 +71,7 @@
 
 <dl class="method">
 <dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>target=None</em>, <em>biomass=None</em>, <em>substrate=None</em>, <em>max_knockouts=5</em>, <em>simulation_method=&lt;function fba&gt;</em>, <em>robust=True</em>, <em>max_evaluations=20000</em>, <em>population_size=100</em>, <em>time_machine=None</em>, <em>max_results=50</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>target=None</em>, <em>biomass=None</em>, <em>substrate=None</em>, <em>max_knockouts=5</em>, <em>simulation_method=&lt;function fba&gt;</em>, <em>growth_coupled=False</em>, <em>max_evaluations=20000</em>, <em>population_size=200</em>, <em>time_machine=None</em>, <em>max_results=50</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.run" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -195,7 +165,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">
@@ -213,7 +183,7 @@
   <li><a href="cameo.html">cameo package</a><ul>
   <li><a href="cameo.strain_design.html">cameo.strain_design package</a><ul>
       <li>Previous: <a href="cameo.strain_design.deterministic.html" title="previous chapter">cameo.strain_design.deterministic package</a></li>
-      <li>Next: <a href="cameo.strain_design.heuristic.evolutionary.html" title="next chapter">cameo.strain_design.heuristic.evolutionary package</a></li>
+      <li>Next: <a href="cameo.strain_design.pathway_prediction.html" title="next chapter">cameo.strain_design.pathway_prediction package</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

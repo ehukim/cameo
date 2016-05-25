@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.pathway_prediction package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.strain_design.pathway_prediction package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.6.0+1.g10719db.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,10 +24,11 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design package" href="cameo.strain_design.html" />
-    <link rel="next" title="cameo.stuff package" href="cameo.stuff.html" />
-    <link rel="prev" title="cameo.strain_design.heuristic.evolutionary.multiprocess package" href="cameo.strain_design.heuristic.evolutionary.multiprocess.html" />
+    <link rel="next" title="cameo.ui package" href="cameo.ui.html" />
+    <link rel="prev" title="cameo.strain_design.heuristic package" href="cameo.strain_design.heuristic.html" />
    
   
     <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
@@ -78,14 +79,14 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 
 <p class="rubric">Examples</p>
 <p>Determine production pathways for propane-1,3-diol (MNXM2861 in the metanetx namespace)</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">hosts</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">hosts</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pathway_predictor</span> <span class="o">=</span> <span class="n">PathwayPredictor</span><span class="p">(</span><span class="n">hosts</span><span class="o">.</span><span class="n">ecoli</span><span class="o">.</span><span class="n">iJO1366</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">MNXM2861</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="method">
 <dt id="cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>product=None</em>, <em>max_predictions=inf</em>, <em>min_production=0.1</em>, <em>timeout=None</em>, <em>silent=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/pathway_prediction/pathway_predictor.html#PathwayPredictor.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>product=None</em>, <em>max_predictions=inf</em>, <em>min_production=0.1</em>, <em>timeout=None</em>, <em>callback=None</em>, <em>silent=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/pathway_prediction/pathway_predictor.html#PathwayPredictor.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run pathway prediction for a desired product.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -186,7 +187,7 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 <li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
 </ul>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../development.html">Design principles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../development.html">Development</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../contributing.html">Contributing to cameo</a></li>
 </ul>
 <ul class="current">
@@ -203,8 +204,8 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
   <li><a href="../API.html">API Docs</a><ul>
   <li><a href="cameo.html">cameo package</a><ul>
   <li><a href="cameo.strain_design.html">cameo.strain_design package</a><ul>
-      <li>Previous: <a href="cameo.strain_design.heuristic.evolutionary.multiprocess.html" title="previous chapter">cameo.strain_design.heuristic.evolutionary.multiprocess package</a></li>
-      <li>Next: <a href="cameo.stuff.html" title="next chapter">cameo.stuff package</a></li>
+      <li>Previous: <a href="cameo.strain_design.heuristic.html" title="previous chapter">cameo.strain_design.heuristic package</a></li>
+      <li>Next: <a href="cameo.ui.html" title="next chapter">cameo.ui package</a></li>
   </ul></li>
   </ul></li>
   </ul></li>

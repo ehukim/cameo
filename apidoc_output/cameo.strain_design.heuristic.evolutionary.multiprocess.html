@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.heuristic.evolutionary.multiprocess package &mdash; cameo 0.5.0+223.gd37a580.dirty documentation</title>
+    <title>cameo.strain_design.heuristic.evolutionary.multiprocess package &mdash; cameo 0.5.0+299.g3ea055b documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.5.0+223.gd37a580.dirty',
+        VERSION:     '0.5.0+299.g3ea055b',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="cameo 0.5.0+223.gd37a580.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.5.0+299.g3ea055b documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design.heuristic.evolutionary package" href="cameo.strain_design.heuristic.evolutionary.html" />
     <link rel="next" title="cameo.strain_design.pathway_prediction package" href="cameo.strain_design.pathway_prediction.html" />
     <link rel="prev" title="cameo.strain_design.heuristic.evolutionary package" href="cameo.strain_design.heuristic.evolutionary.html" />
@@ -47,20 +47,173 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module">
-<h2>cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module<a class="headerlink" href="#cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.multiprocess.migrators">
+<span id="cameo-strain-design-heuristic-evolutionary-multiprocess-migrators-module"></span><h2>cameo.strain_design.heuristic.evolutionary.multiprocess.migrators module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.multiprocess.migrators" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.migrators.MultiprocessingMigrator">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.multiprocess.migrators.</code><code class="descname">MultiprocessingMigrator</code><span class="sig-paren">(</span><em>max_migrants=1</em>, <em>**connection_kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/migrators.html#MultiprocessingMigrator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.migrators.MultiprocessingMigrator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Migrate among processes on multiple machines. This is possible by
+having a Queue implemented on redis.</p>
+<p>This callable class allows individuals to migrate from one process
+to another. It maintains a queue of migrants whose maximum length
+can be fixed via the <code class="docutils literal"><span class="pre">max_migrants</span></code> parameter in the constructor.
+If the number of migrants in the queue reaches this value, new migrants
+are not added until earlier ones are consumed. The unreliability of a
+multiprocessing environment makes it difficult to provide guarantees.
+However, migrants are theoretically added and consumed at the same rate,
+so this value should determine the &#8220;freshness&#8221; of individuals, where
+smaller queue sizes provide more recency.</p>
+<p>An optional keyword argument in <code class="docutils literal"><span class="pre">args</span></code> requires the migrant to be
+evaluated by the current evolutionary computation before being inserted
+into the population. This can be important when different populations
+use different evaluation functions and you need to be able to compare
+&#8220;apples with apples,&#8221; so to speak.</p>
+<p>The migration takes the current individual <em>I</em> out of the queue, if
+one exists. It then randomly chooses an individual <em>E</em> from the population
+to insert into the queue. Finally, if <em>I</em> exists, it replaces <em>E</em> in the
+population (re-evaluating fitness if necessary). Otherwise, <em>E</em> remains in
+the population and also exists in the queue as a migrant.</p>
+<p>Optional keyword arguments in args:</p>
+<ul class="simple">
+<li><em>evaluate_migrant</em> &#8211; should new migrants be evaluated before
+adding them to the population (default False)</li>
+</ul>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>max_migrants</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of migrants in the queue at the same time.</li>
+<li><strong>connection_kwargs</strong> (<em>keyword arguments:</em>) &#8211; see parallel.RedisQueue</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module">
-<h2>cameo.strain_design.heuristic.evolutionary.multiprocess.observers module<a class="headerlink" href="#cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.multiprocess.observers">
+<span id="cameo-strain-design-heuristic-evolutionary-multiprocess-observers-module"></span><h2>cameo.strain_design.heuristic.evolutionary.multiprocess.observers module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.multiprocess.observers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.observers.CliMultiprocessProgressObserver">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.multiprocess.observers.</code><code class="descname">CliMultiprocessProgressObserver</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/observers.html#CliMultiprocessProgressObserver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.observers.CliMultiprocessProgressObserver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.multiprocess.observers.AbstractParallelObserver</span></code></p>
+<p>Command line progress display for multiprocess run</p>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.observers.CliMultiprocessProgressObserver.TerminalWriter">
+<em class="property">class </em><code class="descname">TerminalWriter</code><span class="sig-paren">(</span><em>pos</em>, <em>term</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/observers.html#CliMultiprocessProgressObserver.TerminalWriter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.observers.CliMultiprocessProgressObserver.TerminalWriter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Writer wrapper to write the progress in a specific terminal position</p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.observers.CliMultiprocessProgressObserver.TerminalWriter.write">
+<code class="descname">write</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/observers.html#CliMultiprocessProgressObserver.TerminalWriter.write"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.observers.CliMultiprocessProgressObserver.TerminalWriter.write" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.observers.IPythonNotebookMultiprocessProgressObserver">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.multiprocess.observers.</code><code class="descname">IPythonNotebookMultiprocessProgressObserver</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/observers.html#IPythonNotebookMultiprocessProgressObserver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.observers.IPythonNotebookMultiprocessProgressObserver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.multiprocess.observers.AbstractParallelObserver</span></code></p>
+<p>IPython Notebook Progress Observer for multiprocess run</p>
+</dd></dl>
+
 </div>
-<div class="section" id="cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module">
-<h2>cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module<a class="headerlink" href="#cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.multiprocess.optimization">
+<span id="cameo-strain-design-heuristic-evolutionary-multiprocess-optimization-module"></span><h2>cameo.strain_design.heuristic.evolutionary.multiprocess.optimization module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.multiprocess.optimization" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.MultiprocessReactionKnockoutOptimization">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.</code><code class="descname">MultiprocessReactionKnockoutOptimization</code><span class="sig-paren">(</span><em>reactions=None</em>, <em>essential_reactions=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/optimization.html#MultiprocessReactionKnockoutOptimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.MultiprocessReactionKnockoutOptimization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.MultiprocessKnockoutOptimization</span></code></p>
+<p>Heuristic Knockout Optimization Reaction implementation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; A model to simulate.</li>
+<li><strong>objective_function</strong> (<em>a list of or one objective_function</em>) &#8211; The objective for the algorithm to optimize.</li>
+<li><strong>heuristic_method</strong> (<em>inspyred.ec instance</em>) &#8211; The method using for search (default: inspyred.ec.GA).</li>
+<li><strong>max_migrants</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of individuals travelling between islands (different processes) at the same time (default: 1).</li>
+<li><strong>simulation_method</strong> (<em>a function from flux_analysis.simulation</em>) &#8211; The method to simulate the model (default: pfba).</li>
+<li><strong>reactions</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Optionally, on can set the reactions to knockout (default is None)</li>
+<li><strong>essential_reaction</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Optionally, on can set the reactions to that cannot be knocked out (default is None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.MultiprocessGeneKnockoutOptimization">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.</code><code class="descname">MultiprocessGeneKnockoutOptimization</code><span class="sig-paren">(</span><em>genes=None</em>, <em>essential_genes=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/optimization.html#MultiprocessGeneKnockoutOptimization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.MultiprocessGeneKnockoutOptimization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.multiprocess.optimization.MultiprocessKnockoutOptimization</span></code></p>
+<p>Heuristic Knockout Optimization Gene implementation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>model</strong> (<a class="reference internal" href="cameo.core.html#cameo.core.solver_based_model.SolverBasedModel" title="cameo.core.solver_based_model.SolverBasedModel"><em>SolverBasedModel</em></a>) &#8211; A model to simulate.</li>
+<li><strong>objective_function</strong> (<em>a list of or one objective_function</em>) &#8211; The objective for the algorithm to optimize.</li>
+<li><strong>heuristic_method</strong> (<em>inspyred.ec instance</em>) &#8211; The method using for search (default: inspyred.ec.GA).</li>
+<li><strong>max_migrants</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of individuals travelling between islands (different processes) at the same time (default: 1).</li>
+<li><strong>simulation_method</strong> (<em>a function from flux_analysis.simulation</em>) &#8211; The method to simulate the model (default: pfba).</li>
+<li><strong>gene</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Optionally, on can set the genes to knockout (default is None)</li>
+<li><strong>essential_genes</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Optionally, on can set the genes to that cannot be knocked out (default is None)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module">
-<h2>cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module<a class="headerlink" href="#cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.multiprocess.plotters">
+<span id="cameo-strain-design-heuristic-evolutionary-multiprocess-plotters-module"></span><h2>cameo.strain_design.heuristic.evolutionary.multiprocess.plotters module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.multiprocess.plotters" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.IPythonNotebookBokehMultiprocessPlotObserver">
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.</code><code class="descname">IPythonNotebookBokehMultiprocessPlotObserver</code><span class="sig-paren">(</span><em>color_map={}</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/plotters.html#IPythonNotebookBokehMultiprocessPlotObserver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.IPythonNotebookBokehMultiprocessPlotObserver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.heuristic.evolutionary.multiprocess.observers.AbstractParallelObserver</span></code></p>
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.IPythonNotebookBokehMultiprocessPlotObserver.start">
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/plotters.html#IPythonNotebookBokehMultiprocessPlotObserver.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.IPythonNotebookBokehMultiprocessPlotObserver.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.IPythonNotebookBokehMultiprocessPlotObserver.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary/multiprocess/plotters.html#IPythonNotebookBokehMultiprocessPlotObserver.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary.multiprocess.plotters.IPythonNotebookBokehMultiprocessPlotObserver.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="module-contents">
-<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-cameo.strain_design.heuristic.evolutionary.multiprocess">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary.multiprocess" title="Permalink to this headline">¶</a></h2>
+<p>Multiprocess heuristic optimization.</p>
+<p>It implements an islands model. Multiple processes run in parallel and each single process is an heuristic optimization.
+All of those processes are connected to a Queue and every iteration an individual from a process migrates through the
+Queue to another process enriching the results of the receiving by introducing variability.</p>
+<p>For information on how to run Gene Knockout or Reaction Knockout optimizations refer to
+~cameo.strain_design.heuristic.optimization</p>
+<p>The result is the same as in the single objective. The knockouts solutions resulting from all processes are merged.</p>
+<p class="rubric">Examples</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary.multiprocess</span> <span class="kn">import</span> <span class="n">MultiprocessGeneKnockoutOptimization</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.strain_design.heuristic.evolutionary.objective_functions</span> <span class="kn">import</span> <span class="n">biomass_product_coupled_yield</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">inspyred</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">iJO1366</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">objective_function</span> <span class="o">=</span> <span class="n">biomass_product_coupled_yield</span><span class="p">(</span><span class="s1">&#39;Ec_biomass_iJO1366_core_53p95M&#39;</span><span class="p">,</span> <span class="s1">&#39;EX_succ_e&#39;</span><span class="p">,</span> <span class="s1">&#39;EX_glc__D_e&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">opt</span> <span class="o">=</span> <span class="n">MultiprocessGeneKnockoutOptimization</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">objective_function</span><span class="o">=</span><span class="n">objective_function</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                                           <span class="n">heuristic_method</span><span class="o">=</span><span class="n">inspyred</span><span class="o">.</span><span class="n">ec</span><span class="o">.</span><span class="n">GA</span><span class="p">,</span> <span class="n">max_migrants</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 </div>
 

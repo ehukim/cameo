@@ -1,0 +1,647 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>cameo.flux_analysis.structural &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.6.0+1.g10719db.dirty',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
+    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="up" title="cameo" href="../../cameo.html" />
+   
+  
+    <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for cameo.flux_analysis.structural</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2015 Novo Nordisk Foundation Center for Biosustainability, DTU.</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;Methods for stoichiometric analaysis&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">copy</span>
+
+<span class="kn">import</span> <span class="nn">sympy</span>
+<span class="kn">from</span> <span class="nn">cameo.core</span> <span class="kn">import</span> <span class="n">SolverBasedModel</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">Reaction</span>
+<span class="kn">from</span> <span class="nn">cobra</span> <span class="kn">import</span> <span class="n">Metabolite</span>
+<span class="kn">import</span> <span class="nn">optlang</span>
+<span class="kn">import</span> <span class="nn">six</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">cameo.exceptions</span> <span class="kn">import</span> <span class="n">SolveError</span><span class="p">,</span> <span class="n">Infeasible</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;find_dead_end_reactions&#39;</span><span class="p">,</span> <span class="s1">&#39;find_coupled_reactions&#39;</span><span class="p">,</span> <span class="s1">&#39;ShortestElementaryFluxModes&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="find_dead_end_reactions"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.structural.find_dead_end_reactions">[docs]</a><span class="k">def</span> <span class="nf">find_dead_end_reactions</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Identify reactions that are structurally prevented from carrying flux (dead ends).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">stoichiometries</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">met</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="n">reaction</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">stoichiometries</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">met</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">{})[</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">coef</span>
+
+    <span class="n">blocked_reactions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">new_blocked</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">met_id</span><span class="p">,</span> <span class="n">stoichiometry</span> <span class="ow">in</span> <span class="n">stoichiometries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>  <span class="c1"># Metabolite is only associated with 1 reaction, which can thus not be active</span>
+                <span class="n">new_blocked</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_blocked</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">break</span>  <span class="c1"># No more blocked reactions</span>
+
+        <span class="c1"># Remove blocked reactions from stoichiometries</span>
+        <span class="n">stoichiometries</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">met_id</span><span class="p">:</span> <span class="p">{</span><span class="n">reac_id</span><span class="p">:</span> <span class="n">coef</span> <span class="k">for</span> <span class="n">reac_id</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="n">stoichiometry</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">reac_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">new_blocked</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">met_id</span><span class="p">,</span> <span class="n">stoichiometry</span> <span class="ow">in</span> <span class="n">stoichiometries</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span>
+        <span class="n">blocked_reactions</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_blocked</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">blocked_reactions</span></div>
+
+
+<div class="viewcode-block" id="find_coupled_reactions"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.structural.find_coupled_reactions">[docs]</a><span class="k">def</span> <span class="nf">find_coupled_reactions</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">return_dead_ends</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Find reaction sets that are structurally forced to carry equal flux&quot;&quot;&quot;</span>
+    <span class="n">blocked</span> <span class="o">=</span> <span class="n">find_dead_end_reactions</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">stoichiometries</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">blocked</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">met</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="n">reaction</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">stoichiometries</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">met</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="p">{})[</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">coef</span>
+
+    <span class="c1"># Find reaction pairs that are constrained to carry equal flux</span>
+    <span class="n">couples</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">met_id</span><span class="p">,</span> <span class="n">stoichiometry</span> <span class="ow">in</span> <span class="n">stoichiometries</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">stoichiometry</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">==</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">}:</span>
+            <span class="n">couples</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">stoichiometry</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+
+    <span class="c1"># Aggregate the pairs into groups</span>
+    <span class="n">coupled_groups</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">couple</span> <span class="ow">in</span> <span class="n">couples</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">coupled_groups</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">couple</span> <span class="o">&amp;</span> <span class="n">group</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">couple</span><span class="p">)</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">coupled_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">couple</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_dead_ends</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coupled_groups</span><span class="p">,</span> <span class="n">blocked</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coupled_groups</span></div>
+
+
+<div class="viewcode-block" id="ShortestElementaryFluxModes"><a class="viewcode-back" href="../../../apidoc_output/cameo.flux_analysis.html#cameo.flux_analysis.structural.ShortestElementaryFluxModes">[docs]</a><span class="k">class</span> <span class="nc">ShortestElementaryFluxModes</span><span class="p">(</span><span class="n">six</span><span class="o">.</span><span class="n">Iterator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">change_bounds</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_variables</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">copy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="k">if</span> <span class="n">reactions</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">reactions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reaction</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reaction</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">change_bounds</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__set_exchange_bounds</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__set_up_constraints_and_objective</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span> <span class="o">==</span> <span class="n">optlang</span><span class="o">.</span><span class="n">cplex_interface</span><span class="o">.</span><span class="n">Model</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elementary_mode_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generate_elementary_modes_via_fixed_size_constraint</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_elementary_mode_generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generate_elementary_modes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__set_exchange_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">exchanges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">exchanges</span>
+        <span class="n">min_bound</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">exchange</span><span class="o">.</span><span class="n">lower_bound</span> <span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="n">exchanges</span><span class="p">)</span>
+        <span class="n">max_bound</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">exchange</span><span class="o">.</span><span class="n">upper_bound</span> <span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="n">exchanges</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="n">exchanges</span><span class="p">:</span>
+            <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">exchange</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&lt;</span> <span class="n">max_bound</span><span class="p">:</span>
+                <span class="n">exchange</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">max_bound</span>
+            <span class="k">if</span> <span class="n">min_bound</span> <span class="o">&lt;</span> <span class="n">exchange</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">exchange</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_bound</span>
+
+    <span class="k">def</span> <span class="nf">__set_up_constraints_and_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">indicator_variables</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="p">:</span>
+            <span class="n">y_fwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;y_fwd_&#39;</span> <span class="o">+</span> <span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;binary&#39;</span><span class="p">)</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_fwd</span> <span class="o">=</span> <span class="n">y_fwd</span>
+            <span class="n">indicator_constraint_fwd_1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span>
+                <span class="n">indicator_variable</span><span class="o">=</span><span class="n">y_fwd</span><span class="p">,</span> <span class="n">active_when</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">ub</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;indicator_constraint_fwd_1_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_variable</span><span class="p">(</span><span class="n">y_fwd</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">indicator_constraint_fwd_1</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">indicator_constraint_fwd_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span>
+                <span class="n">indicator_variable</span><span class="o">=</span><span class="n">y_fwd</span><span class="p">,</span> <span class="n">active_when</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;indicator_constraint_fwd_2_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">indicator_constraint_fwd_2</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+            <span class="n">y_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="s1">&#39;y_rev_&#39;</span> <span class="o">+</span> <span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;binary&#39;</span><span class="p">)</span>
+            <span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_rev</span> <span class="o">=</span> <span class="n">y_rev</span>
+            <span class="n">indicator_constraint_rev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">,</span>
+                <span class="n">indicator_variable</span><span class="o">=</span><span class="n">y_rev</span><span class="p">,</span> <span class="n">active_when</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">ub</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;indicator_constraint_rev_1_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_variable</span><span class="p">(</span><span class="n">y_rev</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">indicator_constraint_rev</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">indicator_constraint_rev_2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                <span class="n">reaction</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">,</span>
+                <span class="n">indicator_variable</span><span class="o">=</span><span class="n">y_rev</span><span class="p">,</span> <span class="n">active_when</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">c</span><span class="p">,</span>
+                <span class="n">name</span><span class="o">=</span><span class="s1">&#39;indicator_constraint_rev_2_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">indicator_constraint_rev_2</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+            <span class="n">one_direction_constraint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+                <span class="n">y_fwd</span> <span class="o">+</span> <span class="n">y_rev</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;one_direction_constraint_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">one_direction_constraint</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">indicator_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_fwd</span><span class="p">)</span>
+            <span class="n">indicator_variables</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y_rev</span><span class="p">)</span>
+        <span class="n">at_least_one_active</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+            <span class="n">sympy</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="n">indicator_variables</span><span class="p">),</span> <span class="n">lb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;an_EM_must_constain_at_least_one_active_reaction&#39;</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">at_least_one_active</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="n">indicator_variables</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_variables</span> <span class="o">=</span> <span class="n">indicator_variables</span>
+
+    <span class="k">def</span> <span class="nf">__generate_elementary_modes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">SolveError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">StopIteration</span>
+            <span class="n">elementary_flux_mode</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">exclusion_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_fwd</span><span class="o">.</span><span class="n">primal</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+                    <span class="n">reaction_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+                    <span class="n">reaction_copy</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">elementary_flux_mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_copy</span><span class="p">)</span>
+                    <span class="n">exclusion_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_fwd</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_rev</span><span class="o">.</span><span class="n">primal</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+                    <span class="n">reaction_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+                    <span class="n">reaction_copy</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="n">elementary_flux_mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_copy</span><span class="p">)</span>
+                    <span class="n">exclusion_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_rev</span><span class="p">)</span>
+            <span class="n">exclusion_constraint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="n">exclusion_list</span><span class="p">),</span> <span class="n">ub</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">exclusion_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">exclusion_constraint</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">elementary_flux_mode</span>
+
+    <span class="k">def</span> <span class="nf">__generate_elementary_modes_via_fixed_size_constraint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">fixed_size_constraint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
+            <span class="n">sympy</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">indicator_variables</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;fixed_size_constraint&#39;</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">fixed_size_constraint</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Looking for solutions with cardinality &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">fixed_size_constraint</span><span class="o">.</span><span class="n">lb</span><span class="p">))</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">populate_solution_pool</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+            <span class="n">solution_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">get_num</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">solution_num</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">exclusion_lists</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">solution_num</span><span class="p">):</span>
+                    <span class="n">elementary_flux_mode</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="n">exclusion_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                    <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_fwd</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+                            <span class="n">reaction_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+                            <span class="n">reaction_copy</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="n">elementary_flux_mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_copy</span><span class="p">)</span>
+                            <span class="n">exclusion_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_fwd</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">problem</span><span class="o">.</span><span class="n">solution</span><span class="o">.</span><span class="n">pool</span><span class="o">.</span><span class="n">get_values</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_rev</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mf">1.</span><span class="p">:</span>
+                            <span class="n">reaction_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="n">reaction</span><span class="p">)</span>
+                            <span class="n">reaction_copy</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="mi">0</span>
+                            <span class="n">elementary_flux_mode</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction_copy</span><span class="p">)</span>
+                            <span class="n">exclusion_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">_indicator_variable_rev</span><span class="p">)</span>
+                    <span class="n">exclusion_lists</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">exclusion_list</span><span class="p">)</span>
+                    <span class="k">yield</span> <span class="n">elementary_flux_mode</span>
+                <span class="k">for</span> <span class="n">exclusion_list</span> <span class="ow">in</span> <span class="n">exclusion_lists</span><span class="p">:</span>
+                    <span class="n">exclusion_constraint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">sympy</span><span class="o">.</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="n">exclusion_list</span><span class="p">),</span> <span class="n">ub</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">exclusion_list</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_constraint</span><span class="p">(</span><span class="n">exclusion_constraint</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">new_fixed_size</span> <span class="o">=</span> <span class="n">fixed_size_constraint</span><span class="o">.</span><span class="n">ub</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">new_fixed_size</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_reactions</span><span class="p">):</span>
+                <span class="k">break</span>
+            <span class="n">fixed_size_constraint</span><span class="o">.</span><span class="n">ub</span><span class="p">,</span> <span class="n">fixed_size_constraint</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="n">new_fixed_size</span><span class="p">,</span> <span class="n">new_fixed_size</span>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">indicator_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indicator_variables</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">six</span><span class="o">.</span><span class="n">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elementary_mode_generator</span><span class="p">)</span></div>
+
+
+<span class="k">class</span> <span class="nc">MinimalCutSetsEnumerator</span><span class="p">(</span><span class="n">ShortestElementaryFluxModes</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">constraints</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">exclude</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">exclude_copy</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">re</span> <span class="ow">in</span> <span class="n">exclude</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">re</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+                    <span class="n">exclude_copy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">exclude_copy</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">exclude_copy</span> <span class="o">=</span> <span class="p">()</span>
+        <span class="n">exclude</span> <span class="o">=</span> <span class="n">exclude_copy</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_construct_constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_target_constraints</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_target_to_constraints</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_make_dual_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_target_constraints</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">MinimalCutSetsEnumerator</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">change_bounds</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_v_reactions</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">iterator_wrapper</span><span class="p">(</span><span class="n">generator</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Convert MCS&#39;s to primal and filter according to constraints&quot;&quot;&quot;</span>
+            <span class="k">for</span> <span class="n">mcs</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+                <span class="n">allowed_mcs</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">mcs</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">allowed_mcs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">allowed_mcs</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elementary_mode_generator</span> <span class="o">=</span> <span class="n">iterator_wrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elementary_mode_generator</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_allowed_mcs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_allowed_mcs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dual_em</span><span class="p">):</span>
+        <span class="n">mcs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_mcs_to_primal</span><span class="p">(</span><span class="n">dual_em</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">reac_id</span> <span class="ow">in</span> <span class="n">mcs</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reac_id</span><span class="p">)</span><span class="o">.</span><span class="n">knock_out</span><span class="p">(</span><span class="n">tm</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+                <span class="k">except</span> <span class="n">Infeasible</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">mcs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">mcs</span>
+
+    <span class="k">def</span> <span class="nf">_convert_mcs_to_primal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dual_em</span><span class="p">):</span>
+        <span class="n">primal_mcs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">reac</span> <span class="ow">in</span> <span class="n">dual_em</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reac</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="n">primal_mcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="s2">&quot;_reverse_&quot;</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">and</span> <span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="n">primal_mcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Primal reaction could not be found for &quot;</span> <span class="o">+</span> <span class="n">reac</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">primal_mcs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_make_dual_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="n">dual_model</span> <span class="o">=</span> <span class="n">SolverBasedModel</span><span class="p">(</span><span class="n">solver_interface</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="p">)</span>
+
+        <span class="c1"># Add dual metabolites</span>
+        <span class="n">dual_metabolite_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">irreversibles</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># Metabolites for which a z-reaction must be added</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dual_to_primal_mapping</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">re</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+            <span class="n">forward_id</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()</span>
+            <span class="n">reverse_id</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">forward_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_vars</span> <span class="ow">or</span> <span class="n">reverse_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_vars</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">forward_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_vars</span><span class="p">:</span>
+                    <span class="n">dual_metabolite_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">forward_id</span><span class="p">)</span>
+                    <span class="n">irreversibles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">forward_id</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dual_to_primal_mapping</span><span class="p">[</span><span class="n">forward_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">id</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">reverse_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_vars</span><span class="p">:</span>
+                    <span class="n">dual_metabolite_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reverse_id</span><span class="p">)</span>
+                    <span class="n">irreversibles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reverse_id</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dual_to_primal_mapping</span><span class="p">[</span><span class="n">reverse_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">id</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">dual_metabolite_names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">irreversibles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dual_to_primal_mapping</span><span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">id</span>
+        <span class="n">dual_model</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">([</span><span class="n">Metabolite</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">dual_metabolite_names</span><span class="p">])</span>
+
+        <span class="c1"># Add dual &quot;u-reactions&quot;</span>
+        <span class="n">transposed_stoichiometry</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">met</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="n">reaction</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">reaction</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">dual_metabolite_names</span><span class="p">:</span>
+                    <span class="n">transposed_stoichiometry</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">met</span><span class="p">,</span> <span class="p">{})[</span>
+                        <span class="n">dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">())]</span> <span class="o">=</span> <span class="o">-</span><span class="n">coef</span>
+                <span class="k">if</span> <span class="n">reaction</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">dual_metabolite_names</span><span class="p">:</span>
+                    <span class="n">transposed_stoichiometry</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">met</span><span class="p">,</span> <span class="p">{})[</span>
+                        <span class="n">dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">())]</span> <span class="o">=</span> <span class="n">coef</span>
+                <span class="k">elif</span> <span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">dual_metabolite_names</span><span class="p">:</span>  <span class="c1"># This should be the same as forward_var.name but in general it might not be</span>
+                    <span class="n">transposed_stoichiometry</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">met</span><span class="p">,</span> <span class="p">{})[</span>
+                        <span class="n">dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)]</span> <span class="o">=</span> <span class="n">coef</span>
+
+        <span class="n">u_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">met</span><span class="p">,</span> <span class="n">stoichiometry</span> <span class="ow">in</span> <span class="n">transposed_stoichiometry</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">met_id</span> <span class="o">=</span> <span class="n">met</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">reac</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">(</span><span class="s2">&quot;u_&quot;</span> <span class="o">+</span> <span class="n">met_id</span><span class="p">)</span>
+            <span class="n">reac</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="o">-</span><span class="n">reac</span><span class="o">.</span><span class="n">upper_bound</span>  <span class="c1"># Make reversible</span>
+            <span class="n">reac</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)</span>
+            <span class="n">u_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reac</span><span class="p">)</span>
+
+        <span class="n">dual_model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">(</span><span class="n">u_reactions</span><span class="p">)</span>
+
+        <span class="c1"># Add dual &quot;v-reactions&quot;</span>
+        <span class="n">v_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dual_met</span> <span class="ow">in</span> <span class="n">dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="p">:</span>
+            <span class="n">reac</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">(</span><span class="s2">&quot;v_&quot;</span> <span class="o">+</span> <span class="n">dual_met</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="n">reac</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="o">-</span><span class="n">reac</span><span class="o">.</span><span class="n">upper_bound</span>  <span class="c1"># Make reversible</span>
+            <span class="n">reac</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">({</span><span class="n">dual_met</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+            <span class="n">v_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reac</span><span class="p">)</span>
+        <span class="n">dual_model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">(</span><span class="n">v_reactions</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_v_reactions</span> <span class="o">=</span> <span class="n">v_reactions</span>
+
+        <span class="c1"># Add dual &quot;z-reactions&quot;</span>
+        <span class="n">z_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">dual_met</span> <span class="ow">in</span> <span class="n">dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dual_met</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">irreversibles</span><span class="p">:</span>
+                <span class="n">reac</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">(</span><span class="s2">&quot;z_&quot;</span> <span class="o">+</span> <span class="n">dual_met</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="n">reac</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">reac</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">({</span><span class="n">dual_met</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">})</span>
+                <span class="n">z_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reac</span><span class="p">)</span>
+        <span class="n">dual_model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">(</span><span class="n">z_reactions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">dual_model</span>
+
+    <span class="k">def</span> <span class="nf">_convert_target_to_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">targets</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a list of constraints that describe the target polytope.&quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_convert_string_to_target_constraints</span><span class="p">(</span><span class="n">target_string</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Convert a string to constraints, e.g. a reaction name to constraints that target that reaction&quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="n">target_string</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span>  <span class="c1"># TODO</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>  <span class="c1"># return constraints</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">optlang</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">):</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">targets</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="p">[</span><span class="n">targets</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">targets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
+            <span class="n">new_targets</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+                <span class="n">new_targets</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_convert_string_to_target_constraints</span><span class="p">(</span><span class="n">target</span><span class="p">))</span>
+            <span class="n">targets</span> <span class="o">=</span> <span class="n">new_targets</span>
+
+        <span class="c1"># Find the variables that are used to describe the target polytope (these have to be split).</span>
+        <span class="n">split_vars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="n">targets</span><span class="p">:</span>
+            <span class="n">split_vars</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">target</span><span class="o">.</span><span class="n">variables</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_split_vars</span> <span class="o">=</span> <span class="n">split_vars</span>
+
+        <span class="k">return</span> <span class="n">targets</span>
+
+    <span class="k">def</span> <span class="nf">_add_target_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add the target constraints to the dual model&quot;&quot;&quot;</span>
+        <span class="n">targets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target_constraints</span>
+
+        <span class="n">w_reactions</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">targets</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">optlang</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_Linear</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Target constraints must be linear.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">lb</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">ub</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">ub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Target constraints must be one-sided inequalities.&quot;</span><span class="p">)</span>
+            <span class="n">coefficients_dict</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">as_coefficients_dict</span><span class="p">()</span>
+            <span class="n">w_reac</span> <span class="o">=</span> <span class="n">Reaction</span><span class="p">(</span><span class="s2">&quot;w_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+            <span class="n">w_reac</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">c</span>
+            <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">ub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">coefficients</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">):</span> <span class="n">coef</span> <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span><span class="o">.</span><span class="n">metabolites</span>
+                <span class="p">}</span>
+            <span class="k">elif</span> <span class="n">target</span><span class="o">.</span><span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">coefficients</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">):</span> <span class="o">-</span><span class="n">coef</span> <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">coef</span> <span class="ow">in</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span><span class="o">.</span><span class="n">metabolites</span>
+                <span class="p">}</span>
+            <span class="n">w_reac</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">(</span><span class="n">coefficients</span><span class="p">)</span>
+            <span class="n">w_reactions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">w_reac</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dual_model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">(</span><span class="n">w_reactions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">_construct_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">constraints</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">constraints</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_illegal_knockouts</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">return</span> <span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cloned_constraints</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">constraint</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">solver</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">constraint</span> <span class="ow">in</span> <span class="n">constraints</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cloned_constraints</span><span class="p">)</span>
+            <span class="n">illegal_knockouts</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
+                <span class="c1"># If single knockout causes the constrained model to become infeasible, then no superset</span>
+                <span class="c1"># of knockouts can be feasible either.</span>
+                <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
+                    <span class="n">reaction</span><span class="o">.</span><span class="n">knock_out</span><span class="p">(</span><span class="n">tm</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_primal_model</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+                    <span class="k">except</span> <span class="n">Infeasible</span><span class="p">:</span>
+                        <span class="n">illegal_knockouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_illegal_knockouts</span> <span class="o">=</span> <span class="n">illegal_knockouts</span>
+            <span class="k">return</span> <span class="n">cloned_constraints</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;e_coli_core&quot;</span><span class="p">)</span>
+    <span class="c1"># model = load_model(&#39;../../tests/data/EcoliCore.xml&#39;)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">ATPM</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">ATPM</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">1000.</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">solver</span> <span class="o">=</span> <span class="s1">&#39;cplex&#39;</span>
+    <span class="n">shortest_emo</span> <span class="o">=</span> <span class="n">ShortestElementaryFluxModes</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="c1"># s.model.solver.configuration.verbosity = 3</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">emo</span> <span class="ow">in</span> <span class="n">shortest_emo</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">count</span> <span class="o">==</span> <span class="mi">1000</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">count</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="mi">80</span> <span class="o">*</span> <span class="s2">&quot;#&quot;</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">emo</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">emo</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">reaction</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/cameo_logo.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/biosustain/cameo">
+    <img
+        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+    />
+</a>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://codecov.io/github/biosustain/cameo">
+    <img
+    alt="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    src="https://codecov.io/github/biosustain/cameo/coverage.svg?branch=master"
+    />
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing to cameo</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API Docs</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../../cameo.html">cameo</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/biosustain/cameo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
