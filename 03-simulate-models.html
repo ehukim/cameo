@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Simulate models &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>Simulate models &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,18 +25,21 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="index.html" />
     <link rel="up" title="Tutorials" href="tutorials.html" />
     <link rel="next" title="Analyzing models" href="04-analyze-models.html" />
     <link rel="prev" title="Import models" href="02-import-models.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -93,25 +96,25 @@ balance analysis (FBA):</p>
 <div class="section" id="flux-balance-analysis">
 <h2>Flux Balance Analysis<a class="headerlink" href="#flux-balance-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Load a model.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">load_model</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="s1">&#39;iJO1366&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>In cameo, flux balance analysis can be performed with the function
 <code class="xref py py-obj docutils literal"><span class="pre">fba</span></code>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>from cameo import fba
-%time fba_result = fba(model)
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">fba</span>
+<span class="o">%</span><span class="n">time</span> <span class="n">fba_result</span> <span class="o">=</span> <span class="n">fba</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 410 ms, sys: 6.43 ms, total: 416 ms
-Wall time: 421 ms
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">410</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">6.43</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">416</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">421</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <p>Basically, <code class="xref py py-obj docutils literal"><span class="pre">fba</span></code> calls <code class="xref py py-obj docutils literal"><span class="pre">model.solve()</span></code> and wraps the optimization
 solution in a <code class="xref py py-obj docutils literal"><span class="pre">FluxDistributionResult</span></code> object. The maximum objective
 values (corresponding to a maximum growth rate) can obtained throug
 <code class="xref py py-obj docutils literal"><span class="pre">result.objective_value</span></code>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span>
 </pre></div>
 </div>
 <div>
@@ -181,27 +184,27 @@ minimize flux magnitude as well in order to keep protein costs low.</p>
  ~ &amp; ~ \mathbf{v}_{lb} \leq \mathbf{v} \leq \mathbf{v}_{ub} \,.
 \end{align}\end{split}\]</div>
 <p>In cameo, pFBA can be performed with the function <code class="xref py py-obj docutils literal"><span class="pre">pfba</span></code>.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>from cameo import pfba
-%time pfba_result = pfba(model)
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">pfba</span>
+<span class="o">%</span><span class="n">time</span> <span class="n">pfba_result</span> <span class="o">=</span> <span class="n">pfba</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 429 ms, sys: 19 ms, total: 448 ms
-Wall time: 460 ms
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">429</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">19</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">448</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">460</span> <span class="n">ms</span>
 </pre></div>
 </div>
 <p>The <code class="xref py py-obj docutils literal"><span class="pre">objective_function</span></code> value is <span class="math">\(\lvert \mathbf{v} \rvert\)</span> ...</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">pfba_result</span><span class="o">.</span><span class="n">objective_value</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">pfba_result</span><span class="o">.</span><span class="n">objective_value</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">699.0222751839472</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">699.0222751839472</span>
 </pre></div>
 </div>
 <p>... whis is significantly smaller than flux vector of the original FBA
 solution.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="nb">abs</span><span class="p">(</span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="nb">abs</span><span class="p">(</span><span class="n">fba_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">702.81946544045991</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">702.81946544045991</span>
 </pre></div>
 </div>
 </div>
@@ -216,7 +219,7 @@ ROOM. In <em>cameo</em> we implement a linear version of MOMA.</p>
 <li>Manipulate the bounds of the reaction (or use the shorthand method
 knock_out)</li>
 </ul>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
 </pre></div>
 </div>
 <table>
@@ -235,7 +238,7 @@ knock_out)</li>
     <tr>
         <td><strong>Upper bound</strong></td><td>1000.000000</td>
     </tr>
-</table><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span>
+</table><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span>
 <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">PGI</span>
 </pre></div>
 </div>
@@ -258,48 +261,48 @@ knock_out)</li>
 </table><ul class="simple">
 <li>Simulate using different methods:</li>
 </ul>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time fba_knockout_result = fba(model)
-fba_knockout_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">fba_knockout_result</span> <span class="o">=</span> <span class="n">fba</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">fba_knockout_result</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ec_iJO1366_core_53p95M</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 266 ms, sys: 4.96 ms, total: 271 ms
-Wall time: 272 ms
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">266</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">4.96</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">271</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">272</span> <span class="n">ms</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.9761293262947403</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">0.9761293262947403</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time pfba_knockout_result = pfba(model)
-pfba_knockout_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">pfba_knockout_result</span> <span class="o">=</span> <span class="n">pfba</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<span class="n">pfba_knockout_result</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ec_iJO1366_core_53p95M</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 374 ms, sys: 3.5 ms, total: 378 ms
-Wall time: 379 ms
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">374</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">3.5</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">378</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">379</span> <span class="n">ms</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.9761293262947374</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">0.9761293262947374</span>
 </pre></div>
 </div>
 <p>MOMA and ROOM relly on a reference (wild-type) flux distribution and we
 can use the one previously computed.</p>
 <p><strong>Parsimonious FBA references seem to produce better results using this
 methods</strong></p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="kn">import</span> <span class="n">room</span><span class="p">,</span> <span class="n">lmoma</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="k">import</span> <span class="n">room</span><span class="p">,</span> <span class="n">lmoma</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time lmoma_result = lmoma(model, reference=pfba_result.fluxes)
-lmoma_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">lmoma_result</span> <span class="o">=</span> <span class="n">lmoma</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">pfba_result</span><span class="o">.</span><span class="n">fluxes</span><span class="p">)</span>
+<span class="n">lmoma_result</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ec_iJO1366_core_53p95M</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 16.3 s, sys: 246 ms, total: 16.6 s
-Wall time: 16.8 s
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">16.3</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mi">246</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">16.6</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">16.8</span> <span class="n">s</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="mf">0.8724093536243601</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mf">0.8724093536243601</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time room_result = room(model, reference=pfba_result.fluxes)
-room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">room_result</span> <span class="o">=</span> <span class="n">room</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">pfba_result</span><span class="o">.</span><span class="n">fluxes</span><span class="p">)</span>
+<span class="n">room_result</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ec_iJO1366_core_53p95M</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -322,10 +325,12 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -335,8 +340,8 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -361,7 +366,7 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02-import-models.html">Import models</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Simulate models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Simulate models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="06-predict-gene-modulation-targets.html">Predict expression modulation targets</a></li>
@@ -395,14 +400,11 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -413,8 +415,8 @@ room_result[model.reactions.BIOMASS_Ec_iJO1366_core_53p95M]
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/03-simulate-models.txt"

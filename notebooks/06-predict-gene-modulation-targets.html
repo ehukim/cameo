@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Predict expression modulation targets &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>Predict expression modulation targets &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,15 +25,18 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../index.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -44,22 +47,22 @@
 <h1>Predict expression modulation targets<a class="headerlink" href="#predict-expression-modulation-targets" title="Permalink to this headline">¶</a></h1>
 <p>Cameo provides algorithms to search for genes or reactions that can be
 over or down regulated in order to achieve a given biological objective.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">models</span>
 </pre></div>
 </div>
 <p>Load the E. coli core model.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
 </pre></div>
 </div>
 <div class="section" id="flux-scanning-based-on-enforced-objective-flux">
 <h2>Flux Scanning based on Enforced Objective Flux<a class="headerlink" href="#flux-scanning-based-on-enforced-objective-flux" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic.flux_variability_based</span> <span class="kn">import</span> <span class="n">FSEOF</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic.flux_variability_based</span> <span class="k">import</span> <span class="n">FSEOF</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fseof</span> <span class="o">=</span> <span class="n">FSEOF</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fseof</span> <span class="o">=</span> <span class="n">FSEOF</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fseof</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fseof</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">)</span>
 </pre></div>
 </div>
 <strong>Model:</strong> e_coli_core</br>
@@ -291,14 +294,14 @@ over or down regulated in order to achieve a given biological objective.</p>
 been parameterized to lie on a grid of evenly spaced points in the
 n-dimensional production envelope (n being the number of reaction bounds
 to be varied).</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="kn">import</span> <span class="n">phenotypic_phase_plane</span>
-<span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic</span> <span class="kn">import</span> <span class="n">DifferentialFVA</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">phenotypic_phase_plane</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic</span> <span class="k">import</span> <span class="n">DifferentialFVA</span>
 </pre></div>
 </div>
 <div class="section" id="succinate-production">
 <h3>Succinate production<a class="headerlink" href="#succinate-production" title="Permalink to this headline">¶</a></h3>
 <p>The production envelope looks like this.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">production_envelope</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">production_envelope</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
                                              <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="p">],</span>
                                              <span class="n">objective</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">succ_e</span><span class="p">)</span>
 <span class="n">production_envelope</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
@@ -391,7 +394,7 @@ to be varied).</p>
   }(this));
 </script><p>Set up a model that represents a reference state (in this case a model
 with a constrained growth rate).</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">reference_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">biomass_rxn</span> <span class="o">=</span> <span class="n">reference_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span>
 <span class="n">biomass_rxn</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -399,7 +402,7 @@ with a constrained growth rate).</p>
 </pre></div>
 </div>
 <p>Set up the differential flux variability analysis strain design method.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">diffFVA</span> <span class="o">=</span> <span class="n">DifferentialFVA</span><span class="p">(</span><span class="n">design_space_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">diffFVA</span> <span class="o">=</span> <span class="n">DifferentialFVA</span><span class="p">(</span><span class="n">design_space_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                           <span class="n">reference_model</span><span class="o">=</span><span class="n">reference_model</span><span class="p">,</span>
                           <span class="n">objective</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
                           <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">biomass_rxn</span><span class="p">],</span>
@@ -409,12 +412,12 @@ with a constrained growth rate).</p>
 </div>
 <p>Run differential flux variability analysis (only on the surface of the
 production envelope)</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time result = diffFVA.run(surface_only=True)
-result.plot()
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">result</span> <span class="o">=</span> <span class="n">diffFVA</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">surface_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 1.49 s, sys: 32.3 ms, total: 1.52 s
-Wall time: 2.16 s
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.49</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">32.3</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.52</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">2.16</span> <span class="n">s</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="e9d8bd1a-e3ba-4fa7-b629-6b86a816a3ac"></div>
@@ -502,7 +505,7 @@ Wall time: 2.16 s
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;FBP&#39;</span><span class="p">,</span> <span class="s1">&#39;G6PDH2r&#39;</span><span class="p">,</span> <span class="s1">&#39;PGL&#39;</span><span class="p">,</span> <span class="s1">&#39;PGK&#39;</span><span class="p">])</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;FBP&#39;</span><span class="p">,</span> <span class="s1">&#39;G6PDH2r&#39;</span><span class="p">,</span> <span class="s1">&#39;PGL&#39;</span><span class="p">,</span> <span class="s1">&#39;PGK&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="59f0e0b4-a958-4936-89b1-8b6b7555d6cd"></div>
@@ -590,7 +593,7 @@ Wall time: 2.16 s
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span>
 </pre></div>
 </div>
 <span>BIOMASS_Ecoli_core_w_GAM: 0.094072</span><span>DM_succ_e: 9.873904</span><div>
@@ -761,7 +764,7 @@ Wall time: 2.16 s
   </tbody>
 </table>
 <p>76 rows × 7 columns</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">display_on_map</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">map_name</span><span class="o">=</span><span class="s2">&quot;iJO1366.Central metabolism&quot;</span><span class="p">)</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">display_on_map</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">map_name</span><span class="o">=</span><span class="s2">&quot;iJO1366.Central metabolism&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
   <link rel="stylesheet" href="//npmcdn.com/escher-vis@1.4.0/css/dist/builder.min.css"/>
@@ -872,10 +875,12 @@ Wall time: 2.16 s
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -885,8 +890,8 @@ Wall time: 2.16 s
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -928,14 +933,11 @@ Wall time: 2.16 s
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -946,8 +948,8 @@ Wall time: 2.16 s
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="../_sources/notebooks/06-predict-gene-modulation-targets.txt"

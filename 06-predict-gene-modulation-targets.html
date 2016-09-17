@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Predict expression modulation targets &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>Predict expression modulation targets &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,25 +25,28 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="index.html" />
     <link rel="up" title="Tutorials" href="tutorials.html" />
     <link rel="next" title="Predict heterologous pathways" href="07-predict-heterologous-pathways.html" />
     <link rel="prev" title="Predict gene knockout strategies" href="05-predict-gene-knockout-strategies.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">options</span>
+  <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">options</span>
 <span class="n">options</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">max_rows</span> <span class="o">=</span> <span class="mi">8</span>
 </pre></div>
 </div>
@@ -51,22 +54,22 @@
 <h1>Predict expression modulation targets<a class="headerlink" href="#predict-expression-modulation-targets" title="Permalink to this headline">¶</a></h1>
 <p>Cameo provides algorithms to search for genes or reactions that can be
 over or down regulated in order to achieve a given biological objective.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">models</span>
 </pre></div>
 </div>
 <p>Load the E. coli core model.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
 </pre></div>
 </div>
 <div class="section" id="flux-scanning-based-on-enforced-objective-flux">
 <h2>Flux Scanning based on Enforced Objective Flux<a class="headerlink" href="#flux-scanning-based-on-enforced-objective-flux" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic.flux_variability_based</span> <span class="kn">import</span> <span class="n">FSEOF</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic.flux_variability_based</span> <span class="k">import</span> <span class="n">FSEOF</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fseof</span> <span class="o">=</span> <span class="n">FSEOF</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fseof</span> <span class="o">=</span> <span class="n">FSEOF</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">fseof</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">fseof</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -76,8 +79,8 @@ over or down regulated in order to achieve a given biological objective.</p>
 been parameterized to lie on a grid of evenly spaced points in the
 n-dimensional production envelope (n being the number of reaction bounds
 to be varied).</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="kn">import</span> <span class="n">phenotypic_phase_plane</span>
-<span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic</span> <span class="kn">import</span> <span class="n">DifferentialFVA</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">phenotypic_phase_plane</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.deterministic</span> <span class="k">import</span> <span class="n">DifferentialFVA</span>
 </pre></div>
 </div>
 <style>
@@ -287,7 +290,7 @@ to be varied).</p>
 </script><div class="section" id="succinate-production">
 <h3>Succinate production<a class="headerlink" href="#succinate-production" title="Permalink to this headline">¶</a></h3>
 <p>The production envelope looks like this.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">production_envelope</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">production_envelope</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
                                              <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="p">],</span>
                                              <span class="n">objective</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">succ_e</span><span class="p">)</span>
 <span class="n">production_envelope</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
@@ -315,7 +318,7 @@ to be varied).</p>
     </script>
 <div class="plotdiv" id="028b4e1a-5e88-4434-81db-926bdf35eb4c"></div><p>Set up a model that represents a reference state (in this case a model
 with a constrained growth rate).</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">reference_model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">biomass_rxn</span> <span class="o">=</span> <span class="n">reference_model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span>
 <span class="n">biomass_rxn</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -323,7 +326,7 @@ with a constrained growth rate).</p>
 </pre></div>
 </div>
 <p>Set up the differential flux variability analysis strain design method.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">diffFVA</span> <span class="o">=</span> <span class="n">DifferentialFVA</span><span class="p">(</span><span class="n">design_space_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">diffFVA</span> <span class="o">=</span> <span class="n">DifferentialFVA</span><span class="p">(</span><span class="n">design_space_model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span>
                           <span class="n">reference_model</span><span class="o">=</span><span class="n">reference_model</span><span class="p">,</span>
                           <span class="n">objective</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
                           <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">biomass_rxn</span><span class="p">],</span>
@@ -333,12 +336,12 @@ with a constrained growth rate).</p>
 </div>
 <p>Run differential flux variability analysis (only on the surface of the
 production envelope)</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time result = diffFVA.run(surface_only=True)
-result.plot(height=400)
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">result</span> <span class="o">=</span> <span class="n">diffFVA</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">surface_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 1.88 s, sys: 20.6 ms, total: 1.9 s
-Wall time: 2.66 s
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mf">1.88</span> <span class="n">s</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">20.6</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mf">1.9</span> <span class="n">s</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mf">2.66</span> <span class="n">s</span>
 </pre></div>
 </div>
 <script type="text/javascript">
@@ -361,15 +364,15 @@ Wall time: 2.66 s
         }
     });
     </script>
-<div class="plotdiv" id="864d39e9-f4d2-4f58-9456-5d2cb3119e4d"></div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">diffFVA</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;DM_succ_e&#39;</span><span class="p">]</span>
+<div class="plotdiv" id="864d39e9-f4d2-4f58-9456-5d2cb3119e4d"></div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">diffFVA</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;DM_succ_e&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>lower_bound     0.000000
-upper_bound    13.905778
-Name: DM_succ_e, dtype: float64
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lower_bound</span>     <span class="mf">0.000000</span>
+<span class="n">upper_bound</span>    <span class="mf">13.905778</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">DM_succ_e</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">float64</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;DM_succ_e&#39;</span><span class="p">]</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="p">[</span><span class="s1">&#39;DM_succ_e&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <div>
@@ -480,7 +483,7 @@ Name: DM_succ_e, dtype: float64
   </tbody>
 </table>
 <p>10 rows × 7 columns</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">reference_fva</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">reference_fva</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>
 </pre></div>
 </div>
 <script type="text/javascript">
@@ -503,24 +506,24 @@ Name: DM_succ_e, dtype: float64
         }
     });
     </script>
-<div class="plotdiv" id="0adb47ee-7cd9-4d65-9eb5-7b59bf1ba5b7"></div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;ACONTb&#39;</span><span class="p">]</span>
+<div class="plotdiv" id="0adb47ee-7cd9-4d65-9eb5-7b59bf1ba5b7"></div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;ACONTb&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>lower_bound           0.1268684
-upper_bound           0.1268684
-gaps                 -0.1014947
-normalized_gaps       0.8505368
-KO                        False
-flux_reversal             False
-suddenly_essential        False
-Name: ACONTb, dtype: object
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lower_bound</span>           <span class="mf">0.1268684</span>
+<span class="n">upper_bound</span>           <span class="mf">0.1268684</span>
+<span class="n">gaps</span>                 <span class="o">-</span><span class="mf">0.1014947</span>
+<span class="n">normalized_gaps</span>       <span class="mf">0.8505368</span>
+<span class="n">KO</span>                        <span class="kc">False</span>
+<span class="n">flux_reversal</span>             <span class="kc">False</span>
+<span class="n">suddenly_essential</span>        <span class="kc">False</span>
+<span class="n">Name</span><span class="p">:</span> <span class="n">ACONTb</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="nb">object</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>BIOMASS_Ecoli_core_w_GAM: 0.164627
-DM_succ_e: 4.246667
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="p">:</span> <span class="mf">0.164627</span>
+<span class="n">DM_succ_e</span><span class="p">:</span> <span class="mf">4.246667</span>
 </pre></div>
 </div>
 <div>
@@ -631,13 +634,13 @@ DM_succ_e: 4.246667
   </tbody>
 </table>
 <p>76 rows × 7 columns</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">display_on_map</span><span class="p">(</span><span class="s2">&quot;iJO1366.Central metabolism&quot;</span><span class="p">)</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">display_on_map</span><span class="p">(</span><span class="s2">&quot;iJO1366.Central metabolism&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>
     BIOMASS_Ecoli_core_w_GAM&nbsp;<span id="objective-524ebbae_1c18_4613_8471_93c1928caab0">0.000000</span></br>
     DM_succ_e&nbsp;<span id="variable-524ebbae_1c18_4613_8471_93c1928caab0">13.905778</span>
-</p><div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+</p><div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
   <!-- These are not generally used within the notebook. -->
@@ -752,166 +755,166 @@ window.escher_builders["escher_5bd21b69_90ad_4593_8e0f_5e04cdb85533"] = escher.B
        });
      }
    }
-  </script><div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+  </script><div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>&lt;IPython.core.display.Javascript object&gt;
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">IPython</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Javascript</span> <span class="nb">object</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </div>
@@ -935,10 +938,12 @@ window.escher_builders["escher_5bd21b69_90ad_4593_8e0f_5e04cdb85533"] = escher.B
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -948,8 +953,8 @@ window.escher_builders["escher_5bd21b69_90ad_4593_8e0f_5e04cdb85533"] = escher.B
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -977,7 +982,7 @@ window.escher_builders["escher_5bd21b69_90ad_4593_8e0f_5e04cdb85533"] = escher.B
 <li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Predict expression modulation targets</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Predict expression modulation targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
@@ -1008,14 +1013,11 @@ window.escher_builders["escher_5bd21b69_90ad_4593_8e0f_5e04cdb85533"] = escher.B
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1026,8 +1028,8 @@ window.escher_builders["escher_5bd21b69_90ad_4593_8e0f_5e04cdb85533"] = escher.B
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/06-predict-gene-modulation-targets.txt"

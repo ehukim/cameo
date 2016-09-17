@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo package &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,18 +25,21 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../index.html" />
     <link rel="up" title="API Docs" href="../API.html" />
     <link rel="next" title="cameo.api package" href="cameo.api.html" />
     <link rel="prev" title="API Docs" href="../API.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -198,10 +201,16 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path_or_handle</strong> (<em>path, fhandle or name.</em>) &#8211; One of:
-* file path of a model file;
-* file handle to a SBML or pickled model; or
-* the identifier of a model in a web database (optflux.org/models)</li>
+<li><strong>path_or_handle</strong> (<em>path, fhandle or name.</em>) &#8211; <dl class="docutils">
+<dt>One of:</dt>
+<dd><ul class="first last">
+<li>file path of a model file;</li>
+<li>file handle to a SBML or pickled model; or</li>
+<li>the identifier of a model in a web database (optflux.org/models)</li>
+</ul>
+</dd>
+</dl>
+</li>
 <li><strong>solver_interface</strong> (<em>solver_interface, optional</em>) &#8211; E.g. optlang.glpk_interface or any other optlang interface.</li>
 <li><strong>sanitize</strong> (<em>boolean, optional</em>) &#8211; If reaction and metabolite IDs should be sanitized (works only for SBML models).</li>
 </ul>
@@ -235,9 +244,14 @@ that provides the original ID, i.e., EX_glc(d).</p>
 <span id="cameo-parallel-module"></span><h2>cameo.parallel module<a class="headerlink" href="#module-cameo.parallel" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cameo.parallel.MultiprocessingView">
-<em class="property">class </em><code class="descclassname">cameo.parallel.</code><code class="descname">MultiprocessingView</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#MultiprocessingView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.MultiprocessingView" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cameo.parallel.</code><code class="descname">MultiprocessingView</code><span class="sig-paren">(</span><em>processes=4</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#MultiprocessingView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.MultiprocessingView" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#cameo.util.Singleton" title="cameo.util.Singleton"><code class="xref py py-class docutils literal"><span class="pre">cameo.util.Singleton</span></code></a></p>
 <p>Provides a parallel view (similar to IPython)</p>
+<dl class="attribute">
+<dt id="cameo.parallel.MultiprocessingView.pool">
+<code class="descname">pool</code><a class="headerlink" href="#cameo.parallel.MultiprocessingView.pool" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="method">
 <dt id="cameo.parallel.MultiprocessingView.map">
 <code class="descname">map</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#MultiprocessingView.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.MultiprocessingView.map" title="Permalink to this definition">¶</a></dt>
@@ -268,7 +282,7 @@ that provides the original ID, i.e., EX_glc(d).</p>
 <dl class="class">
 <dt id="cameo.parallel.RedisQueue">
 <em class="property">class </em><code class="descclassname">cameo.parallel.</code><code class="descname">RedisQueue</code><span class="sig-paren">(</span><em>name</em>, <em>maxsize=0</em>, <em>namespace='queue'</em>, <em>**connection_args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#RedisQueue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.RedisQueue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Queue with Redis Backend
 <a class="reference external" href="http://peter-hoffmann.com/2012/python-simple-queue-redis-queue.html">http://peter-hoffmann.com/2012/python-simple-queue-redis-queue.html</a></p>
 <dl class="attribute">
@@ -309,7 +323,7 @@ that provides the original ID, i.e., EX_glc(d).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; An object to put in the queue</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; An object to put in the queue</td>
 </tr>
 </tbody>
 </table>
@@ -327,7 +341,7 @@ that provides the original ID, i.e., EX_glc(d).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; An object to put in the queue.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>item</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; An object to put in the queue.</td>
 </tr>
 </tbody>
 </table>
@@ -343,7 +357,7 @@ that provides the original ID, i.e., EX_glc(d).</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>block</strong> (<em>bool, default is True</em>) &#8211; If true, the queue is blocked until it an object is retrieved reaches the timeout.</li>
-<li><strong>timeout</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#long" title="(in Python v2.7)"><em>long</em></a>) &#8211; The timeout (in seconds) that the method should wait for the queue to return an item. If block is False,
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#long" title="(in Python v2.7)"><em>long</em></a>) &#8211; The timeout (in seconds) that the method should wait for the queue to return an item. If block is False,
 time wil ignored.</li>
 </ul>
 </td>
@@ -351,7 +365,7 @@ time wil ignored.</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>item</strong></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 </tbody>
@@ -369,7 +383,7 @@ time wil ignored.</li>
 <dl class="class">
 <dt id="cameo.parallel.SequentialView">
 <em class="property">class </em><code class="descclassname">cameo.parallel.</code><code class="descname">SequentialView</code><a class="reference internal" href="../_modules/cameo/parallel.html#SequentialView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.SequentialView" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="cameo.parallel.SequentialView.map">
 <code class="descname">map</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/parallel.html#SequentialView.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.parallel.SequentialView.map" title="Permalink to this definition">¶</a></dt>
@@ -403,7 +417,7 @@ time wil ignored.</li>
 <dl class="class">
 <dt id="cameo.util.frozendict">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">frozendict</code><span class="sig-paren">(</span><em>iterable</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
 <dl class="method">
 <dt id="cameo.util.frozendict.popitem">
 <code class="descname">popitem</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#frozendict.popitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.frozendict.popitem" title="Permalink to this definition">¶</a></dt>
@@ -429,7 +443,7 @@ time wil ignored.</li>
 <dl class="class">
 <dt id="cameo.util.ProblemCache">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">ProblemCache</code><span class="sig-paren">(</span><em>model</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#ProblemCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.ProblemCache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Variable and constraint cache for models.</p>
 <p>To be used in complex methods that require many extra variables when one must run
 multiple simulations.</p>
@@ -459,7 +473,7 @@ generates an invalid state.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>constraint_id</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The identifier of the constraint</li>
+<li><strong>constraint_id</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The identifier of the constraint</li>
 <li><strong>create</strong> (<em>function</em>) &#8211; A function that creates an optlang.interface.Constraint</li>
 <li><strong>update</strong> (<em>function</em>) &#8211; a function that updates an optlang.interface.Constraint</li>
 </ul>
@@ -482,7 +496,7 @@ generates an invalid state.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>constraint_id</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The identifier of the constraint</li>
+<li><strong>constraint_id</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The identifier of the constraint</li>
 <li><strong>create</strong> (<em>function</em>) &#8211; A function that creates an optlang.interface.Variable</li>
 <li><strong>update</strong> (<em>function</em>) &#8211; a function that updates an optlang.interface.Variable</li>
 </ul>
@@ -514,7 +528,7 @@ generates an invalid state.</p>
 <dl class="class">
 <dt id="cameo.util.RandomGenerator">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">RandomGenerator</code><span class="sig-paren">(</span><em>seed=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#RandomGenerator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.RandomGenerator" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="cameo.util.RandomGenerator.seed">
 <code class="descname">seed</code><span class="sig-paren">(</span><em>seed</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#RandomGenerator.seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.RandomGenerator.seed" title="Permalink to this definition">¶</a></dt>
@@ -545,21 +559,21 @@ generates an invalid state.</p>
 <dl class="class">
 <dt id="cameo.util.Singleton">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">Singleton</code><a class="reference internal" href="../_modules/cameo/util.html#Singleton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.Singleton" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Singleton class to be extended</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="cameo.util.AutoVivification">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">AutoVivification</code><a class="reference internal" href="../_modules/cameo/util.html#AutoVivification"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.AutoVivification" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">dict</span></code></a></p>
 <p>Implementation of perl&#8217;s autovivification feature. Checkout <a class="reference external" href="http://stackoverflow.com/a/652284/280182">http://stackoverflow.com/a/652284/280182</a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="cameo.util.TimeMachine">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">TimeMachine</code><a class="reference internal" href="../_modules/cameo/util.html#TimeMachine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.TimeMachine" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Travel back and forth in time.</p>
 <dl class="method">
 <dt id="cameo.util.TimeMachine.undo">
@@ -581,14 +595,14 @@ generates an invalid state.</p>
 <dl class="class">
 <dt id="cameo.util.Timer">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">Timer</code><span class="sig-paren">(</span><em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#Timer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.Timer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Taken from <a class="reference external" href="http://stackoverflow.com/a/5849861/280182">http://stackoverflow.com/a/5849861/280182</a></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="cameo.util.IntelliContainer">
 <em class="property">class </em><code class="descclassname">cameo.util.</code><code class="descname">IntelliContainer</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/util.html#IntelliContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.util.IntelliContainer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 </dd></dl>
 
 <dl class="function">
@@ -633,9 +647,9 @@ decomposition of <code class="xref py py-obj docutils literal"><span class="pre"
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>A</strong> (<em>ndarray</em>) &#8211; A should be at most 2-D.  A 1-D array with length k will be treated
 as a 2-D with shape (1, k)</li>
-<li><strong>atol</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The absolute tolerance for a zero singular value.  Singular values
+<li><strong>atol</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The absolute tolerance for a zero singular value.  Singular values
 smaller than <code class="xref py py-obj docutils literal"><span class="pre">atol</span></code> are considered to be zero.</li>
-<li><strong>rtol</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The relative tolerance.  Singular values less than rtol*smax are
+<li><strong>rtol</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The relative tolerance.  Singular values less than rtol*smax are
 considered to be zero, where smax is the largest singular value.</li>
 <li><strong>both atol and rtol are positive, the combined tolerance is the</strong> (<em>If</em>) &#8211; </li>
 <li><strong>of the two; that is</strong> (<em>maximum</em>) &#8211; tol = max(atol, rtol * smax)</li>
@@ -754,10 +768,12 @@ product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -767,8 +783,8 @@ product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -798,7 +814,7 @@ product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_
 </ul>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../API.html">API Docs</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="">cameo package</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">cameo package</a></li>
 </ul>
 </li>
 </ul>
@@ -817,14 +833,11 @@ product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -835,8 +848,8 @@ product=&#8221;<a href="#id17"><span class="problematic" id="id18">EX_succ_lp_e_
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="../_sources/apidoc_output/cameo.txt"

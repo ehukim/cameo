@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.util &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.util &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../index.html" />
     <link rel="up" title="cameo" href="../cameo.html" />
    
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -56,28 +59,28 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">colorsys</span>
 <span class="kn">import</span> <span class="nn">itertools</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
-<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="k">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">islice</span>
-<span class="kn">from</span> <span class="nn">time</span> <span class="kn">import</span> <span class="n">time</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid1</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">islice</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid1</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span>
 <span class="kn">import</span> <span class="nn">pip</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="kn">import</span> <span class="n">svd</span>
-<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="kn">import</span> <span class="n">RandomState</span>
-<span class="kn">from</span> <span class="nn">six.moves</span> <span class="kn">import</span> <span class="nb">range</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">svd</span>
+<span class="kn">from</span> <span class="nn">numpy.random</span> <span class="k">import</span> <span class="n">RandomState</span>
+<span class="kn">from</span> <span class="nn">six.moves</span> <span class="k">import</span> <span class="nb">range</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
@@ -89,13 +92,13 @@
 <div class="viewcode-block" id="frozendict.popitem"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.popitem">[docs]</a>    <span class="k">def</span> <span class="nf">popitem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;frozendict&#39; object has no attribute &#39;popitem&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="frozendict.pop"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="frozendict.pop"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;frozendict&#39; object has no attribute &#39;pop&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;frozendict&#39; object has no attribute &#39;__setitem__&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="frozendict.setdefault"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.setdefault">[docs]</a>    <span class="k">def</span> <span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="frozendict.setdefault"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.setdefault">[docs]</a>    <span class="k">def</span> <span class="nf">setdefault</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;frozendict&#39; object has no attribute &#39;setdefault&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -104,7 +107,7 @@
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())))</span>
 
-<div class="viewcode-block" id="frozendict.update"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">F</span><span class="p">):</span>
+<div class="viewcode-block" id="frozendict.update"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.frozendict.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">F</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;&#39;frozendict&#39; object has no attribute &#39;update&quot;</span><span class="p">)</span></div></div>
 
 
@@ -121,14 +124,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span> <span class="o">=</span> <span class="n">TimeMachine</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="ProblemCache.begin_transaction"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.ProblemCache.begin_transaction">[docs]</a>    <span class="k">def</span> <span class="nf">begin_transaction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -164,7 +167,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_remove_variable</span><span class="p">(</span><span class="n">variable</span><span class="p">)</span>
             <span class="n">new_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="n">ub</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">type</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">variable</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_variable</span><span class="p">(</span><span class="n">new_variable</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_add_variable</span><span class="p">(</span><span class="n">new_variable</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rebuild</span>
 
@@ -188,7 +191,7 @@
 <span class="sd">            a function that updates an optlang.interface.Constraint</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">constraint_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="n">constraint_id</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span><span class="p">(</span>
@@ -216,7 +219,7 @@
 <span class="sd">            a function that updates an optlang.interface.Variable</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">variable_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">update</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span><span class="p">(</span>
                     <span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">update</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable_id</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
                     <span class="n">undo</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_variable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">variable_id</span><span class="p">]))</span>
@@ -227,7 +230,7 @@
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="ProblemCache.add_objective"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.ProblemCache.add_objective">[docs]</a>    <span class="k">def</span> <span class="nf">add_objective</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">create</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span><span class="p">(</span>
                 <span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="s1">&#39;objective&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">),</span>
@@ -249,33 +252,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_remove_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_objective</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">constraints</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="ProblemCache.rollback"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.ProblemCache.rollback">[docs]</a>    <span class="k">def</span> <span class="nf">rollback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns to the previous transaction start point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Start transaction must be called before rollback&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">time_machine</span><span class="o">.</span><span class="n">undo</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="bp">None</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transaction_id</span> <span class="o">=</span> <span class="kc">None</span></div></div>
 
 
 <div class="viewcode-block" id="RandomGenerator"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator">[docs]</a><span class="k">class</span> <span class="nc">RandomGenerator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_random</span> <span class="o">=</span> <span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RandomGenerator.seed"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.seed">[docs]</a>    <span class="k">def</span> <span class="nf">seed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_random</span> <span class="o">=</span> <span class="n">RandomState</span><span class="p">(</span><span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="RandomGenerator.random"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.random">[docs]</a>    <span class="k">def</span> <span class="nf">random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="RandomGenerator.randint"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.randint">[docs]</a>    <span class="k">def</span> <span class="nf">randint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+<div class="viewcode-block" id="RandomGenerator.randint"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.randint">[docs]</a>    <span class="k">def</span> <span class="nf">randint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">b</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
             <span class="n">a</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -284,7 +287,7 @@
 <div class="viewcode-block" id="RandomGenerator.sample"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.sample">[docs]</a>    <span class="k">def</span> <span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span></div>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
@@ -295,7 +298,7 @@
     <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_random</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_random&#39;</span><span class="p">]</span>
 
-<div class="viewcode-block" id="RandomGenerator.uniform"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.uniform">[docs]</a>    <span class="k">def</span> <span class="nf">uniform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RandomGenerator.uniform"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.RandomGenerator.uniform">[docs]</a>    <span class="k">def</span> <span class="nf">uniform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">low</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span></div></div>
 
 
@@ -303,7 +306,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Singleton class to be extended</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_instance</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">_instance</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">_instance</span><span class="p">:</span>
@@ -329,15 +332,15 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">TimeMachine</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">bookmark</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">do</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bookmark</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">do</span><span class="p">()</span>
         <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">bookmark</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bookmark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">entry_id</span> <span class="o">=</span> <span class="n">uuid1</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">entry_id</span> <span class="o">=</span> <span class="n">bookmark</span>
         <span class="c1"># make sure that entry is added to the end of history</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">entry_id</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">entry_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">entry_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;unix_epoch&#39;</span><span class="p">:</span> <span class="n">current_time</span><span class="p">,</span> <span class="s1">&#39;undo&#39;</span><span class="p">:</span> <span class="n">undo</span><span class="p">,</span> <span class="s1">&#39;redo&#39;</span><span class="p">:</span> <span class="n">do</span><span class="p">}</span>
         <span class="k">return</span> <span class="n">entry_id</span><span class="p">,</span> <span class="n">output</span>
 
@@ -373,15 +376,15 @@
             <span class="n">info</span> <span class="o">+=</span> <span class="s1">&#39;redo: &#39;</span> <span class="o">+</span> <span class="n">redo_entry</span><span class="o">.</span><span class="n">__name__</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
         <span class="k">return</span> <span class="n">info</span>
 
-<div class="viewcode-block" id="TimeMachine.undo"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.TimeMachine.undo">[docs]</a>    <span class="k">def</span> <span class="nf">undo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bookmark</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">bookmark</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+<div class="viewcode-block" id="TimeMachine.undo"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.TimeMachine.undo">[docs]</a>    <span class="k">def</span> <span class="nf">undo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bookmark</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">bookmark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
                 <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;undo&#39;</span><span class="p">]()</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>  <span class="c1"># history is empty</span>
                 <span class="k">pass</span>
         <span class="k">elif</span> <span class="n">bookmark</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-            <span class="n">uuid</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="n">uuid</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">while</span> <span class="n">uuid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">bookmark</span><span class="p">:</span>
                 <span class="p">(</span><span class="n">uuid</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">popitem</span><span class="p">()</span>
                 <span class="n">entry</span><span class="p">[</span><span class="s1">&#39;undo&#39;</span><span class="p">]()</span>
@@ -400,7 +403,7 @@
 <div class="viewcode-block" id="Timer"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.Timer">[docs]</a><span class="k">class</span> <span class="nc">Timer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Taken from http://stackoverflow.com/a/5849861/280182&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -408,8 +411,8 @@
 
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s1">&#39;Elapsed: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">tstart</span><span class="p">))</span></div>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Elapsed: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">tstart</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="IntelliContainer"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.IntelliContainer">[docs]</a><span class="k">class</span> <span class="nc">IntelliContainer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -436,7 +439,7 @@
     <span class="k">if</span> <span class="s1">&#39;__doc__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">attrs</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">attrs</span><span class="p">[</span><span class="s2">&quot;__doc__&quot;</span><span class="p">]:</span>
         <span class="c1"># create a temporary &#39;parent&#39; to (greatly) simplify the MRO search</span>
         <span class="k">for</span> <span class="n">cls</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmro</span><span class="p">(</span><span class="n">temp</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">attrs</span><span class="p">[</span><span class="s1">&#39;__doc__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">__doc__</span>
                 <span class="k">break</span>
 
@@ -444,7 +447,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">__doc__</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">cls</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmro</span><span class="p">(</span><span class="n">temp</span><span class="p">):</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span><span class="o">.</span><span class="n">__doc__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                         <span class="n">attr</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">)</span><span class="o">.</span><span class="n">__doc__</span>
                         <span class="k">break</span>
                 <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
@@ -486,7 +489,7 @@
 
 
 <span class="c1"># Taken from http://wiki.scipy.org/Cookbook/RankNullspace</span>
-<div class="viewcode-block" id="nullspace"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.nullspace">[docs]</a><span class="k">def</span> <span class="nf">nullspace</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-13</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="nullspace"><a class="viewcode-back" href="../../apidoc_output/cameo.html#cameo.util.nullspace">[docs]</a><span class="k">def</span> <span class="nf">nullspace</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">13</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute an approximate basis for the nullspace of A.</span>
 
 <span class="sd">    The algorithm used by this function is based on the singular value</span>
@@ -604,10 +607,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -617,8 +622,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -664,14 +669,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -682,8 +684,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

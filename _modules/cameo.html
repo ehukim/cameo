@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../index.html" />
     <link rel="up" title="Module code" href="index.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -91,12 +94,12 @@
 <span class="sd">       mutation_rate=0.3, view=cameo.parallel.SequentialView(),</span>
 <span class="sd">       product=&quot;EX_succ_lp_e_rp_&quot;, num_elites=1)</span>
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">config</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">get_system_info</span><span class="p">,</span> <span class="n">in_ipnb</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">get_system_info</span><span class="p">,</span> <span class="n">in_ipnb</span>
 
 <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">imp</span>
@@ -105,50 +108,50 @@
     <span class="k">def</span> <span class="nf">find_module</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">imp</span><span class="o">.</span><span class="n">find_module</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">False</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
 <span class="k">elif</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">find_loader</span> <span class="k">as</span> <span class="n">find</span>
+        <span class="kn">from</span> <span class="nn">importlib</span> <span class="k">import</span> <span class="n">find_loader</span> <span class="k">as</span> <span class="n">find</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">from</span> <span class="nn">importlib.util</span> <span class="kn">import</span> <span class="n">find_spec</span> <span class="k">as</span> <span class="n">find</span>
+        <span class="kn">from</span> <span class="nn">importlib.util</span> <span class="k">import</span> <span class="n">find_spec</span> <span class="k">as</span> <span class="n">find</span>
 
 
 <div class="viewcode-block" id="find_module"><a class="viewcode-back" href="../apidoc_output/cameo.html#cameo.find_module">[docs]</a>    <span class="k">def</span> <span class="nf">find_module</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span></div>
+        <span class="k">return</span> <span class="n">find</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
 
 <span class="n">_cameo_path</span> <span class="o">=</span> <span class="n">__path__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="n">_cameo_data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_cameo_path</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">)</span>
 
 <span class="c1"># fix - if matplotlib is installed it is not possible to import cameo without importing matplotlib on jupyter notebook.</span>
 <span class="k">if</span> <span class="n">find_module</span><span class="p">(</span><span class="s2">&quot;matplotlib&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">in_ipnb</span><span class="p">():</span>
-    <span class="kn">from</span> <span class="nn">IPython</span> <span class="kn">import</span> <span class="n">get_ipython</span>
+    <span class="kn">from</span> <span class="nn">IPython</span> <span class="k">import</span> <span class="n">get_ipython</span>
 
     <span class="n">ipython</span> <span class="o">=</span> <span class="n">get_ipython</span><span class="p">()</span>
     <span class="n">ipython</span><span class="o">.</span><span class="n">magic</span><span class="p">(</span><span class="s2">&quot;matplotlib inline&quot;</span><span class="p">)</span>
 
 <span class="n">system_info</span> <span class="o">=</span> <span class="n">get_system_info</span><span class="p">()</span>
 
-<span class="kn">from</span> <span class="nn">._version</span> <span class="kn">import</span> <span class="n">get_versions</span>
+<span class="kn">from</span> <span class="nn">._version</span> <span class="k">import</span> <span class="n">get_versions</span>
 
 <span class="n">__version__</span> <span class="o">=</span> <span class="n">get_versions</span><span class="p">()[</span><span class="s1">&#39;version&#39;</span><span class="p">]</span>
 <span class="k">del</span> <span class="n">get_versions</span>
 
-<span class="kn">from</span> <span class="nn">cameo.io</span> <span class="kn">import</span> <span class="n">load_model</span>
+<span class="kn">from</span> <span class="nn">cameo.io</span> <span class="k">import</span> <span class="n">load_model</span>
 <span class="c1">#except ImportError:</span>
 <span class="c1">#    raise</span>
 <span class="c1">#    pass</span>
 
-<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">models</span>
 
-<span class="kn">from</span> <span class="nn">cameo.core.solver_based_model</span> <span class="kn">import</span> <span class="n">SolverBasedModel</span> <span class="k">as</span> <span class="n">Model</span>
-<span class="kn">from</span> <span class="nn">cameo.core.reaction</span> <span class="kn">import</span> <span class="n">Reaction</span>
-<span class="kn">from</span> <span class="nn">cobra.core</span> <span class="kn">import</span> <span class="n">Metabolite</span>
+<span class="kn">from</span> <span class="nn">cameo.core.solver_based_model</span> <span class="k">import</span> <span class="n">SolverBasedModel</span> <span class="k">as</span> <span class="n">Model</span>
+<span class="kn">from</span> <span class="nn">cameo.core.reaction</span> <span class="k">import</span> <span class="n">Reaction</span>
+<span class="kn">from</span> <span class="nn">cobra.core</span> <span class="k">import</span> <span class="n">Metabolite</span>
 
-<span class="kn">from</span> <span class="nn">.flux_analysis.analysis</span> <span class="kn">import</span> <span class="n">flux_variability_analysis</span><span class="p">,</span> <span class="n">phenotypic_phase_plane</span>
-<span class="kn">from</span> <span class="nn">.flux_analysis.simulation</span> <span class="kn">import</span> <span class="n">fba</span><span class="p">,</span> <span class="n">pfba</span>
+<span class="kn">from</span> <span class="nn">.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">flux_variability_analysis</span><span class="p">,</span> <span class="n">phenotypic_phase_plane</span>
+<span class="kn">from</span> <span class="nn">.flux_analysis.simulation</span> <span class="k">import</span> <span class="n">fba</span><span class="p">,</span> <span class="n">pfba</span>
 </pre></div>
 
           </div>
@@ -167,10 +170,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -180,8 +185,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -225,14 +230,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -243,8 +245,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

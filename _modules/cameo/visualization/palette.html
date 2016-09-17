@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.visualization.palette &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.visualization.palette &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -58,13 +61,13 @@
 
 <span class="kn">import</span> <span class="nn">six</span>
 
-<span class="kn">from</span> <span class="nn">palettable.colorbrewer.colorbrewer</span> <span class="kn">import</span> <span class="n">_load_maps_by_type</span> <span class="k">as</span> <span class="n">load_colorbrewer_palette</span>  <span class="c1"># noqa</span>
+<span class="kn">from</span> <span class="nn">palettable.colorbrewer.colorbrewer</span> <span class="k">import</span> <span class="n">_load_maps_by_type</span> <span class="k">as</span> <span class="n">load_colorbrewer_palette</span>  <span class="c1"># noqa</span>
 
-<span class="kn">from</span> <span class="nn">palettable.cubehelix.cubehelix</span> <span class="kn">import</span> <span class="n">_get_all_maps</span> <span class="k">as</span> <span class="n">load_cubehelix_palettes</span>
-<span class="kn">from</span> <span class="nn">palettable.tableau.tableau</span> <span class="kn">import</span> <span class="n">_get_all_maps</span> <span class="k">as</span> <span class="n">load_tableau_palettes</span>
-<span class="kn">from</span> <span class="nn">palettable.wesanderson.wesanderson</span> <span class="kn">import</span> <span class="n">_get_all_maps</span> <span class="k">as</span> <span class="n">load_wesanderson_palettes</span>
+<span class="kn">from</span> <span class="nn">palettable.cubehelix.cubehelix</span> <span class="k">import</span> <span class="n">_get_all_maps</span> <span class="k">as</span> <span class="n">load_cubehelix_palettes</span>
+<span class="kn">from</span> <span class="nn">palettable.tableau.tableau</span> <span class="k">import</span> <span class="n">_get_all_maps</span> <span class="k">as</span> <span class="n">load_tableau_palettes</span>
+<span class="kn">from</span> <span class="nn">palettable.wesanderson.wesanderson</span> <span class="k">import</span> <span class="n">_get_all_maps</span> <span class="k">as</span> <span class="n">load_wesanderson_palettes</span>
 
-<span class="kn">from</span> <span class="nn">palettable.palette</span> <span class="kn">import</span> <span class="n">Palette</span>
+<span class="kn">from</span> <span class="nn">palettable.palette</span> <span class="k">import</span> <span class="n">Palette</span>
 
 
 <div class="viewcode-block" id="PaletteMapper"><a class="viewcode-back" href="../../../apidoc_output/cameo.visualization.html#cameo.visualization.palette.PaletteMapper">[docs]</a><span class="k">class</span> <span class="nc">PaletteMapper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -77,12 +80,12 @@
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid palette description &#39;</span><span class="si">%s</span><span class="s2">&#39;&quot;</span> <span class="o">%</span> <span class="n">name</span><span class="p">)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">reverse</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">reverse</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">split</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;r&quot;</span><span class="p">:</span>
-                <span class="n">reverse</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">reverse</span> <span class="o">=</span> <span class="kc">True</span>
                 <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">split</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
@@ -99,7 +102,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_palettes</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">size</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_palettes</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">size</span><span class="p">][</span><span class="n">reverse</span><span class="p">]</span> <span class="o">=</span> <span class="n">palette</span></div>
 
-<div class="viewcode-block" id="PaletteMapper.map_palette"><a class="viewcode-back" href="../../../apidoc_output/cameo.visualization.html#cameo.visualization.palette.PaletteMapper.map_palette">[docs]</a>    <span class="k">def</span> <span class="nf">map_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="PaletteMapper.map_palette"><a class="viewcode-back" href="../../../apidoc_output/cameo.visualization.html#cameo.visualization.palette.PaletteMapper.map_palette">[docs]</a>    <span class="k">def</span> <span class="nf">map_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_split_palette_name</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
@@ -153,10 +156,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -166,8 +171,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -213,14 +218,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -231,8 +233,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.core.gene &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.core.gene &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -56,21 +59,23 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
 <span class="kn">import</span> <span class="nn">cobra</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">inheritdocstring</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">inheritdocstring</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Gene&#39;</span><span class="p">]</span>
 
-<span class="nd">@six.add_metaclass</span><span class="p">(</span><span class="n">inheritdocstring</span><span class="p">)</span>
+
+<span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">inheritdocstring</span><span class="p">)</span>
 <div class="viewcode-block" id="Gene"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.gene.Gene">[docs]</a><span class="k">class</span> <span class="nc">Gene</span><span class="p">(</span><span class="n">cobra</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Gene</span><span class="p">):</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Gene.clone"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.gene.Gene.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Gene.clone"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.gene.Gene.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">gene</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">new_gene</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">gene</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">attribute</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">gene</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
@@ -80,21 +85,21 @@
                     <span class="s2">&quot;Can&#39;t set attribute </span><span class="si">%s</span><span class="s2"> for gene </span><span class="si">%s</span><span class="s2"> (while cloning it to a cameo style gene). Skipping it ...&quot;</span> <span class="o">%</span>
                     <span class="p">(</span><span class="n">attribute</span><span class="p">,</span> <span class="n">gene</span><span class="p">)</span>
                 <span class="p">)</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_gene</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
         <span class="k">return</span> <span class="n">new_gene</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c1"># Returns None if _id is not set</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># Returns None if _id is not set</span>
 
-    <span class="nd">@id.setter</span>
+    <span class="nd">@id</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;ID must be a string&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>  <span class="c1"># (= if hasattr(self, &quot;_model&quot;) and self._model is not None)</span>
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># (= if hasattr(self, &quot;_model&quot;) and self._model is not None)</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">genes</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model already contains a gene with the id:&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 
@@ -103,7 +108,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="Gene.knock_out"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.gene.Gene.knock_out">[docs]</a>    <span class="k">def</span> <span class="nf">knock_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Gene.knock_out"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.gene.Gene.knock_out">[docs]</a>    <span class="k">def</span> <span class="nf">knock_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Knockout gene by setting all its affected reactions&#39; bounds to zero.</span>
 
 <span class="sd">        Parameters</span>
@@ -116,13 +121,13 @@
 <span class="sd">        None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="kn">from</span> <span class="nn">cobra.manipulation.delete</span> <span class="kn">import</span> <span class="n">find_gene_knockout_reactions</span>
+        <span class="kn">from</span> <span class="nn">cobra.manipulation.delete</span> <span class="k">import</span> <span class="n">find_gene_knockout_reactions</span>
         <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">find_gene_knockout_reactions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="p">]):</span>
             <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">reaction</span><span class="p">,</span> <span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">):</span>
                 <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">ub</span>
                 <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">lb</span>
 
-            <span class="k">if</span> <span class="n">time_machine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">time_machine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">time_machine</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">reaction</span><span class="o">.</span><span class="n">knock_out</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">reaction</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span></div></div>
@@ -144,10 +149,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -157,8 +164,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -204,14 +211,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -222,8 +226,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.core.pathway &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.core.pathway &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -58,11 +61,11 @@
 
 <span class="sd">&quot;&quot;&quot;This module implements a pathway data structure that can be added to a model for example.&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span><span class="p">,</span> <span class="nb">reduce</span>
-<span class="kn">from</span> <span class="nn">cobra.core</span> <span class="kn">import</span> <span class="n">Metabolite</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span><span class="p">,</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">cobra.core</span> <span class="k">import</span> <span class="n">Metabolite</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">DataFrame</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">cameo.core.reaction</span> <span class="kn">import</span> <span class="n">Reaction</span>
+<span class="kn">from</span> <span class="nn">cameo.core.reaction</span> <span class="k">import</span> <span class="n">Reaction</span>
 
 
 <span class="c1"># TODO: Load pathways from SBML and JSON</span>
@@ -86,7 +89,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">data_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">DataFrame</span><span class="p">([[</span><span class="n">r</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">(</span><span class="bp">True</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">],</span>
+        <span class="k">return</span> <span class="n">DataFrame</span><span class="p">([[</span><span class="n">r</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">(</span><span class="kc">True</span><span class="p">),</span> <span class="n">r</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="n">r</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">],</span>
                          <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;equation&quot;</span><span class="p">,</span> <span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="s2">&quot;upper_bound&quot;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">])</span>
 
     <span class="nd">@classmethod</span>
@@ -152,7 +155,7 @@
                                   <span class="n">reaction</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="n">sep</span> <span class="o">+</span>
                                   <span class="n">reaction</span><span class="o">.</span><span class="n">notes</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pathway_note&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Pathway.plug_model"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.pathway.Pathway.plug_model">[docs]</a>    <span class="k">def</span> <span class="nf">plug_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Pathway.plug_model"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.pathway.Pathway.plug_model">[docs]</a>    <span class="k">def</span> <span class="nf">plug_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Plugs the pathway to a model.</span>
 <span class="sd">        If a TimeMachine is provided, the reactions will be removed after reverting the TimeMachine.</span>
@@ -169,13 +172,13 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">tm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">tm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">),</span>
-               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
+               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">)</span>
 
-        <span class="n">metabolites</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">],</span> <span class="p">[]))</span>
+        <span class="n">metabolites</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">reduce</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">],</span> <span class="p">[]))</span>
         <span class="n">exchanges</span> <span class="o">=</span> <span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">add_demand</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;EX_&quot;</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="n">tm</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">metabolites</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">reactions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="n">exchanges</span><span class="p">:</span>
             <span class="n">exchange</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span></div></div>
@@ -218,10 +221,10 @@
 
 <span class="k">def</span> <span class="nf">_build_equation</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">):</span>
     <span class="n">products</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
-    <span class="n">reactants</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="n">reactants</span> <span class="o">=</span> <span class="p">{</span><span class="n">m</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">stoichiometry</span><span class="p">)</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">}</span>
 
-    <span class="n">products</span> <span class="o">=</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2"> * </span><span class="si">%s</span><span class="s2">#</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">products</span><span class="p">])</span>
-    <span class="n">reactants</span> <span class="o">=</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2"> * </span><span class="si">%s</span><span class="s2">#</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">reactants</span><span class="p">])</span>
+    <span class="n">products</span> <span class="o">=</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2"> * </span><span class="si">%s</span><span class="s2">#</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">products</span><span class="p">)])</span>
+    <span class="n">reactants</span> <span class="o">=</span> <span class="s2">&quot; + &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s2">&quot;</span><span class="si">%f</span><span class="s2"> * </span><span class="si">%s</span><span class="s2">#</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="o">-</span><span class="n">v</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">reactants</span><span class="p">)])</span>
     <span class="k">return</span> <span class="n">reactants</span> <span class="o">+</span> <span class="s2">&quot; &lt;=&gt; &quot;</span> <span class="o">+</span> <span class="n">products</span>
 </pre></div>
 
@@ -241,10 +244,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -254,8 +259,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -301,14 +306,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -319,8 +321,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

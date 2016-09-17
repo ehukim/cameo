@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.pathway_prediction.pathway_predictor &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.strain_design.pathway_prediction.pathway_predictor &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../../index.html" />
     <link rel="up" title="cameo" href="../../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -56,29 +59,30 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">ceil</span>
-<span class="kn">from</span> <span class="nn">cameo.visualization.plotting</span> <span class="kn">import</span> <span class="n">plotter</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">ceil</span>
+<span class="kn">from</span> <span class="nn">cameo.visualization.plotting</span> <span class="k">import</span> <span class="n">plotter</span>
 
 <span class="kn">import</span> <span class="nn">six</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
-<span class="kn">from</span> <span class="nn">cameo.core.result</span> <span class="kn">import</span> <span class="n">Result</span>
-<span class="kn">from</span> <span class="nn">cameo.core.pathway</span> <span class="kn">import</span> <span class="n">Pathway</span>
-<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">phenotypic_phase_plane</span>
-<span class="kn">from</span> <span class="nn">cameo.exceptions</span> <span class="kn">import</span> <span class="n">SolveError</span>
-<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Metabolite</span>
-<span class="kn">from</span> <span class="nn">cameo.data</span> <span class="kn">import</span> <span class="n">metanetx</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
+<span class="kn">from</span> <span class="nn">cameo.core.result</span> <span class="k">import</span> <span class="n">Result</span>
+<span class="kn">from</span> <span class="nn">cameo.core.pathway</span> <span class="k">import</span> <span class="n">Pathway</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">models</span><span class="p">,</span> <span class="n">phenotypic_phase_plane</span>
+<span class="kn">from</span> <span class="nn">cameo.exceptions</span> <span class="k">import</span> <span class="n">SolveError</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Metabolite</span>
+<span class="kn">from</span> <span class="nn">cameo.data</span> <span class="k">import</span> <span class="n">metanetx</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">TimeMachine</span>
+<span class="kn">from</span> <span class="nn">cameo.config</span> <span class="k">import</span> <span class="n">non_zero_flux_threshold</span>
 
-<span class="kn">from</span> <span class="nn">cameo.strain_design.strain_design</span> <span class="kn">import</span> <span class="n">StrainDesignResult</span><span class="p">,</span> <span class="n">StrainDesign</span>
-<span class="kn">from</span> <span class="nn">cameo.strain_design.pathway_prediction</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.strain_design</span> <span class="k">import</span> <span class="n">StrainDesignResult</span><span class="p">,</span> <span class="n">StrainDesign</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design.pathway_prediction</span> <span class="k">import</span> <span class="n">util</span>
 
 <span class="kn">import</span> <span class="nn">sympy</span>
 
-<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Add</span><span class="p">,</span> <span class="n">Mul</span><span class="p">,</span> <span class="n">RealNumber</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="k">import</span> <span class="n">Add</span><span class="p">,</span> <span class="n">Mul</span><span class="p">,</span> <span class="n">RealNumber</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
@@ -102,30 +106,30 @@
     <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">needs_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">needs_optimization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">area</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">production_envelope</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="p">)</span><span class="o">.</span><span class="n">area</span>
-        <span class="k">return</span> <span class="n">area</span> <span class="o">&gt;</span> <span class="mf">1e-5</span>
+        <span class="k">return</span> <span class="n">area</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">5</span>
 
-    <span class="k">def</span> <span class="nf">production_envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">production_envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">with</span> <span class="n">TimeMachine</span><span class="p">()</span> <span class="k">as</span> <span class="n">tm</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">plug_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tm</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">objective</span><span class="p">],</span> <span class="n">objective</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">plug_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">adapters</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">exchanges</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">tm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">plug_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">adapters</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exchanges</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">tm</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">),</span>
-               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactions</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">adapters</span><span class="p">:</span>
                 <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapters</span><span class="p">),</span>
-                   <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapters</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                   <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapters</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">exchanges</span><span class="p">:</span>
                 <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchanges</span><span class="p">),</span>
-                   <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchanges</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                   <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">exchanges</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
                <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="p">,</span> <span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">))</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">add_reaction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="p">),</span>
-                   <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="p">],</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                   <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="p">],</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
             <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Exchange </span><span class="si">%s</span><span class="s2"> already in model&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
                 <span class="k">pass</span>
@@ -152,25 +156,28 @@
         <span class="c1"># TODO: sort the pathways to make them easier to read</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pathways</span> <span class="o">=</span> <span class="n">pathways</span>
 
-    <span class="k">def</span> <span class="nf">plug_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plug_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">tm</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">plug_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tm</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">string</span> <span class="o">=</span> <span class="nb">str</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">):</span>
-            <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Pathway No. {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;Pathway No. </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">reaction</span> <span class="ow">in</span> <span class="n">pathway</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
-                <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;{}, {}:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-                                           <span class="n">reaction</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">(</span><span class="n">use_metabolite_names</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+                <span class="n">string</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">reaction</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                           <span class="n">reaction</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">(</span><span class="n">use_metabolite_names</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">string</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="c1"># TODO: small pathway visualizations would be great.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
-    <span class="k">def</span> <span class="nf">plot_production_envelopes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot_production_envelopes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">))</span>
-        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Production envelops for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">title</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Production envelops for </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">title</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">n_rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
         <span class="k">with</span> <span class="n">grid</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">pathway</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pathways</span><span class="p">):</span>
@@ -213,13 +220,13 @@
 <span class="sd">    &gt;&gt;&gt; pathway_predictor.run(product=pathway_predictor.model.metabolites.MNXM2861)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">universal_model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">compartment_regexp</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">universal_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">compartment_regexp</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">original_model</span> <span class="o">=</span> <span class="n">model</span>
-        <span class="k">if</span> <span class="n">compartment_regexp</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">compartment_regexp</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">compartment_regexp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;.*&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">universal_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">universal_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Loading default universal model.&quot;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">universal_model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">universal</span><span class="o">.</span><span class="n">metanetx_universal_model_bigg_rhea</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">universal_model</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
@@ -228,7 +235,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provided universal_model </span><span class="si">%s</span><span class="s1"> is not a model.&#39;</span> <span class="o">%</span> <span class="n">universal_model</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">universal_model</span><span class="o">.</span><span class="n">metabolites</span>
 
-        <span class="k">if</span> <span class="n">mapping</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">mapping</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mapping</span> <span class="o">=</span> <span class="n">metanetx</span><span class="o">.</span><span class="n">all2mnx</span>
             <span class="k">for</span> <span class="n">metabolite</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">original_model</span><span class="o">.</span><span class="n">metabolites</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -254,7 +261,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_reactions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">adpater_reactions</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_add_switches</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">new_reactions</span><span class="p">)</span>
 
-<div class="viewcode-block" id="PathwayPredictor.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.pathway_prediction.html#cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_predictions</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span> <span class="n">min_production</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="PathwayPredictor.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.pathway_prediction.html#cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">product</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_predictions</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="s2">&quot;inf&quot;</span><span class="p">),</span> <span class="n">min_production</span><span class="o">=.</span><span class="mi">1</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">silent</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run pathway prediction for a desired product.</span>
 
 <span class="sd">        Parameters</span>
@@ -285,8 +292,9 @@
                 <span class="n">demand_reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="s1">&#39;DM_&#39;</span> <span class="o">+</span> <span class="n">product</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="n">demand_reaction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">add_demand</span><span class="p">(</span><span class="n">product</span><span class="p">)</span>
-                <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="p">[</span><span class="n">demand_reaction</span><span class="p">],</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">))</span>
-            <span class="n">demand_reaction</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">min_production</span>
+                <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">remove_reactions</span><span class="p">,</span> <span class="p">[</span><span class="n">demand_reaction</span><span class="p">],</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">demand_reaction</span><span class="p">,</span> <span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="n">min_production</span><span class="p">),</span>
+               <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">demand_reaction</span><span class="p">,</span> <span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="n">demand_reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">))</span>
             <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
             <span class="k">while</span> <span class="n">counter</span> <span class="o">&lt;=</span> <span class="n">max_predictions</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Predicting pathway No. </span><span class="si">%d</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">counter</span><span class="p">)</span>
@@ -317,19 +325,21 @@
 
                 <span class="n">pathway</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">y_var</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span> <span class="k">for</span> <span class="n">y_var</span> <span class="ow">in</span> <span class="n">vars_to_cut</span><span class="p">]</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Pathway predicted: </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                    <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">(</span><span class="n">use_metabolite_names</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pathway</span><span class="p">]))</span>
+                    <span class="p">[</span><span class="n">r</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">(</span><span class="n">use_metabolite_names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">pathway</span><span class="p">]))</span>
                 <span class="c1"># Figure out adapter reactions to include</span>
-                <span class="n">adapters</span> <span class="o">=</span> <span class="p">[</span><span class="n">adapter</span> <span class="k">for</span> <span class="n">adapter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adpater_reactions</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">adapter</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">adapters</span> <span class="o">=</span> <span class="p">[</span><span class="n">adapter</span> <span class="k">for</span> <span class="n">adapter</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">adpater_reactions</span>
+                            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">adapter</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">non_zero_flux_threshold</span><span class="p">]</span>
 
                 <span class="c1"># Figure out exchange reactions to include</span>
-                <span class="n">exchanges</span> <span class="o">=</span> <span class="p">[</span><span class="n">exchange</span> <span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exchanges</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">exchange</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+                <span class="n">exchanges</span> <span class="o">=</span> <span class="p">[</span><span class="n">exchange</span> <span class="k">for</span> <span class="n">exchange</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_exchanges</span>
+                             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">exchange</span><span class="o">.</span><span class="n">flux</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">non_zero_flux_threshold</span><span class="p">]</span>
 
                 <span class="n">pathway</span> <span class="o">=</span> <span class="n">PathwayResult</span><span class="p">(</span><span class="n">pathway</span><span class="p">,</span> <span class="n">exchanges</span><span class="p">,</span> <span class="n">adapters</span><span class="p">,</span> <span class="n">demand_reaction</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">silent</span><span class="p">:</span>
                     <span class="n">util</span><span class="o">.</span><span class="n">display_pathway</span><span class="p">(</span><span class="n">pathway</span><span class="p">,</span> <span class="n">counter</span><span class="p">)</span>
 
                 <span class="n">pathways</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pathway</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">callback</span><span class="p">(</span><span class="n">pathway</span><span class="p">)</span>
                 <span class="n">integer_cut</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="n">vars_to_cut</span><span class="p">),</span>
                                                                      <span class="n">name</span><span class="o">=</span><span class="s2">&quot;integer_cut_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">counter</span><span class="p">),</span>
@@ -370,13 +380,13 @@
             <span class="n">switch_ub_y_term</span> <span class="o">=</span> <span class="n">Mul</span><span class="o">.</span><span class="n">_from_args</span><span class="p">((</span><span class="n">RealNumber</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">),</span> <span class="n">y</span><span class="p">))</span>
             <span class="n">switch_lb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
                 <span class="n">Add</span><span class="o">.</span><span class="n">_from_args</span><span class="p">((</span><span class="n">switch_lb_y_term</span><span class="p">,</span> <span class="n">forward_var_term</span><span class="p">,</span> <span class="n">reverse_var_term</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;switch_lb_&#39;</span> <span class="o">+</span> <span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="n">ub</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">ub</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">switch_ub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Constraint</span><span class="p">(</span>
                 <span class="n">Add</span><span class="o">.</span><span class="n">_from_args</span><span class="p">((</span><span class="n">switch_ub_y_term</span><span class="p">,</span> <span class="n">forward_var_term</span><span class="p">,</span> <span class="n">reverse_var_term</span><span class="p">)),</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;switch_ub_&#39;</span> <span class="o">+</span> <span class="n">reaction</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
-                <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                <span class="n">lb</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="n">switches</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">switch_lb</span><span class="p">,</span> <span class="n">switch_ub</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">y_vars</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switches</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">switches</span><span class="p">,</span> <span class="n">sloppy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Setting minimization of switch variables as objective.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">interface</span><span class="o">.</span><span class="n">Objective</span><span class="p">(</span><span class="n">Add</span><span class="p">(</span><span class="o">*</span><span class="n">y_vars</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="s1">&#39;min&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_y_vars_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">y_vars</span><span class="p">]</span>
@@ -388,7 +398,7 @@
 
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Adding reactions from universal model to host model.&quot;</span><span class="p">)</span>
         <span class="n">new_reactions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="n">original_model_metabolites</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span>
+        <span class="n">original_model_metabolites</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mapping</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;bigg:&#39;</span> <span class="o">+</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">],</span> <span class="n">m</span><span class="o">.</span><span class="n">id</span><span class="p">)</span> <span class="k">for</span>
                                       <span class="n">r</span> <span class="ow">in</span> <span class="n">original_exchanges</span> <span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">metabolites</span><span class="p">)</span>
                                       <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">metabolites</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">coeff</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">r</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">]</span>
 
@@ -414,7 +424,7 @@
                 <span class="k">if</span> <span class="n">metabolite</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">product</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">metabolite</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Specified product &#39;{product}&#39; could not be found. Try searching pathway_predictor_obj.universal_model.metabolites&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;Specified product &#39;</span><span class="si">{product}</span><span class="s2">&#39; could not be found. Try searching pathway_predictor_obj.universal_model.metabolites&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">product</span><span class="o">=</span><span class="n">product</span><span class="p">))</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">product</span><span class="p">,</span> <span class="n">Metabolite</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
@@ -426,10 +436,10 @@
 
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">hosts</span>
+    <span class="kn">from</span> <span class="nn">cameo.api</span> <span class="k">import</span> <span class="n">hosts</span>
 
     <span class="n">pathway_predictor</span> <span class="o">=</span> <span class="n">PathwayPredictor</span><span class="p">(</span><span class="n">hosts</span><span class="o">.</span><span class="n">ecoli</span><span class="o">.</span><span class="n">models</span><span class="o">.</span><span class="n">EcoliCore</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">MNXM53</span><span class="p">))</span>  <span class="c1"># MNXM53 = L-serine</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">MNXM53</span><span class="p">))</span>  <span class="c1"># MNXM53 = L-serine</span>
 </pre></div>
 
           </div>
@@ -448,10 +458,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -461,8 +473,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -508,14 +520,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -526,8 +535,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.visualization.visualization &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.visualization.visualization &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -56,7 +59,7 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">six</span>
@@ -66,15 +69,15 @@
 <span class="kn">import</span> <span class="nn">tempfile</span>
 <span class="kn">import</span> <span class="nn">subprocess</span>
 
-<span class="kn">import</span> <span class="nn">networkx</span> <span class="kn">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
-<span class="kn">from</span> <span class="nn">escher</span> <span class="kn">import</span> <span class="n">Builder</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">BytesIO</span>
+<span class="kn">from</span> <span class="nn">escher</span> <span class="k">import</span> <span class="n">Builder</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">TimeMachine</span>
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">SVG</span>
+    <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">SVG</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
 
@@ -90,7 +93,7 @@
 
 
 <span class="k">def</span> <span class="nf">pathviz_svg</span><span class="p">(</span><span class="n">map_id</span><span class="o">=</span><span class="s1">&#39;EcoliCore_coreMap&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="n">map_id</span><span class="p">,</span> <span class="s2">&quot;ImageSize&quot;</span><span class="p">:</span> <span class="mf">800.</span><span class="p">,</span> <span class="s2">&quot;Boundary&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="n">map_id</span><span class="p">,</span> <span class="s2">&quot;ImageSize&quot;</span><span class="p">:</span> <span class="mf">800.</span><span class="p">,</span> <span class="s2">&quot;Boundary&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
     <span class="n">fd</span><span class="p">,</span> <span class="n">tmp_pathviz_input</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;pathviz_svg_&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span>
@@ -128,7 +131,7 @@
     <span class="n">html_template2</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">&lt;iframe width=800 height=700 src=&quot;files/</span><span class="si">%s</span><span class="s2">&quot; id=&quot;CDF&quot;&gt;&lt;/iframe&gt;</span>
 <span class="s2">&quot;&quot;&quot;</span>
-    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="n">map_id</span><span class="p">,</span> <span class="s2">&quot;ImageSize&quot;</span><span class="p">:</span> <span class="mf">800.</span><span class="p">,</span> <span class="s2">&quot;Boundary&quot;</span><span class="p">:</span> <span class="bp">False</span><span class="p">}</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;map&quot;</span><span class="p">:</span> <span class="n">map_id</span><span class="p">,</span> <span class="s2">&quot;ImageSize&quot;</span><span class="p">:</span> <span class="mf">800.</span><span class="p">,</span> <span class="s2">&quot;Boundary&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">config</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
     <span class="n">fd</span><span class="p">,</span> <span class="n">tmp_pathviz_input</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkstemp</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;pathviz_svg_&#39;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s1">&#39;.json&#39;</span><span class="p">)</span>
@@ -163,7 +166,7 @@
         <span class="k">raise</span> <span class="n">e</span></div>
 
 
-<div class="viewcode-block" id="inchi_to_svg"><a class="viewcode-back" href="../../../apidoc_output/cameo.visualization.html#cameo.visualization.visualization.inchi_to_svg">[docs]</a><span class="k">def</span> <span class="nf">inchi_to_svg</span><span class="p">(</span><span class="n">inchi</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">three_d</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="inchi_to_svg"><a class="viewcode-back" href="../../../apidoc_output/cameo.visualization.html#cameo.visualization.visualization.inchi_to_svg">[docs]</a><span class="k">def</span> <span class="nf">inchi_to_svg</span><span class="p">(</span><span class="n">inchi</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">three_d</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate an SVG drawing from an InChI string.</span>
 
 <span class="sd">    Parameters</span>
@@ -186,14 +189,14 @@
     <span class="n">in_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inchi</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
     <span class="n">in_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="n">out_file</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">gen</span> <span class="o">=</span> <span class="s2">&quot;--gen3d&quot;</span> <span class="k">if</span> <span class="n">three_d</span> <span class="k">else</span> <span class="s2">&quot;--gen2d&quot;</span>
     <span class="n">error_level</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="mi">1</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;obabel -iinchi </span><span class="si">%s</span><span class="s2"> -osvg -O </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> -xh 40 ---errorlevel </span><span class="si">%d</span><span class="s2">&quot;</span> <span class="o">%</span>
-                      <span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">error_level</span><span class="p">))</span>
-            <span class="k">return</span> <span class="nb">file</span><span class="o">.</span><span class="n">name</span>
+                      <span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">gen</span><span class="p">,</span> <span class="n">error_level</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">out_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="s2">&quot;w+&quot;</span><span class="p">)</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;obabel -iinchi </span><span class="si">%s</span><span class="s2"> -osvg -O </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2"> -xh 40 ---errorlevel </span><span class="si">%d</span><span class="s2">&quot;</span>
@@ -201,11 +204,11 @@
             <span class="k">return</span> <span class="n">out_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">in_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">inchi_to_ascii</span><span class="p">(</span><span class="n">inchi</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">inchi_to_ascii</span><span class="p">(</span><span class="n">inchi</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate an ASCII drawing from an InChI string.</span>
 
 <span class="sd">    Parameters</span>
@@ -228,14 +231,14 @@
     <span class="n">in_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">inchi</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
     <span class="n">in_file</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="n">out_file</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">out_file</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="n">error_level</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="mi">1</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;obabel -iinchi </span><span class="si">%s</span><span class="s2"> -oascii -O </span><span class="si">%s</span><span class="s2"> --gen3d -xh 40 ---errorlevel </span><span class="si">%d</span><span class="s2">&quot;</span>
-                      <span class="o">%</span> <span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">error_level</span><span class="p">))</span>
-            <span class="k">return</span> <span class="nb">file</span><span class="o">.</span><span class="n">name</span>
+                      <span class="o">%</span> <span class="p">(</span><span class="n">in_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">error_level</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">file</span><span class="o">.</span><span class="n">name</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">out_file</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">()</span>
             <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;obabel -iinchi </span><span class="si">%s</span><span class="s2"> -oascii -O </span><span class="si">%s</span><span class="s2"> --gen3d -xh 40 ---errorlevel </span><span class="si">%d</span><span class="s2">&quot;</span>
@@ -243,13 +246,13 @@
             <span class="k">return</span> <span class="n">out_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">in_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="graph_to_svg"><a class="viewcode-back" href="../../../apidoc_output/cameo.visualization.html#cameo.visualization.visualization.graph_to_svg">[docs]</a><span class="k">def</span> <span class="nf">graph_to_svg</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">layout</span><span class="o">=</span><span class="n">nx</span><span class="o">.</span><span class="n">spring_layout</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;return the SVG of a matplotlib figure generated from a graph&quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
     <span class="n">layout</span> <span class="o">=</span> <span class="n">layout</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
@@ -258,7 +261,7 @@
     <span class="c1"># rxn_nodes = [node for node in g.nodes() if isinstance(node, cameo.Reaction)]</span>
     <span class="c1"># draw metabolites</span>
     <span class="n">met_nodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">Metabolite</span><span class="p">)]</span>
-    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">nodelist</span><span class="o">=</span><span class="n">met_nodes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
+    <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edges</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">nodelist</span><span class="o">=</span><span class="n">met_nodes</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">node_color</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)</span>
     <span class="n">labels</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">Reaction</span><span class="p">):</span>
@@ -267,7 +270,7 @@
             <span class="n">labels</span><span class="p">[</span><span class="n">node</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">name</span>
     <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_labels</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">layout</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
     <span class="n">output</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
-    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;svg&#39;</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span></div>
 </pre></div>
@@ -288,10 +291,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -301,8 +306,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -348,14 +353,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -366,8 +368,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

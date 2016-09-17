@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.models.webmodels &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.models.webmodels &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -64,7 +67,7 @@
 <span class="sd">http://darwin.di.uminho.pt/models and http://bigg.ucsd.edu databases</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 
 <span class="kn">import</span> <span class="nn">io</span>
@@ -76,14 +79,14 @@
 <span class="kn">import</span> <span class="nn">lazy_object_proxy</span>
 <span class="kn">import</span> <span class="nn">optlang</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">DataFrame</span>
 
-<span class="kn">from</span> <span class="nn">cobra.io</span> <span class="kn">import</span> <span class="n">load_json_model</span><span class="p">,</span> <span class="n">read_sbml_model</span>
+<span class="kn">from</span> <span class="nn">cobra.io</span> <span class="k">import</span> <span class="n">load_json_model</span><span class="p">,</span> <span class="n">read_sbml_model</span>
 
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">str_to_valid_variable_name</span>
-<span class="kn">from</span> <span class="nn">cameo.core.solver_based_model</span> <span class="kn">import</span> <span class="n">to_solver_based_model</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">str_to_valid_variable_name</span>
+<span class="kn">from</span> <span class="nn">cameo.core.solver_based_model</span> <span class="k">import</span> <span class="n">to_solver_based_model</span>
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;index_models_minho&#39;</span><span class="p">,</span> <span class="s1">&#39;index_models_bigg&#39;</span><span class="p">,</span> <span class="s1">&#39;bigg&#39;</span><span class="p">,</span> <span class="s1">&#39;minho&#39;</span><span class="p">]</span>
@@ -136,7 +139,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">uri</span> <span class="o">=</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/models.json&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot reach </span><span class="si">%s</span><span class="s2">. Are you sure that you are connected to the internet?&quot;</span> <span class="o">%</span> <span class="n">host</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
@@ -144,7 +147,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="n">json</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No json could be decoded from server response coming from {}.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;No json could be decoded from server response coming from </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
             <span class="k">raise</span> <span class="n">e</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">index</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;doi&quot;</span><span class="p">,</span> <span class="s2">&quot;author&quot;</span><span class="p">,</span>
@@ -163,12 +166,12 @@
 
 
 <span class="k">def</span> <span class="nf">get_sbml_file</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s2">&quot;http://darwin.di.uminho.pt/models&quot;</span><span class="p">):</span>
-    <span class="n">temp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">temp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">uri</span> <span class="o">=</span> <span class="n">host</span> <span class="o">+</span> <span class="s2">&quot;/models/</span><span class="si">%i</span><span class="s2">.sbml&quot;</span> <span class="o">%</span> <span class="n">index</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uri</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot reach {}. Are you sure that you are connected to the internet?&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot reach </span><span class="si">{}</span><span class="s2">. Are you sure that you are connected to the internet?&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">host</span><span class="p">))</span>
         <span class="k">raise</span> <span class="n">e</span>
     <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">ok</span><span class="p">:</span>
 
@@ -181,7 +184,7 @@
 
 <div class="viewcode-block" id="index_models_bigg"><a class="viewcode-back" href="../../../apidoc_output/cameo.models.html#cameo.models.webmodels.index_models_bigg">[docs]</a><span class="k">def</span> <span class="nf">index_models_bigg</span><span class="p">():</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://bigg.ucsd.edu/api/v2/models&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://bigg.ucsd.edu/api/v2/models&#39;</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot reach http://bigg.ucsd.edu. Are you sure that you are connected to the internet?&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
@@ -195,12 +198,12 @@
             <span class="k">return</span> <span class="n">DataFrame</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">json</span><span class="p">[</span><span class="s1">&#39;results&#39;</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;Could not index available models. bigg.ucsd.edu returned status code {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span></div>
+            <span class="s2">&quot;Could not index available models. bigg.ucsd.edu returned status code </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span></div>
 
 
 <span class="k">def</span> <span class="nf">get_model_from_bigg</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">solver_interface</span><span class="o">=</span><span class="n">optlang</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://bigg.ucsd.edu/api/v2/models/{}/download&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://bigg.ucsd.edu/api/v2/models/</span><span class="si">{}</span><span class="s1">/download&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">))</span>
     <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot reach http://bigg.ucsd.edu. Are you sure that you are connected to the internet?&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
@@ -209,59 +212,95 @@
             <span class="k">return</span> <span class="n">to_solver_based_model</span><span class="p">(</span><span class="n">load_json_model</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">solver_interface</span><span class="o">=</span><span class="n">solver_interface</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;Could not download model {}. bigg.ucsd.edu returned status code {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span>
+            <span class="s2">&quot;Could not download model </span><span class="si">{}</span><span class="s2">. bigg.ucsd.edu returned status code </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">))</span>
 
 
 <span class="k">class</span> <span class="nc">ModelDB</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_method</span><span class="p">,</span> <span class="n">get_model_method</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index_method</span> <span class="o">=</span> <span class="n">index_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_method</span> <span class="o">=</span> <span class="n">get_model_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_index_models</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_method</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;no_models_available&quot;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">no_models_available</span> <span class="o">=</span> <span class="s2">&quot;The server could not be reached. Make sure you are connected to the internet&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_index_models</span><span class="p">()</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_index_models</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_model_method</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">(</span><span class="n">ModelDB</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__getattribute__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+<span class="n">bigg</span> <span class="o">=</span> <span class="n">ModelDB</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">index_models_bigg</span><span class="p">()</span><span class="o">.</span><span class="n">bigg_id</span><span class="p">,</span> <span class="n">get_model_from_bigg</span><span class="p">)</span>
+
+<span class="n">minho</span> <span class="o">=</span> <span class="n">ModelDB</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">index_models_minho</span><span class="p">()</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">get_model_from_uminho</span><span class="p">)</span>
 
 
-<span class="n">bigg</span> <span class="o">=</span> <span class="n">ModelDB</span><span class="p">()</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">model_ids</span> <span class="o">=</span> <span class="n">index_models_bigg</span><span class="p">()</span><span class="o">.</span><span class="n">bigg_id</span>
-<span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">:</span>
-    <span class="n">bigg</span><span class="o">.</span><span class="n">no_models_available</span> <span class="o">=</span> <span class="s2">&quot;Cameo couldn&#39;t reach http://bigg.ucsd.edu at initialization time.&quot;</span> \
-                               <span class="s2">&quot;Are you connected to the internet?&quot;</span>
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">bigg</span><span class="o">.</span><span class="n">no_models_available</span> <span class="o">=</span> <span class="s2">&quot;Cameo could reach http://bigg.ucsd.edu at initialization time&quot;</span> \
-                               <span class="s2">&quot;but something went wrong while decoding the server response.&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">model_ids</span><span class="p">:</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">bigg</span><span class="p">,</span> <span class="n">str_to_valid_variable_name</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">lazy_object_proxy</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">get_model_from_bigg</span><span class="p">,</span> <span class="nb">id</span><span class="p">)))</span>
+<span class="k">def</span> <span class="nf">validated_minho_names</span><span class="p">():</span>
+    <span class="n">minho</span> <span class="o">=</span> <span class="n">index_models_minho</span><span class="p">()</span>
+    <span class="n">minho_validated</span> <span class="o">=</span> <span class="n">minho</span><span class="p">[</span><span class="n">minho</span><span class="o">.</span><span class="n">validated</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">minho_validated</span><span class="o">.</span><span class="n">name</span>
 
-<span class="n">minho</span> <span class="o">=</span> <span class="n">ModelDB</span><span class="p">()</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">minho_models</span> <span class="o">=</span> <span class="n">index_models_minho</span><span class="p">()</span>
-<span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">minho</span><span class="o">.</span><span class="n">no_models_available</span> <span class="o">=</span> <span class="s2">&quot;Cameo couldn&#39;t reach http://darwin.di.uminho.pt/models at initialization time.&quot;</span> \
-                                <span class="s2">&quot;Are you connected to the internet?&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-    <span class="n">minho</span><span class="o">.</span><span class="n">no_models_available</span> <span class="o">=</span> <span class="s2">&quot;Cameo could reach http://darwin.di.uminho.pt/models at initialization time&quot;</span> \
-                                <span class="s2">&quot;but something went wrong while decoding the server response.&quot;</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-<span class="k">else</span><span class="p">:</span>
-    <span class="n">model_indices</span> <span class="o">=</span> <span class="n">minho_models</span><span class="o">.</span><span class="n">id</span>
-    <span class="n">model_ids</span> <span class="o">=</span> <span class="n">minho_models</span><span class="o">.</span><span class="n">name</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">model_indices</span><span class="p">,</span> <span class="n">model_ids</span><span class="p">):</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">minho</span><span class="p">,</span> <span class="n">str_to_valid_variable_name</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span> <span class="n">lazy_object_proxy</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">get_model_from_uminho</span><span class="p">,</span> <span class="n">index</span><span class="p">)))</span>
+<span class="n">minho</span><span class="o">.</span><span class="n">validated</span> <span class="o">=</span> <span class="n">ModelDB</span><span class="p">(</span><span class="n">validated_minho_names</span><span class="p">,</span> <span class="n">get_model_from_uminho</span><span class="p">)</span>
 
-    <span class="n">validated_models</span> <span class="o">=</span> <span class="n">minho_models</span><span class="p">[</span><span class="n">minho_models</span><span class="o">.</span><span class="n">validated</span><span class="p">]</span>
-    <span class="n">minho</span><span class="o">.</span><span class="n">validated</span> <span class="o">=</span> <span class="n">ModelDB</span><span class="p">()</span>
-    <span class="n">model_indices</span> <span class="o">=</span> <span class="n">validated_models</span><span class="o">.</span><span class="n">id</span>
-    <span class="n">model_ids</span> <span class="o">=</span> <span class="n">validated_models</span><span class="o">.</span><span class="n">name</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">model_indices</span><span class="p">,</span> <span class="n">model_ids</span><span class="p">):</span>
-        <span class="nb">setattr</span><span class="p">(</span><span class="n">minho</span><span class="o">.</span><span class="n">validated</span><span class="p">,</span> <span class="n">str_to_valid_variable_name</span><span class="p">(</span><span class="nb">id</span><span class="p">),</span>
-                <span class="n">lazy_object_proxy</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span><span class="n">partial</span><span class="p">(</span><span class="n">get_model_from_uminho</span><span class="p">,</span> <span class="n">index</span><span class="p">)))</span>
+<span class="c1"># bigg = ModelDB()</span>
+<span class="c1"># try:</span>
+<span class="c1">#     model_ids = index_models_bigg().bigg_id</span>
+<span class="c1"># except requests.ConnectionError:</span>
+<span class="c1">#     bigg.no_models_available = &quot;Cameo couldn&#39;t reach http://bigg.ucsd.edu at initialization time.&quot; \</span>
+<span class="c1">#                                &quot;Are you connected to the internet?&quot;</span>
+<span class="c1"># except Exception as e:</span>
+<span class="c1">#     bigg.no_models_available = &quot;Cameo could reach http://bigg.ucsd.edu at initialization time&quot; \</span>
+<span class="c1">#                                &quot;but something went wrong while decoding the server response.&quot;</span>
+<span class="c1">#     logger.debug(e)</span>
+<span class="c1"># else:</span>
+<span class="c1">#     for id in model_ids:</span>
+<span class="c1">#         setattr(bigg, str_to_valid_variable_name(id), lazy_object_proxy.Proxy(partial(get_model_from_bigg, id)))</span>
+<span class="c1">#</span>
+<span class="c1"># minho = ModelDB()</span>
+<span class="c1"># try:</span>
+<span class="c1">#     minho_models = index_models_minho()</span>
+<span class="c1"># except requests.ConnectionError as e:</span>
+<span class="c1">#     minho.no_models_available = &quot;Cameo couldn&#39;t reach http://darwin.di.uminho.pt/models at initialization time.&quot; \</span>
+<span class="c1">#                                 &quot;Are you connected to the internet?&quot;</span>
+<span class="c1">#     logger.debug(e)</span>
+<span class="c1"># except Exception as e:</span>
+<span class="c1">#     minho.no_models_available = &quot;Cameo could reach http://darwin.di.uminho.pt/models at initialization time&quot; \</span>
+<span class="c1">#                                 &quot;but something went wrong while decoding the server response.&quot;</span>
+<span class="c1">#     logger.debug(e)</span>
+<span class="c1"># else:</span>
+<span class="c1">#     model_indices = minho_models.id</span>
+<span class="c1">#     model_ids = minho_models.name</span>
+<span class="c1">#     for index, id in zip(model_indices, model_ids):</span>
+<span class="c1">#         setattr(minho, str_to_valid_variable_name(id), lazy_object_proxy.Proxy(partial(get_model_from_uminho, index)))</span>
+<span class="c1">#</span>
+<span class="c1">#     validated_models = minho_models[minho_models.validated]</span>
+<span class="c1">#     minho.validated = ModelDB()</span>
+<span class="c1">#     model_indices = validated_models.id</span>
+<span class="c1">#     model_ids = validated_models.name</span>
+<span class="c1">#     for index, id in zip(model_indices, model_ids):</span>
+<span class="c1">#         setattr(minho.validated, str_to_valid_variable_name(id),</span>
+<span class="c1">#                 lazy_object_proxy.Proxy(partial(get_model_from_uminho, index)))</span>
 
 
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">index_models_minho</span><span class="p">())</span>
-    <span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">load_model</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">index_models_minho</span><span class="p">())</span>
+    <span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">load_model</span>
 
     <span class="n">model</span> <span class="o">=</span> <span class="n">load_model</span><span class="p">(</span><span class="n">get_sbml_file</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -280,10 +319,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -293,8 +334,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -340,14 +381,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -358,8 +396,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

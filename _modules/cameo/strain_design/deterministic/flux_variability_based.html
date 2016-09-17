@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.deterministic.flux_variability_based &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.strain_design.deterministic.flux_variability_based &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../../index.html" />
     <link rel="up" title="cameo" href="../../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -57,7 +60,7 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -68,38 +71,36 @@
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
-<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="k">import</span> <span class="n">uuid4</span>
 
 
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Javascript</span>
+    <span class="kn">from</span> <span class="nn">IPython.core.display</span> <span class="k">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">HTML</span><span class="p">,</span> <span class="n">Javascript</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
     <span class="k">pass</span>
 
-<span class="kn">from</span> <span class="nn">IProgress</span> <span class="kn">import</span> <span class="n">ProgressBar</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">pandas</span>
-<span class="kn">from</span> <span class="nn">cameo.visualization.plotting</span> <span class="kn">import</span> <span class="n">plotter</span>
+<span class="kn">from</span> <span class="nn">IProgress</span> <span class="k">import</span> <span class="n">ProgressBar</span>
+<span class="kn">from</span> <span class="nn">pandas</span> <span class="k">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">pandas</span>
+<span class="kn">from</span> <span class="nn">cameo.visualization.plotting</span> <span class="k">import</span> <span class="n">plotter</span>
 
-<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">config</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">config</span>
 
-<span class="kn">from</span> <span class="nn">cameo.ui</span> <span class="kn">import</span> <span class="n">notice</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">TimeMachine</span><span class="p">,</span> <span class="n">in_ipnb</span>
-<span class="kn">from</span> <span class="nn">cameo.config</span> <span class="kn">import</span> <span class="n">non_zero_flux_threshold</span>
-<span class="kn">from</span> <span class="nn">cameo.parallel</span> <span class="kn">import</span> <span class="n">SequentialView</span>
+<span class="kn">from</span> <span class="nn">cameo.ui</span> <span class="k">import</span> <span class="n">notice</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">TimeMachine</span><span class="p">,</span> <span class="n">in_ipnb</span>
+<span class="kn">from</span> <span class="nn">cameo.config</span> <span class="k">import</span> <span class="n">non_zero_flux_threshold</span>
+<span class="kn">from</span> <span class="nn">cameo.parallel</span> <span class="k">import</span> <span class="n">SequentialView</span>
 
-<span class="kn">from</span> <span class="nn">cameo.core.reaction</span> <span class="kn">import</span> <span class="n">Reaction</span>
-<span class="kn">from</span> <span class="nn">cameo.core.metabolite</span> <span class="kn">import</span> <span class="n">Metabolite</span>
+<span class="kn">from</span> <span class="nn">cameo.core.reaction</span> <span class="k">import</span> <span class="n">Reaction</span>
+<span class="kn">from</span> <span class="nn">cameo.core.metabolite</span> <span class="k">import</span> <span class="n">Metabolite</span>
 
-<span class="kn">from</span> <span class="nn">cameo.visualization.escher_ext</span> <span class="kn">import</span> <span class="n">NotebookBuilder</span>
-<span class="kn">from</span> <span class="nn">cameo.visualization.palette</span> <span class="kn">import</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">Palette</span>
+<span class="kn">from</span> <span class="nn">cameo.visualization.escher_ext</span> <span class="k">import</span> <span class="n">NotebookBuilder</span>
+<span class="kn">from</span> <span class="nn">cameo.visualization.palette</span> <span class="k">import</span> <span class="n">mapper</span><span class="p">,</span> <span class="n">Palette</span>
 
-<span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="kn">import</span> <span class="n">flux_variability_analysis</span><span class="p">,</span> <span class="n">phenotypic_phase_plane</span><span class="p">,</span> <span class="n">PhenotypicPhasePlaneResult</span>
-<span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="kn">import</span> <span class="n">pfba</span><span class="p">,</span> <span class="n">fba</span>
+<span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">flux_variability_analysis</span><span class="p">,</span> <span class="n">phenotypic_phase_plane</span><span class="p">,</span> <span class="n">PhenotypicPhasePlaneResult</span>
+<span class="kn">from</span> <span class="nn">cameo.flux_analysis.simulation</span> <span class="k">import</span> <span class="n">pfba</span><span class="p">,</span> <span class="n">fba</span>
 
-<span class="kn">from</span> <span class="nn">cameo.strain_design.strain_design</span> <span class="kn">import</span> <span class="n">StrainDesignMethod</span><span class="p">,</span> <span class="n">StrainDesignResult</span><span class="p">,</span> <span class="n">StrainDesign</span>
-
-
+<span class="kn">from</span> <span class="nn">cameo.strain_design.strain_design</span> <span class="k">import</span> <span class="n">StrainDesignMethod</span><span class="p">,</span> <span class="n">StrainDesignResult</span><span class="p">,</span> <span class="n">StrainDesign</span>
 
 
 <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
@@ -107,10 +108,10 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
-            <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="kn">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">IntSlider</span>
+            <span class="kn">from</span> <span class="nn">IPython.html.widgets</span> <span class="k">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">IntSlider</span>
     <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="kn">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">IntSlider</span>
+            <span class="kn">from</span> <span class="nn">ipywidgets</span> <span class="k">import</span> <span class="n">interact</span><span class="p">,</span> <span class="n">IntSlider</span>
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
             <span class="k">pass</span>
 
@@ -180,12 +181,12 @@
 <span class="sd">    &gt;&gt;&gt; result.plot()</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design_space_model</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">reference_model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="n">normalize_ranges_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">design_space_model</span><span class="p">,</span> <span class="n">objective</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference_model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="n">normalize_ranges_by</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DifferentialFVA</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span> <span class="o">=</span> <span class="n">design_space_model</span>
-        <span class="k">if</span> <span class="n">reference_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">reference_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">fix_objective_as_constraint</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
@@ -207,7 +208,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;You need to provide an objective as a Reaction, Metabolite or a reaction id&#39;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="c1"># try to establish the current objective reaction</span>
             <span class="n">obj_var_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">variable</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">free_symbols</span><span class="p">]</span>
             <span class="n">obj_var_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;_reverse.*&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span> <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="n">obj_var_ids</span><span class="p">]</span>
@@ -235,8 +236,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">)</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="nb">set</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">points</span> <span class="o">=</span> <span class="n">points</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">normalize_ranges_by</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span> <span class="o">=</span> <span class="n">normalize_ranges_by</span><span class="o">.</span><span class="n">id</span>
@@ -258,13 +259,13 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">overlap</span>
 
-    <span class="k">def</span> <span class="nf">_init_search_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_only</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_init_search_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the grid of points to be scanned within the production envelope.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">design_space_model</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">,</span> <span class="n">objective</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">points</span><span class="p">)</span>
         <span class="n">intervals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">envelope</span><span class="p">[[</span><span class="s1">&#39;objective_lower_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;objective_upper_bound&#39;</span><span class="p">]]</span>
         <span class="n">max_distance</span> <span class="o">=</span> <span class="mf">0.</span>
-        <span class="n">max_interval</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">max_interval</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">lb</span><span class="p">,</span> <span class="n">ub</span><span class="p">)</span> <span class="ow">in</span> <span class="n">intervals</span><span class="o">.</span><span class="n">iterrows</span><span class="p">():</span>
             <span class="n">distance</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ub</span> <span class="o">-</span> <span class="n">lb</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">distance</span> <span class="o">&gt;</span> <span class="n">max_distance</span><span class="p">:</span>
@@ -291,7 +292,7 @@
         <span class="n">columns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">objective</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">grid</span> <span class="o">=</span> <span class="n">DataFrame</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
 
-<div class="viewcode-block" id="DifferentialFVA.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.DifferentialFVA.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_only</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="DifferentialFVA.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.DifferentialFVA.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">surface_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">view</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Run the differential flux variability analysis.</span>
 
 <span class="sd">        Parameters</span>
@@ -319,7 +320,7 @@
             <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">target_reaction</span><span class="p">,</span> <span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="n">target_reaction</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">))</span>
             <span class="n">tm</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="n">target_reaction</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">,</span> <span class="n">target_reaction</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
 
-            <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">view</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">view</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">default_view</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">view</span> <span class="o">=</span> <span class="n">view</span>
@@ -328,7 +329,7 @@
                                   <span class="n">reaction</span><span class="o">.</span><span class="n">id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">exclude</span><span class="p">]</span>
             <span class="c1"># FIXME: reference flux ranges should be for a fraction (say 0.75) of the original objective</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span> <span class="o">=</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="n">included_reactions</span><span class="p">,</span>
-                                                                   <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span> <span class="n">remove_cycles</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">data_frame</span>
+                                                                   <span class="n">view</span><span class="o">=</span><span class="n">view</span><span class="p">,</span> <span class="n">remove_cycles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">data_frame</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_search_grid</span><span class="p">(</span><span class="n">surface_only</span><span class="o">=</span><span class="n">surface_only</span><span class="p">,</span> <span class="n">improvements_only</span><span class="o">=</span><span class="n">improvements_only</span><span class="p">)</span>
 
             <span class="n">progress</span> <span class="o">=</span> <span class="n">ProgressBar</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">grid</span><span class="p">))</span>
@@ -343,13 +344,15 @@
             <span class="n">gaps</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval_gap</span><span class="p">(</span><span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">)</span> <span class="k">for</span> <span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span> <span class="ow">in</span>
                     <span class="n">my_zip</span><span class="p">(</span><span class="n">reference_intervals</span><span class="p">,</span> <span class="n">intervals</span><span class="p">)]</span>
             <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;gaps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaps</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">sol</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">normalized_intervals</span> <span class="o">=</span> <span class="n">sol</span><span class="p">[[</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">,</span> <span class="s1">&#39;upper_bound&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="n">sol</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">[</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">normalize_ranges_by</span><span class="p">]</span>
                 <span class="n">normalized_gaps</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval_gap</span><span class="p">(</span><span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span><span class="p">)</span> <span class="k">for</span> <span class="n">interval1</span><span class="p">,</span> <span class="n">interval2</span> <span class="ow">in</span>
                                    <span class="n">my_zip</span><span class="p">(</span><span class="n">reference_intervals</span><span class="p">,</span> <span class="n">normalized_intervals</span><span class="p">)]</span>
                 <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;normalized_gaps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">normalized_gaps</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sol</span><span class="p">[</span><span class="s1">&#39;normalized_gaps&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gaps</span>
+
         <span class="n">chopped_ref_lower_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">lower_bound</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">non_zero_flux_threshold</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
         <span class="n">chopped_ref_upper_bounds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_flux_ranges</span><span class="o">.</span><span class="n">upper_bound</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">non_zero_flux_threshold</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
@@ -358,24 +361,24 @@
                               <span class="p">(</span><span class="n">df_chopped</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
                               <span class="p">(</span><span class="n">chopped_ref_lower_bounds</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span>
                               <span class="n">chopped_ref_upper_bounds</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
-            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;KO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ko_selection</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;KO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;KO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">ko_selection</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;KO&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
             <span class="n">df_chopped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">non_zero_flux_threshold</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
             <span class="n">flux_reversal_selection</span> <span class="o">=</span> <span class="n">df</span><span class="p">[((</span><span class="n">chopped_ref_upper_bounds</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_chopped</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">|</span>
                                           <span class="p">((</span><span class="n">chopped_ref_lower_bounds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_chopped</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)))]</span>
-            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flux_reversal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">flux_reversal_selection</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;flux_reversal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;flux_reversal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">flux_reversal_selection</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;flux_reversal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">for</span> <span class="n">df</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">itervalues</span><span class="p">(</span><span class="n">solutions</span><span class="p">):</span>
             <span class="n">df_chopped</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">applymap</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">non_zero_flux_threshold</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
             <span class="n">suddenly_essential_selection</span> <span class="o">=</span> <span class="n">df</span><span class="p">[((</span><span class="n">df_chopped</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_chopped</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">))</span> <span class="o">|</span> <span class="p">(</span>
                 <span class="p">(</span><span class="n">chopped_ref_upper_bounds</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">df_chopped</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">))]</span>
-            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;suddenly_essential&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">False</span>
-            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">suddenly_essential_selection</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;suddenly_essential&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">df</span><span class="p">[</span><span class="s1">&#39;suddenly_essential&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">suddenly_essential_selection</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="s1">&#39;suddenly_essential&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_model</span><span class="o">.</span><span class="n">objective</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">objective</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective</span>
@@ -417,21 +420,21 @@
         <span class="n">data</span><span class="p">[</span><span class="s2">&quot;suddenly_essential&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;suddenly_essential&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">numpy</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">data</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">notice</span><span class="p">(</span><span class="s2">&quot;Multi-dimensional plotting is not supported&quot;</span><span class="p">)</span>
             <span class="k">return</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_plot_flux_variability_analysis</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="n">variables</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_plot_production_envelope</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_plot_flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                                        <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">_plot_flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                        <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">variables</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_fva</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span>
 
-        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Compare WT solution </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">title</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;Compare WT solution </span><span class="si">%i</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">index</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">title</span>
 
         <span class="n">wt_fva_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_fva</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
         <span class="n">strain_fva_res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">variables</span><span class="p">]</span>
@@ -452,8 +455,8 @@
 
         <span class="n">plotter</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_plot_production_envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;DifferentialFVA Result&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">title</span>
+    <span class="k">def</span> <span class="nf">_plot_production_envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;DifferentialFVA Result&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">title</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
         <span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="n">elem</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">items</span><span class="p">)]</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;red&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
@@ -478,7 +481,7 @@
     <span class="k">def</span> <span class="nf">normalized_gaps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">numpy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">display_on_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">map_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;RdYlBu&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">display_on_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">map_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s2">&quot;RdYlBu&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># TODO: hack escher to use iterative maps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_display_on_map_static</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">map_name</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -523,9 +526,9 @@
             <span class="kn">import</span> <span class="nn">escher</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">map_name</span><span class="p">):</span>
                 <span class="n">map_json</span> <span class="o">=</span> <span class="n">map_name</span>
-                <span class="n">map_name</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">map_name</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">map_json</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="n">map_json</span> <span class="o">=</span> <span class="kc">None</span>
 
             <span class="n">values</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalized_gaps</span>
 
@@ -563,13 +566,13 @@
                                      <span class="n">reaction_scale</span><span class="o">=</span><span class="n">reaction_scale</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">in_ipnb</span><span class="p">():</span>
-                <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+                <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
                 <span class="n">display</span><span class="p">(</span><span class="n">builder</span><span class="o">.</span><span class="n">display_in_notebook</span><span class="p">())</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">builder</span><span class="o">.</span><span class="n">display_in_browser</span><span class="p">()</span>
 
         <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Escher must be installed in order to visualize maps&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Escher must be installed in order to visualize maps&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_display_on_map_iteractive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">map_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">view</span> <span class="o">=</span> <span class="n">_MapView</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="p">,</span> <span class="n">map_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -583,13 +586,13 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">solutions</span><span class="p">,</span> <span class="n">map_name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span> <span class="o">=</span> <span class="n">solutions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map_name</span> <span class="o">=</span> <span class="n">map_name</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kwargs_for_escher</span> <span class="o">=</span> <span class="n">kwargs</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="n">reaction_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">gaps</span><span class="p">)</span>
         <span class="n">axis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solutions</span><span class="o">.</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">builder</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_builder</span><span class="p">(</span><span class="n">reaction_data</span><span class="p">,</span> <span class="n">axis</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">builder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">reaction_data</span><span class="p">)</span>
@@ -629,7 +632,7 @@
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_bounds</span><span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">included_reactions</span><span class="p">,</span> <span class="n">remove_cycles</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">included_reactions</span><span class="p">,</span> <span class="n">remove_cycles</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                                                     <span class="n">view</span><span class="o">=</span><span class="n">SequentialView</span><span class="p">()))</span>
 
     <span class="k">def</span> <span class="nf">_set_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
@@ -661,11 +664,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">primary_objective</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">primary_objective</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">FSEOF</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
 
-        <span class="k">if</span> <span class="n">primary_objective</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">primary_objective</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">objective</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">primary_objective</span><span class="p">,</span> <span class="n">Reaction</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">primary_objective</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
@@ -682,8 +685,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Primary objective must be an Objective, Reaction or a string&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="FSEOF.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.FSEOF.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_enforced_flux</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">number_of_results</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="n">simulation_method</span><span class="o">=</span><span class="n">fba</span><span class="p">,</span>
-            <span class="n">simulation_kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="FSEOF.run"><a class="viewcode-back" href="../../../../apidoc_output/cameo.strain_design.deterministic.html#cameo.strain_design.deterministic.flux_variability_based.FSEOF.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_enforced_flux</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">number_of_results</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="p">(),</span> <span class="n">simulation_method</span><span class="o">=</span><span class="n">fba</span><span class="p">,</span>
+            <span class="n">simulation_kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Performs a Flux Scanning based on Enforced Objective Flux (FSEOF) analysis.</span>
 
@@ -709,9 +712,9 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="n">target</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">reaction_for</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">_reaction_for</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
 
-        <span class="n">simulation_kwargs</span> <span class="o">=</span> <span class="n">simulation_kwargs</span> <span class="k">if</span> <span class="n">simulation_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="p">{}</span>
+        <span class="n">simulation_kwargs</span> <span class="o">=</span> <span class="n">simulation_kwargs</span> <span class="k">if</span> <span class="n">simulation_kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">simulation_kwargs</span><span class="p">[</span><span class="s1">&#39;objective&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">primary_objective</span>
 
         <span class="k">if</span> <span class="s1">&#39;reference&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">simulation_kwargs</span><span class="p">:</span>
@@ -797,8 +800,14 @@
 
     <span class="n">__method_name__</span> <span class="o">=</span> <span class="s2">&quot;FSEOF&quot;</span>
 
-    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;FSEOF fluxes&quot;</span>
+
+        <span class="n">plot</span> <span class="o">=</span> <span class="n">plotter</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">height</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">grid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">plotter</span><span class="o">.</span><span class="n">display</span><span class="p">(</span><span class="n">plot</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reactions</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">primary_objective</span><span class="p">,</span> <span class="n">enforced_levels</span><span class="p">,</span> <span class="n">reaction_results</span><span class="p">,</span>
                  <span class="n">run_args</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -953,10 +962,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -966,8 +977,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -1013,14 +1024,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1031,8 +1039,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

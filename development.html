@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Development &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>Development &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,17 +25,20 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="index.html" />
     <link rel="next" title="Contributing to cameo" href="contributing.html" />
     <link rel="prev" title="Using meta-heuristics to search for knockout strategies." href="12-advanced-usage-of-heuristic-optimization.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -57,12 +60,10 @@ as provided by cobrapy (<code class="xref py py-obj docutils literal"><span clas
 the optlang package (see <span class="xref std std-ref">optlang_interface</span>). The following benefits ....</p>
 <ul class="simple">
 <li>Methods that require solving multiple succession will run a lot faster since previously found solution will be reused.</li>
-<li>Implementation of novel or published becomes a lot easier since optlang (based on the very popular symbolic math library</li>
+<li>Implementation of novel or published becomes a lot easier since optlang (based on the very popular symbolic math library sympy) facilitates the formulation of constraints and objectives using equations (similar to GAMS) instead of matrix formalism.</li>
+<li>Adding of additional constraints (even non-metabolic ), is straight forwards and eliminates the problem in cobrapy of having to define opti (check out the ice cream sandwich ...)</li>
+<li>The optimization problem is always accessible and has a one-to-one correspondence to the model.</li>
 </ul>
-<p>sympy) facilitates the formulation of constraints and objectives using equations (similar to GAMS) instead of matrix formalism.
-* Adding of additional constraints (even non-metabolic ), is straight forwards and eliminates the problem in cobrapy of having
-to define opti (check out the ice cream sandwich ...)
-* The optimization problem is always accessible and has a one-to-one correspondence to the model.</p>
 </div>
 <div class="section" id="importing-a-model">
 <h3>Importing a model<a class="headerlink" href="#importing-a-model" title="Permalink to this headline">¶</a></h3>
@@ -182,10 +183,12 @@ It is straightforward to add additional constraints, for example, a flux ratio c
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -195,8 +198,8 @@ It is straightforward to add additional constraints, for example, a flux ratio c
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -221,7 +224,7 @@ It is straightforward to add additional constraints, for example, a flux ratio c
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
 </ul>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">Development</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#cameo-vs-cobrapy">cameo vs. cobrapy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#the-optlang-solver-interface">The optlang solver interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#good-coding-practices">Good coding practices</a></li>
@@ -245,14 +248,11 @@ It is straightforward to add additional constraints, for example, a flux ratio c
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -263,8 +263,8 @@ It is straightforward to add additional constraints, for example, a flux ratio c
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/development.txt"

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.heuristic package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.strain_design.heuristic package &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,18 +25,21 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design package" href="cameo.strain_design.html" />
     <link rel="next" title="cameo.strain_design.pathway_prediction package" href="cameo.strain_design.pathway_prediction.html" />
     <link rel="prev" title="cameo.strain_design.deterministic package" href="cameo.strain_design.deterministic.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -52,13 +55,8 @@
 <span id="cameo-strain-design-heuristic-evolutionary-based-module"></span><h2>cameo.strain_design.heuristic.evolutionary_based module<a class="headerlink" href="#module-cameo.strain_design.heuristic.evolutionary_based" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene">
-<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary_based.</code><code class="descname">OptGene</code><span class="sig-paren">(</span><em>model</em>, <em>evolutionary_algorithm=&lt;class 'inspyred.ec.ec.GA'&gt;</em>, <em>manipulation_type='genes'</em>, <em>essential_genes=None</em>, <em>essential_reactions=None</em>, <em>plot=True</em>, <em>exclude_non_gene_reactions=True</em>, <em>seed=None</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">cameo.strain_design.heuristic.evolutionary_based.</code><code class="descname">OptGene</code><span class="sig-paren">(</span><em>model</em>, <em>evolutionary_algorithm=&lt;class 'inspyred.ec.ec.GA'&gt;</em>, <em>manipulation_type='genes'</em>, <em>essential_genes=None</em>, <em>essential_reactions=None</em>, <em>plot=True</em>, <em>exclude_non_gene_reactions=True</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="cameo.strain_design.html#cameo.strain_design.strain_design.StrainDesignMethod" title="cameo.strain_design.strain_design.StrainDesignMethod"><code class="xref py py-class docutils literal"><span class="pre">cameo.strain_design.strain_design.StrainDesignMethod</span></code></a></p>
-<dl class="attribute">
-<dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene.seed">
-<code class="descname">seed</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.seed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="attribute">
 <dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene.plot">
 <code class="descname">plot</code><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.plot" title="Permalink to this definition">¶</a></dt>
@@ -71,7 +69,7 @@
 
 <dl class="method">
 <dt id="cameo.strain_design.heuristic.evolutionary_based.OptGene.run">
-<code class="descname">run</code><span class="sig-paren">(</span><em>target=None</em>, <em>biomass=None</em>, <em>substrate=None</em>, <em>max_knockouts=5</em>, <em>simulation_method=&lt;function fba&gt;</em>, <em>growth_coupled=False</em>, <em>max_evaluations=20000</em>, <em>population_size=200</em>, <em>time_machine=None</em>, <em>max_results=50</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><em>target=None</em>, <em>biomass=None</em>, <em>substrate=None</em>, <em>max_knockouts=5</em>, <em>variable_size=True</em>, <em>simulation_method=&lt;function fba&gt;</em>, <em>growth_coupled=False</em>, <em>max_evaluations=20000</em>, <em>population_size=200</em>, <em>time_machine=None</em>, <em>max_results=50</em>, <em>seed=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/heuristic/evolutionary_based.html#OptGene.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.heuristic.evolutionary_based.OptGene.run" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -80,14 +78,16 @@
 <li><strong>target</strong> (<em>str, Metabolite or Reaction</em>) &#8211; The design target</li>
 <li><strong>biomass</strong> (<em>str, Metabolite or Reaction</em>) &#8211; The biomass definition in the model</li>
 <li><strong>substrate</strong> (<em>str, Metabolite or Reaction</em>) &#8211; The main carbon source</li>
-<li><strong>max_knockouts</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Max number of knockouts allowed</li>
+<li><strong>max_knockouts</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Max number of knockouts allowed</li>
+<li><strong>variable_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If true, all candidates have the same size. Otherwise the candidate size can be from 1 to max_knockouts.</li>
 <li><strong>simulation_method</strong> (<em>function</em>) &#8211; Any method from cameo.flux_analysis.simulation or equivalent</li>
-<li><strong>robust</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If true will use the minimum flux rate to compute the fitness</li>
-<li><strong>max_evaluations</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of evaluations before stop</li>
-<li><strong>population_size</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of individuals in each generation</li>
+<li><strong>robust</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; If true will use the minimum flux rate to compute the fitness</li>
+<li><strong>max_evaluations</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of evaluations before stop</li>
+<li><strong>population_size</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of individuals in each generation</li>
 <li><strong>time_machine</strong> (<a class="reference internal" href="cameo.html#cameo.util.TimeMachine" title="cameo.util.TimeMachine"><em>TimeMachine</em></a>) &#8211; See TimeMachine</li>
-<li><strong>max_results</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Max number of different designs to return if found</li>
-<li><strong>kwargs</strong> (<a class="reference external" href="http://docs.python.org/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Arguments for the simulation method.</li>
+<li><strong>max_results</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Max number of different designs to return if found.</li>
+<li><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/2/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; Arguments for the simulation method.</li>
+<li><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; A seed for random.</li>
 </ul>
 </td>
 </tr>
@@ -126,10 +126,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -139,8 +141,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -193,14 +195,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -211,8 +210,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="../_sources/apidoc_output/cameo.strain_design.heuristic.txt"

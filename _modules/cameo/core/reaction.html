@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.core.reaction &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.core.reaction &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -57,25 +60,26 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">partial</span>
 <span class="kn">import</span> <span class="nn">hashlib</span>
-<span class="kn">import</span> <span class="nn">cobra</span> <span class="kn">as</span> <span class="nn">_cobrapy</span>
+<span class="kn">import</span> <span class="nn">cobra</span> <span class="k">as</span> <span class="nn">_cobrapy</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">deepcopy</span>
 
 <span class="kn">import</span> <span class="nn">cameo</span>
-<span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">flux_analysis</span>
-<span class="kn">from</span> <span class="nn">cameo.parallel</span> <span class="kn">import</span> <span class="n">SequentialView</span>
+<span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">flux_analysis</span>
+<span class="kn">from</span> <span class="nn">cameo.parallel</span> <span class="k">import</span> <span class="n">SequentialView</span>
 
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">six</span>
-<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="kn">import</span> <span class="n">inheritdocstring</span>
+<span class="kn">from</span> <span class="nn">cameo.util</span> <span class="k">import</span> <span class="n">inheritdocstring</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 <span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">)</span>
 
 
-<span class="nd">@six.add_metaclass</span><span class="p">(</span><span class="n">inheritdocstring</span><span class="p">)</span>
+<span class="nd">@six</span><span class="o">.</span><span class="n">add_metaclass</span><span class="p">(</span><span class="n">inheritdocstring</span><span class="p">)</span>
 <div class="viewcode-block" id="Reaction"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction">[docs]</a><span class="k">class</span> <span class="nc">Reaction</span><span class="p">(</span><span class="n">_cobrapy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Reaction</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This class extends the cobrapy Reaction class to work with SolverBasedModel.</span>
 
@@ -85,7 +89,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="nd">@classmethod</span>
-<div class="viewcode-block" id="Reaction.clone"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Reaction.clone"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.clone">[docs]</a>    <span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reaction</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Clone a reaction.</span>
 
 <span class="sd">        Parameters</span>
@@ -109,18 +113,38 @@
                     <span class="s2">&quot;Can&#39;t set attribute </span><span class="si">%s</span><span class="s2"> for reaction </span><span class="si">%s</span><span class="s2"> (while cloning it to a cameo style reaction). Skipping it ...&quot;</span> <span class="o">%</span> <span class="p">(</span>
                         <span class="n">attribute</span><span class="p">,</span> <span class="n">reaction</span><span class="p">))</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reaction</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver_based_model</span><span class="o">.</span><span class="n">SolverBasedModel</span><span class="p">):</span>
-            <span class="n">new_reaction</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">new_reaction</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">new_reaction</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">model</span>
-        <span class="c1"># for gene in new_reaction.genes:</span>
-        <span class="c1">#     gene._reaction.remove(reaction)</span>
-        <span class="c1">#     gene._reaction.add(new_reaction)</span>
-        <span class="c1"># for metabolite in new_reaction.metabolites:</span>
-        <span class="c1">#     metabolite._reaction.remove(reaction)</span>
-        <span class="c1">#     metabolite._reaction.add(new_reaction)</span>
+        <span class="n">new_reaction</span><span class="o">.</span><span class="n">_clone_genes</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="n">new_reaction</span><span class="o">.</span><span class="n">_clone_metabolites</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_reaction</span></div>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">subsystem</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_clone_genes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="n">cloned_genes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">gene</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_genes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gene</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Gene</span><span class="p">):</span>
+                <span class="n">cloned_genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cloned_gene</span> <span class="o">=</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Gene</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">gene</span><span class="p">)</span>
+                <span class="n">cloned_genes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cloned_gene</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">genes</span><span class="o">.</span><span class="n">_replace_on_id</span><span class="p">(</span><span class="n">cloned_gene</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_genes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cloned_genes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_clone_metabolites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+        <span class="n">cloned_metabolites</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">metabolite</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Metabolite</span><span class="p">):</span>
+                <span class="n">cloned_metabolites</span><span class="p">[</span><span class="n">metabolite</span><span class="p">]</span> <span class="o">=</span> <span class="n">coeff</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cloned_metabolite</span> <span class="o">=</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Metabolite</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">metabolite</span><span class="p">)</span>
+                <span class="n">cloned_metabolites</span><span class="p">[</span><span class="n">cloned_metabolite</span><span class="p">]</span> <span class="o">=</span> <span class="n">coeff</span>
+                <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">_replace_on_id</span><span class="p">(</span><span class="n">cloned_metabolite</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_metabolites</span> <span class="o">=</span> <span class="n">cloned_metabolites</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">subsystem</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">lower_bound</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">upper_bound</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -130,12 +154,17 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="nb">id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">subsystem</span><span class="o">=</span><span class="n">subsystem</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span> <span class="o">=</span> <span class="n">lower_bound</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span> <span class="o">=</span> <span class="n">upper_bound</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span> <span class="o">=</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Reaction.__str__"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">()))</span></div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_reaction_string</span><span class="p">()))</span>
+
+    <span class="nd">@_cobrapy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Reaction</span><span class="o">.</span><span class="n">gene_reaction_rule</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">gene_reaction_rule</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">):</span>
+        <span class="n">_cobrapy</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">Reaction</span><span class="o">.</span><span class="n">gene_reaction_rule</span><span class="o">.</span><span class="n">fset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rule</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clone_genes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">reversibility</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -155,38 +184,61 @@
         <span class="sd">&quot;&quot;&quot;An optlang variable representing the forward flux (if associated with model), otherwise None.</span>
 <span class="sd">        Representing the net flux if model.reversible_encoding == &#39;unsplit&#39;&quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="mf">1.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span> <span class="o">-</span> <span class="mf">1.</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">forward_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An optlang variable representing the forward flux (if associated with model), otherwise None.&quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_forward_id</span><span class="p">()]</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span><span class="o">.</span><span class="n">problem</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span>
+            <span class="c1"># return model.solver.variables[self._get_forward_id()]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">reverse_variable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;An optlang variable representing the reverse flux (if associated with model), otherwise None.&quot;&quot;&quot;</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_reverse_id</span><span class="p">()]</span>
+            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span><span class="o">.</span><span class="n">problem</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">solver</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span>
+            <span class="c1"># return model.solver.variables[self._get_reverse_id()]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">_reset_var_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_forward_variable</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reverse_variable</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cop</span> <span class="o">=</span> <span class="n">copy</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+        <span class="n">cop</span><span class="o">.</span><span class="n">_reset_var_cache</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cop</span>
+
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="p">):</span>
+        <span class="n">cop</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">),</span> <span class="n">memo</span><span class="p">)</span>
+        <span class="n">cop</span><span class="o">.</span><span class="n">_reset_var_cache</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cop</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">lower_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span>
 
-    <span class="nd">@lower_bound.setter</span>
+    <span class="nd">@lower_bound</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">lower_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
 
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
             <span class="n">forward_variable</span><span class="p">,</span> <span class="n">reverse_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span><span class="p">:</span>  <span class="c1"># reversible</span>
@@ -233,7 +285,6 @@
                         <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span> <span class="o">=</span> <span class="n">value</span>
                         <span class="n">reverse_variable</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="n">value</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s1">&#39;self._lower_bound&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span><span class="p">,</span> <span class="s1">&#39;self._upper_bound&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span><span class="p">})</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;lower_bound issue&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span> <span class="o">=</span> <span class="n">value</span>
@@ -242,10 +293,10 @@
     <span class="k">def</span> <span class="nf">upper_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span>
 
-    <span class="nd">@upper_bound.setter</span>
+    <span class="nd">@upper_bound</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">upper_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 
             <span class="n">forward_variable</span><span class="p">,</span> <span class="n">reverse_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span><span class="p">:</span>  <span class="c1"># reversible</span>
@@ -291,7 +342,6 @@
                     <span class="n">forward_variable</span><span class="o">.</span><span class="n">ub</span> <span class="o">=</span> <span class="n">value</span>
                     <span class="n">reverse_variable</span><span class="o">.</span><span class="n">lb</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">({</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="n">value</span><span class="p">,</span> <span class="s1">&#39;self._lower_bound&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lower_bound</span><span class="p">,</span> <span class="s1">&#39;self._upper_bound&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span><span class="p">})</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;upper_bound issue&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_upper_bound</span> <span class="o">=</span> <span class="n">value</span>
@@ -300,17 +350,18 @@
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span>
 
-    <span class="nd">@model.setter</span>
+    <span class="nd">@model</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">objective_coefficient</span>  <span class="c1"># Get objective coefficient from model</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SolverBasedModel</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Must be an instance of cameo.core.SolverBasedModel, not </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_var_cache</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="o">=</span> <span class="n">value</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">objective_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SolverBasedModel</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">cameo</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">SolverBasedModel</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">coefficients_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">objective</span><span class="o">.</span><span class="n">expression</span><span class="o">.</span><span class="n">as_coefficients_dict</span><span class="p">()</span>
             <span class="n">forw_coef</span> <span class="o">=</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">rev_coef</span> <span class="o">=</span> <span class="n">coefficients_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -320,10 +371,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span>
 
-    <span class="nd">@objective_coefficient.setter</span>
+    <span class="nd">@objective_coefficient</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">objective_coefficient</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">coef_difference</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">objective_coefficient</span>
             <span class="n">model</span><span class="o">.</span><span class="n">objective</span> <span class="o">+=</span> <span class="n">coef_difference</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_expression</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_objective_coefficient</span> <span class="o">=</span> <span class="n">value</span>
@@ -332,59 +383,64 @@
     <span class="k">def</span> <span class="nf">effective_lower_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="n">fva_result</span> <span class="o">=</span> <span class="n">flux_analysis</span><span class="o">.</span><span class="n">flux_variability_analysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="n">view</span><span class="o">=</span><span class="n">SequentialView</span><span class="p">(),</span>
-                                                             <span class="n">remove_cycles</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                                                             <span class="n">remove_cycles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fva_result</span><span class="p">[</span><span class="s1">&#39;lower_bound&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">effective_upper_bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="n">fva_result</span> <span class="o">=</span> <span class="n">flux_analysis</span><span class="o">.</span><span class="n">flux_variability_analysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">reactions</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">],</span> <span class="n">view</span><span class="o">=</span><span class="n">SequentialView</span><span class="p">(),</span>
-                                                             <span class="n">remove_cycles</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                                                             <span class="n">remove_cycles</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">fva_result</span><span class="p">[</span><span class="s1">&#39;upper_bound&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">]</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">flux</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="o">.</span><span class="n">primal</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span><span class="o">.</span><span class="n">primal</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">reduced_cost</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="o">.</span><span class="n">dual</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="o">.</span><span class="n">dual</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span><span class="o">.</span><span class="n">dual</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">return</span> <span class="kc">None</span>
 
-<div class="viewcode-block" id="Reaction.add_metabolites"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.add_metabolites">[docs]</a>    <span class="k">def</span> <span class="nf">add_metabolites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolites</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
+<div class="viewcode-block" id="Reaction.add_metabolites"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.add_metabolites">[docs]</a>    <span class="k">def</span> <span class="nf">add_metabolites</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolites</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">combine</span><span class="p">:</span>
             <span class="n">old_coefficients</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolites</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">(</span><span class="n">metabolites</span><span class="p">,</span> <span class="n">combine</span><span class="o">=</span><span class="n">combine</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
-        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">metabolite</span><span class="p">,</span> <span class="n">coefficient</span> <span class="ow">in</span> <span class="n">six</span><span class="o">.</span><span class="n">iteritems</span><span class="p">(</span><span class="n">metabolites</span><span class="p">):</span>
+
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>  <span class="c1"># support metabolites added as strings.</span>
                     <span class="n">metabolite</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">metabolite</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">combine</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">combine</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="n">old_coefficient</span> <span class="o">=</span> <span class="n">old_coefficients</span><span class="p">[</span><span class="n">metabolite</span><span class="p">]</span>
                     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                         <span class="k">pass</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">coefficient</span> <span class="o">=</span> <span class="n">coefficient</span> <span class="o">-</span> <span class="n">old_coefficient</span>
-                <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="n">metabolite</span><span class="o">.</span><span class="n">id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">coefficient</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">flux_expression</span></div>
+                        <span class="n">coefficient</span> <span class="o">=</span> <span class="n">coefficient</span> <span class="o">+</span> <span class="n">old_coefficient</span>
+
+                <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">constraints</span><span class="p">[</span><span class="n">metabolite</span><span class="o">.</span><span class="n">id</span><span class="p">]</span><span class="o">.</span><span class="n">set_linear_coefficients</span><span class="p">({</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span><span class="p">:</span> <span class="n">coefficient</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span><span class="p">:</span> <span class="o">-</span><span class="n">coefficient</span>
+                <span class="p">})</span></div>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>  <span class="c1"># Returns None if _id is not set</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># Returns None if _id is not set</span>
 
-    <span class="nd">@id.setter</span>
+    <span class="nd">@id</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;ID must be a string&quot;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>  <span class="c1"># (= if hasattr(self, &quot;_model&quot;) and self._model is not None)</span>
+        <span class="k">elif</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_model&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># (= if hasattr(self, &quot;_model&quot;) and self._model is not None)</span>
             <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The model already contains a reaction with the id:&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
             <span class="n">forward_variable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span>
@@ -398,7 +454,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_id</span> <span class="o">=</span> <span class="n">value</span>
 
-<div class="viewcode-block" id="Reaction.knock_out"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.knock_out">[docs]</a>    <span class="k">def</span> <span class="nf">knock_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Reaction.knock_out"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.knock_out">[docs]</a>    <span class="k">def</span> <span class="nf">knock_out</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Knockout reaction by setting its bounds to zero.</span>
 
 <span class="sd">        Parameters</span>
@@ -415,7 +471,7 @@
             <span class="n">reaction</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">ub</span>
             <span class="n">reaction</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">lb</span>
 
-        <span class="k">if</span> <span class="n">time_machine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">time_machine</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">time_machine</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">knock_out</span><span class="p">,</span> <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">knock_out</span><span class="p">()</span></div>
@@ -423,7 +479,7 @@
 <div class="viewcode-block" id="Reaction.pop"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.pop">[docs]</a>    <span class="k">def</span> <span class="nf">pop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metabolite_id</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Removes a given metabolite from the reaction stoichiometry, and returns the coefficient.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">metabolite_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metabolite_id</span><span class="p">,</span> <span class="n">six</span><span class="o">.</span><span class="n">string_types</span><span class="p">):</span>
@@ -431,24 +487,42 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">met</span> <span class="o">=</span> <span class="n">metabolite_id</span>
             <span class="n">coef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metabolites</span><span class="p">[</span><span class="n">met</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">({</span><span class="n">met</span><span class="p">:</span> <span class="o">-</span><span class="n">coef</span><span class="p">},</span> <span class="n">combine</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_metabolites</span><span class="p">({</span><span class="n">met</span><span class="p">:</span> <span class="o">-</span><span class="n">coef</span><span class="p">},</span> <span class="n">combine</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">coef</span></div>
 
-<div class="viewcode-block" id="Reaction.remove_from_model"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.remove_from_model">[docs]</a>    <span class="k">def</span> <span class="nf">remove_from_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Reaction.remove_from_model"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.remove_from_model">[docs]</a>    <span class="k">def</span> <span class="nf">remove_from_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">reaction_model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span>
         <span class="n">reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">remove_from_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="p">)</span>
-        <span class="n">reaction_model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">])</span></div>
+        <span class="n">reaction_model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Trigger model setter, since cobrapy only sets _model</span></div>
 
-<div class="viewcode-block" id="Reaction.delete"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Reaction.delete"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">remove_orphans</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">model</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span>
         <span class="n">forward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward_variable</span>
         <span class="n">reverse</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reverse_variable</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Reaction</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">remove_orphans</span><span class="p">)</span>
-        <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">])</span></div>
+        <span class="n">model</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">remove</span><span class="p">([</span><span class="n">forward</span><span class="p">,</span> <span class="n">reverse</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># Trigger model setter, since cobrapy only sets _model</span></div>
         <span class="c1"># if remove_orphans:</span>
         <span class="c1">#     model.solver.remove([metabolite.model.solver for metabolite in self.metabolites.keys()])</span>
+
+<div class="viewcode-block" id="Reaction.change_bounds"><a class="viewcode-back" href="../../../apidoc_output/cameo.core.html#cameo.core.reaction.Reaction.change_bounds">[docs]</a>    <span class="k">def</span> <span class="nf">change_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ub</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">time_machine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Changes one or both of the reaction bounds and allows the changes to be reversed with a TimeMachine&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">time_machine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="n">lb</span>
+            <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span> <span class="o">=</span> <span class="n">ub</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">old_lb</span><span class="p">,</span> <span class="n">old_ub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span>
+            <span class="k">if</span> <span class="n">lb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time_machine</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="n">lb</span><span class="p">),</span>
+                             <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;lower_bound&quot;</span><span class="p">,</span> <span class="n">old_lb</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">ub</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">time_machine</span><span class="p">(</span><span class="n">do</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;upper_bound&quot;</span><span class="p">,</span> <span class="n">ub</span><span class="p">),</span>
+                             <span class="n">undo</span><span class="o">=</span><span class="n">partial</span><span class="p">(</span><span class="nb">setattr</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;upper_bound&quot;</span><span class="p">,</span> <span class="n">old_ub</span><span class="p">))</span></div>
 
     <span class="k">def</span> <span class="nf">_repr_html_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s2">&quot;&quot;&quot;</span>
@@ -463,13 +537,16 @@
 <span class="s2">                &lt;td&gt;&lt;strong&gt;Stoichiometry&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;</span><span class="si">%s</span><span class="s2">&lt;/td&gt;</span>
 <span class="s2">            &lt;/tr&gt;</span>
 <span class="s2">            &lt;tr&gt;</span>
+<span class="s2">                &lt;td&gt;&lt;strong&gt;GPR&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;</span><span class="si">%s</span><span class="s2">&lt;/td&gt;</span>
+<span class="s2">            &lt;/tr&gt;</span>
+<span class="s2">            &lt;tr&gt;</span>
 <span class="s2">                &lt;td&gt;&lt;strong&gt;Lower bound&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;</span><span class="si">%f</span><span class="s2">&lt;/td&gt;</span>
 <span class="s2">            &lt;/tr&gt;</span>
 <span class="s2">            &lt;tr&gt;</span>
 <span class="s2">                &lt;td&gt;&lt;strong&gt;Upper bound&lt;/strong&gt;&lt;/td&gt;&lt;td&gt;</span><span class="si">%f</span><span class="s2">&lt;/td&gt;</span>
 <span class="s2">            &lt;/tr&gt;</span>
 <span class="s2">        &lt;/table&gt;</span>
-<span class="s2">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">)</span></div>
+<span class="s2">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gene_reaction_rule</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lower_bound</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">upper_bound</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -488,10 +565,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -501,8 +580,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -548,14 +627,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -566,8 +642,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.network_analysis.util &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.network_analysis.util &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,16 +25,19 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../../../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../../../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../../../index.html" />
     <link rel="up" title="cameo" href="../../cameo.html" />
    
+  <link rel="stylesheet" href="../../../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../../../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -56,12 +59,12 @@
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">print_function</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;distance_based_on_molecular_formula&#39;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="distance_based_on_molecular_formula"><a class="viewcode-back" href="../../../apidoc_output/cameo.network_analysis.html#cameo.network_analysis.util.distance_based_on_molecular_formula">[docs]</a><span class="k">def</span> <span class="nf">distance_based_on_molecular_formula</span><span class="p">(</span><span class="n">metabolite1</span><span class="p">,</span> <span class="n">metabolite2</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="distance_based_on_molecular_formula"><a class="viewcode-back" href="../../../apidoc_output/cameo.network_analysis.html#cameo.network_analysis.util.distance_based_on_molecular_formula">[docs]</a><span class="k">def</span> <span class="nf">distance_based_on_molecular_formula</span><span class="p">(</span><span class="n">metabolite1</span><span class="p">,</span> <span class="n">metabolite2</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Calculate the distance of two metabolites bases on the molecular formula</span>
 
 <span class="sd">    Arguments</span>
@@ -78,14 +81,14 @@
 <span class="sd">    float</span>
 <span class="sd">        The distance between metabolite1 and metabolite2.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">metabolite2</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">metabolite2</span><span class="o">.</span><span class="n">elements</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Cannot calculate distance between metabolites </span><span class="si">%s</span><span class="s1"> and </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">metabolite1</span><span class="p">,</span> <span class="n">metabolite2</span><span class="p">))</span>
-    <span class="n">elements</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">metabolite2</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
+    <span class="n">elements</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">metabolite2</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
     <span class="n">distance</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">elements</span><span class="p">:</span>
-        <span class="n">distance</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">metabolite2</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">distance</span> <span class="o">+=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">metabolite2</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">normalize</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">distance</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">metabolite2</span><span class="o">.</span><span class="n">formula</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="n">distance</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">metabolite1</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">metabolite2</span><span class="o">.</span><span class="n">elements</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">distance</span></div>
 </pre></div>
@@ -106,10 +109,12 @@
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -119,8 +124,8 @@
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -166,14 +171,11 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -184,8 +186,8 @@
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
     </div>
 

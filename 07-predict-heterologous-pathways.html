@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Predict heterologous pathways &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>Predict heterologous pathways &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,25 +25,28 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="index.html" />
     <link rel="up" title="Tutorials" href="tutorials.html" />
     <link rel="next" title="Vanillin production" href="09-vanillin-production.html" />
     <link rel="prev" title="Predict expression modulation targets" href="06-predict-gene-modulation-targets.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">display</span>
+  <div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="k">import</span> <span class="n">display</span>
 <span class="kn">import</span> <span class="nn">re</span>
 </pre></div>
 </div>
@@ -54,8 +57,8 @@ new viable strains. Because portfolio of available reactions is very
 large, computer assisted pathway design becomes essential. <strong>Cameo</strong>
 implements a pathway search algorithm using an universal biochemical
 reaction database that enumerates the shortest pathways.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
-<span class="kn">from</span> <span class="nn">cameo.strain_design</span> <span class="kn">import</span> <span class="n">pathway_prediction</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">cameo.strain_design</span> <span class="k">import</span> <span class="n">pathway_prediction</span>
 </pre></div>
 </div>
 <script type="text/javascript">
@@ -135,13 +138,13 @@ reaction database that enumerates the shortest pathways.</p>
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">iMM904</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">iMM904</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">predictor</span> <span class="o">=</span> <span class="n">pathway_prediction</span><span class="o">.</span><span class="n">PathwayPredictor</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">compartment_regexp</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;.*_c$&quot;</span><span class="p">))</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">predictor</span> <span class="o">=</span> <span class="n">pathway_prediction</span><span class="o">.</span><span class="n">PathwayPredictor</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">compartment_regexp</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;.*_c$&quot;</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">pathways</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="s2">&quot;vanillin&quot;</span><span class="p">,</span> <span class="n">max_predictions</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">pathways</span> <span class="o">=</span> <span class="n">predictor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="s2">&quot;vanillin&quot;</span><span class="p">,</span> <span class="n">max_predictions</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 <span>Pathway 1</span><div>
@@ -274,7 +277,7 @@ reaction database that enumerates the shortest pathways.</p>
     </tr>
   </tbody>
 </table>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">pathways</span><span class="o">.</span><span class="n">pathways</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reactions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">pathways</span><span class="o">.</span><span class="n">pathways</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reactions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 <table>
@@ -293,7 +296,7 @@ reaction database that enumerates the shortest pathways.</p>
     <tr>
         <td><strong>Upper bound</strong></td><td>1000.000000</td>
     </tr>
-</table><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">pathways</span><span class="o">.</span><span class="n">plot_production_envelopes</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">biomass_SC5_notrace</span><span class="p">])</span>
+</table><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">pathways</span><span class="o">.</span><span class="n">plot_production_envelopes</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">biomass_SC5_notrace</span><span class="p">])</span>
 </pre></div>
 </div>
 <script type="text/javascript">
@@ -335,10 +338,12 @@ reaction database that enumerates the shortest pathways.</p>
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -348,8 +353,8 @@ reaction database that enumerates the shortest pathways.</p>
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -378,7 +383,7 @@ reaction database that enumerates the shortest pathways.</p>
 <li class="toctree-l2"><a class="reference internal" href="04-analyze-models.html">Analyzing models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="06-predict-gene-modulation-targets.html">Predict expression modulation targets</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Predict heterologous pathways</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Predict heterologous pathways</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html">Vanillin production</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#genome-scale-metabolic-model">Genome-scale metabolic model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="09-vanillin-production.html#heterologous-pathway">Heterologous pathway</a></li>
@@ -408,14 +413,11 @@ reaction database that enumerates the shortest pathways.</p>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -426,8 +428,8 @@ reaction database that enumerates the shortest pathways.</p>
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/07-predict-heterologous-pathways.txt"

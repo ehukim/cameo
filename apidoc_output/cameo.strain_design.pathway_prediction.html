@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>cameo.strain_design.pathway_prediction package &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>cameo.strain_design.pathway_prediction package &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,18 +25,21 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="../_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="../index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="../index.html" />
     <link rel="up" title="cameo.strain_design package" href="cameo.strain_design.html" />
     <link rel="next" title="cameo.ui package" href="cameo.ui.html" />
     <link rel="prev" title="cameo.strain_design.heuristic package" href="cameo.strain_design.heuristic.html" />
    
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="../_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -53,7 +56,7 @@
 <dl class="class">
 <dt id="cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor">
 <em class="property">class </em><code class="descclassname">cameo.strain_design.pathway_prediction.pathway_predictor.</code><code class="descname">PathwayPredictor</code><span class="sig-paren">(</span><em>model</em>, <em>universal_model=None</em>, <em>mapping=None</em>, <em>compartment_regexp=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/cameo/strain_design/pathway_prediction/pathway_predictor.html#PathwayPredictor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="http://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Pathway predictions from a universal set of reaction.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -73,13 +76,12 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 <dl class="attribute">
 <dt id="cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.model">
 <code class="descname">model</code><a class="headerlink" href="#cameo.strain_design.pathway_prediction.pathway_predictor.PathwayPredictor.model" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>SolverBasedModel</em></p>
-<p>The provided model + universal_model + adapter reactions</p>
+<dd><p><em>SolverBasedModel</em> &#8211; The provided model + universal_model + adapter reactions</p>
 </dd></dl>
 
 <p class="rubric">Examples</p>
 <p>Determine production pathways for propane-1,3-diol (MNXM2861 in the metanetx namespace)</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="kn">import</span> <span class="n">hosts</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">cameo.api</span> <span class="k">import</span> <span class="n">hosts</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pathway_predictor</span> <span class="o">=</span> <span class="n">PathwayPredictor</span><span class="p">(</span><span class="n">hosts</span><span class="o">.</span><span class="n">ecoli</span><span class="o">.</span><span class="n">iJO1366</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">product</span><span class="o">=</span><span class="n">pathway_predictor</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">metabolites</span><span class="o">.</span><span class="n">MNXM2861</span><span class="p">)</span>
 </pre></div>
@@ -95,15 +97,15 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>product</strong> (<em>Metabolite, str</em>) &#8211; Metabolite or id or name of metabolite to find production pathways for.</li>
 <li><strong>max_predictions</strong> (<em>int, optional</em>) &#8211; The maximum number of predictions to compute.</li>
-<li><strong>min_production</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The minimum acceptable production flux to product.</li>
-<li><strong>timeout</strong> (<a class="reference external" href="http://docs.python.org/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The time limit [seconds] per attempted prediction.</li>
+<li><strong>min_production</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The minimum acceptable production flux to product.</li>
+<li><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The time limit [seconds] per attempted prediction.</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A list of pathways (list of reactions)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.python.org/library/functions.html#list" title="(in Python v2.7)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2/library/functions.html#list" title="(in Python v2.7)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -148,10 +150,12 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -161,8 +165,8 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -215,14 +219,11 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -233,8 +234,8 @@ identifiers in <a class="reference internal" href="#cameo.strain_design.pathway_
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="../_sources/apidoc_output/cameo.strain_design.pathway_prediction.txt"

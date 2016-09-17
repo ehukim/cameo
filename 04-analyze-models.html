@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Analyzing models &mdash; cameo 0.6.0+1.g10719db.dirty documentation</title>
+    <title>Analyzing models &#8212; cameo 0.7.1+3.geb2a8df.dirty documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.0+1.g10719db.dirty',
+        VERSION:     '0.7.1+3.geb2a8df.dirty',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,18 +25,21 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="cameo 0.6.0+1.g10719db.dirty documentation" href="index.html" />
+    <link rel="top" title="cameo 0.7.1+3.geb2a8df.dirty documentation" href="index.html" />
     <link rel="up" title="Tutorials" href="tutorials.html" />
     <link rel="next" title="Predict gene knockout strategies" href="05-predict-gene-knockout-strategies.html" />
     <link rel="prev" title="Simulate models" href="03-simulate-models.html" />
    
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
     <link rel="apple-touch-icon" href="_static/cameo_touch_icon.png" />
+  
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">  
+  <body role="document">
+  
 
     <div class="document">
       <div class="documentwrapper">
@@ -52,7 +55,7 @@ tool for <strong>Py</strong>thon. <strong>cameo</strong> is thus 100% compatible
 <strong>cobrapy</strong>. For efficiency reasons though <strong>cameo</strong> implements its own
 analysis methods that take advantage of a more advanced solver
 interface.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">models</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">models</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">bigg</span><span class="o">.</span><span class="n">e_coli_core</span>
 </pre></div>
 </div>
@@ -137,10 +140,10 @@ interface.</p>
 <h2>Flux Variability Analysis<a class="headerlink" href="#flux-variability-analysis" title="Permalink to this headline">¶</a></h2>
 <p>Flux variability analysis (FVA) enables the computation of lower and
 upper bounds of reaction fluxes.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">flux_variability_analysis</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">flux_variability_analysis</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fva_result</span> <span class="o">=</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fva_result</span> <span class="o">=</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
 <span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span>
 </pre></div>
 </div>
@@ -202,7 +205,7 @@ upper bounds of reaction fluxes.</p>
   </tbody>
 </table>
 <p>95 rows × 2 columns</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fva_result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">25</span><span class="p">])</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fva_result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">index</span><span class="p">[:</span><span class="mi">25</span><span class="p">])</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="a8ec79da-a799-44ff-aee9-17c80324985a"></div>
@@ -290,7 +293,7 @@ upper bounds of reaction fluxes.</p>
   }(this));
 </script><p>One very useful application of FVA is determining if alternative optimal
 solution exist.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fva_result2</span> <span class="o">=</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">fraction_of_optimum</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fva_result2</span> <span class="o">=</span> <span class="n">flux_variability_analysis</span><span class="p">(</span><span class="n">model</span><span class="p">,</span><span class="n">fraction_of_optimum</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 <span class="n">fva_result2</span><span class="o">.</span><span class="n">data_frame</span>
 </pre></div>
 </div>
@@ -352,7 +355,7 @@ solution exist.</p>
   </tbody>
 </table>
 <p>95 rows × 2 columns</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fva_result2</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fva_result2</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="868b5abd-e1a5-4e57-aa4c-254a18e9cc33"></div>
@@ -438,10 +441,10 @@ solution exist.</p>
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.visualization</span> <span class="kn">import</span> <span class="n">plotting</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.visualization</span> <span class="k">import</span> <span class="n">plotting</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span>
 <span class="n">plotting</span><span class="o">.</span><span class="n">plot_2_flux_variability_analysis</span><span class="p">(</span><span class="n">fva_result</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">fva_result2</span><span class="o">.</span><span class="n">data_frame</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -537,17 +540,17 @@ stoichiometric constraints [Edawards <em>et al.</em> 2001].</p>
 <p>The phenotipic phase plane between growth and a product of interest
 yields the production envelope: a representation between the trade of
 between production of the desired product and growth.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="kn">import</span> <span class="n">phenotypic_phase_plane</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo</span> <span class="k">import</span> <span class="n">phenotypic_phase_plane</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
                                 <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="p">],</span>
                                 <span class="n">objective</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_succ_e</span><span class="p">,</span>
                                 <span class="n">points</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">700</span><span class="p">)</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="a1a2dd8b-4327-4d59-a38d-babe8aea0e59"></div>
@@ -638,7 +641,7 @@ of the system to design and how the production relates for with growth.
 In the previous example, succinate prudction is completly decoupled from
 growth and by decreasing the growth rate it is theoretically possible to
 produce up to 15 times more succinate.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.52</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.23</span><span class="p">,</span> <span class="mf">12.2</span><span class="p">)],</span> <span class="n">points_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">])</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.52</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.23</span><span class="p">,</span> <span class="mf">12.2</span><span class="p">)],</span> <span class="n">points_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="9319f7da-f15a-46ec-a731-fbc3758991b2"></div>
@@ -728,7 +731,7 @@ produce up to 15 times more succinate.</p>
 production. There is no stoichiometric couple between growth and
 production for succinate under aerobic conditions, but that is not the
 case for acetate under anaerobic conditions.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
                                 <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="p">],</span>
                                 <span class="n">objective</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_ac_e</span><span class="p">)</span>
 <span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">350</span><span class="p">)</span>
@@ -817,7 +820,7 @@ case for acetate under anaerobic conditions.</p>
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">data_frame</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">data_frame</span>
 </pre></div>
 </div>
 <div>
@@ -890,7 +893,7 @@ case for acetate under anaerobic conditions.</p>
 <p>20 rows × 3 columns</p>
 </div><p>One can imediatly see if a design is feasible within the new defined
 constraints.</p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="n">points_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">])</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="mi">350</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)],</span> <span class="n">points_colors</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;green&quot;</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="501072a0-a7f1-454d-aae0-9b7962e1e8af"></div>
@@ -978,7 +981,7 @@ constraints.</p>
   }(this));
 </script><p>The computed data can be inspected in the format of a pandas data frame
 by calling <code class="xref py py-obj docutils literal"><span class="pre">result.data_frame</span></code></p>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">data_frame</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">result</span><span class="o">.</span><span class="n">data_frame</span>
 </pre></div>
 </div>
 <div>
@@ -1049,7 +1052,7 @@ by calling <code class="xref py py-obj docutils literal"><span class="pre">resul
   </tbody>
 </table>
 <p>20 rows × 3 columns</p>
-</div><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
+</div><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">result2</span> <span class="o">=</span> <span class="n">phenotypic_phase_plane</span><span class="p">(</span><span class="n">model</span><span class="p">,</span>
                                  <span class="n">variables</span><span class="o">=</span><span class="p">[</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">BIOMASS_Ecoli_core_w_GAM</span><span class="p">],</span>
                                  <span class="n">objective</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_ac_e</span><span class="p">,</span>
@@ -1140,10 +1143,10 @@ by calling <code class="xref py py-obj docutils literal"><span class="pre">resul
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.visualization</span> <span class="kn">import</span> <span class="n">plotting</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.visualization</span> <span class="k">import</span> <span class="n">plotting</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_2_production_envelopes</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">result2</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">plotting</span><span class="o">.</span><span class="n">plot_2_production_envelopes</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">result2</span><span class="o">.</span><span class="n">data_frame</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">objective</span><span class="p">,</span> <span class="n">result</span><span class="o">.</span><span class="n">variable_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 </pre></div>
 </div>
     <div class="plotdiv" id="ddb3ce76-83f1-4001-a8ed-90d931551585"></div>
@@ -1229,23 +1232,23 @@ by calling <code class="xref py py-obj docutils literal"><span class="pre">resul
       });
     }
   }(this));
-</script><div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>
+</script><div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">model</span><span class="o">.</span><span class="n">reactions</span><span class="o">.</span><span class="n">EX_o2_e</span><span class="o">.</span><span class="n">lower_bound</span> <span class="o">=</span> <span class="o">-</span><span class="mi">10</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="flux-balance-impact-degree">
 <h2>Flux Balance Impact Degree<a class="headerlink" href="#flux-balance-impact-degree" title="Permalink to this headline">¶</a></h2>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="kn">import</span> <span class="n">flux_balance_impact_degree</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cameo.flux_analysis.analysis</span> <span class="k">import</span> <span class="n">flux_balance_impact_degree</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span>%time fbid = flux_balance_impact_degree(model, [&quot;EX_o2_e&quot;])
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">time</span> <span class="n">fbid</span> <span class="o">=</span> <span class="n">flux_balance_impact_degree</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;EX_o2_e&quot;</span><span class="p">])</span>
 </pre></div>
 </div>
-<div class="highlight-python"><div class="highlight"><pre><span></span>CPU times: user 301 ms, sys: 4.12 ms, total: 305 ms
-Wall time: 336 ms
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">CPU</span> <span class="n">times</span><span class="p">:</span> <span class="n">user</span> <span class="mi">301</span> <span class="n">ms</span><span class="p">,</span> <span class="n">sys</span><span class="p">:</span> <span class="mf">4.12</span> <span class="n">ms</span><span class="p">,</span> <span class="n">total</span><span class="p">:</span> <span class="mi">305</span> <span class="n">ms</span>
+<span class="n">Wall</span> <span class="n">time</span><span class="p">:</span> <span class="mi">336</span> <span class="n">ms</span>
 </pre></div>
 </div>
-<div class="code python highlight-python"><div class="highlight"><pre><span></span><span class="n">fbid</span>
+<div class="code python highlight-default"><div class="highlight"><pre><span></span><span class="n">fbid</span>
 </pre></div>
 </div>
         <h3>Flux Balance Impact Degree</h3>
@@ -1321,10 +1324,12 @@ Wall time: 336 ms
 
 
 
+
 <p>
-<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large"
+<iframe src="https://ghbtns.com/github-btn.html?user=biosustain&repo=cameo&type=watch&count=true&size=large&v=2"
   allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
 </p>
+
 
 
 
@@ -1334,8 +1339,8 @@ Wall time: 336 ms
 <p>
 <a href="https://travis-ci.org/biosustain/cameo">
     <img
-        alt="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
-        src="https://secure.travis-ci.org/biosustain/cameo.png?branch=master"
+        alt="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
+        src="https://secure.travis-ci.org/biosustain/cameo.svg?branch=master"
     />
 </a>
 </p>
@@ -1361,7 +1366,7 @@ Wall time: 336 ms
 <li class="toctree-l2"><a class="reference internal" href="08-high-level-API.html">High-level interface for users</a></li>
 <li class="toctree-l2"><a class="reference internal" href="02-import-models.html">Import models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="03-simulate-models.html">Simulate models</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Analyzing models</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Analyzing models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="05-predict-gene-knockout-strategies.html">Predict gene knockout strategies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="06-predict-gene-modulation-targets.html">Predict expression modulation targets</a></li>
 <li class="toctree-l2"><a class="reference internal" href="07-predict-heterologous-pathways.html">Predict heterologous pathways</a></li>
@@ -1394,14 +1399,11 @@ Wall time: 336 ms
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -1412,8 +1414,8 @@ Wall time: 336 ms
       &copy;2014, Novo Nordisk Foundation Center for Biosustainability.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.5</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.7</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.6</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.9</a>
       
       |
       <a href="_sources/04-analyze-models.txt"
