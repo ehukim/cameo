@@ -24,27 +24,24 @@ Currently implements:
 
 from __future__ import absolute_import, print_function
 
-import os
-import six
-
-import pandas
-import numpy
-import cameo
-
 import logging
-
+import os
 from functools import partial
 
+import numpy
+import pandas
+import six
 import sympy
+from optlang.interface import OptimizationExpression
 from sympy import Add
 from sympy import Mul
 from sympy.parsing.sympy_parser import parse_expr
 
-from optlang.interface import OptimizationExpression
+import cameo
 from cameo.config import ndecimals
-from cameo.util import TimeMachine, ProblemCache, in_ipnb
-from cameo.exceptions import SolveError
 from cameo.core.result import Result
+from cameo.exceptions import SolveError
+from cameo.util import TimeMachine, ProblemCache, in_ipnb
 from cameo.visualization.palette import mapper, Palette
 
 __all__ = ['fba', 'pfba', 'moma', 'lmoma', 'room']
@@ -121,13 +118,54 @@ def pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **
         try:
             solution = model.solve()
             if reactions is not None:
-                result = FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+                return FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
             else:
-                result = FluxDistributionResult.from_solution(solution)
+                return FluxDistributionResult.from_solution(solution)
         except SolveError as e:
             logger.error("pfba could not determine an optimal solution for objective %s" % model.objective)
             raise e
-    return result
+
+
+def gene_pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **kwargs):
+    """Parsimonious Enzyme Usage Flux Balance Analysis with Enzymes [1].
+
+    Parameters
+    ----------
+    model: GPRBasedModel
+    objective: str or reaction or optlang.Objective
+        An objective to be minimized/maximized for
+
+    Returns
+    -------
+    FluxDistributionResult
+        Contains the result of the linear solver.
+
+    References
+    ----------
+    .. [1] Machado, D., Herrgaard, M. J., & Rocha, I. (2016). Stoichiometric Representation of Gene–Protein–Reaction
+      Associations Leverages Constraint-Based Analysis from Reaction to Gene-Level Phenotype Prediction. PLOS
+      Computational Biology, 12(10), e1005140. http://doi.org/10.1371/journal.pcbi.1005140
+
+    """
+    with TimeMachine() as tm:
+        original_objective = model.objective
+        if objective is not None:
+            tm(do=partial(setattr, model, 'objective', objective),
+               undo=partial(setattr, model, 'objective', original_objective))
+        model.fix_objective_as_constraint(time_machine=tm, fraction=fraction_of_optimum)
+        pfba_obj = model.solver.interface.Objective(0, direction='min')
+        tm(do=partial(setattr, model, 'objective', pfba_obj),
+           undo=partial(setattr, model, 'objective', original_objective))
+        pfba_obj.set_linear_coefficients({enzyme.variable: 1 for enzyme in model.enzymes})
+        try:
+            solution = model.solve()
+            if reactions is not None:
+                return FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+            else:
+                return FluxDistributionResult.from_solution(solution)
+        except SolveError as e:
+            logger.error("pfba could not determine an optimal solution for objective %s" % model.objective)
+            raise e
 
 
 def moma(model, reference=None, cache=None, reactions=None, *args, **kwargs):
@@ -546,7 +584,6 @@ class FluxDistributionResult(Result):
 if __name__ == '__main__':
     import time
     from cobra.io import read_sbml_model
-    from cobra.flux_analysis.parsimonious import optimize_minimal_flux
     from cameo import load_model
 
     # sbml_path = '../../tests/data/EcoliCore.xml'
