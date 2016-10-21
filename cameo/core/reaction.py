@@ -15,22 +15,24 @@
 
 from __future__ import absolute_import, print_function
 
-from functools import partial
 import hashlib
-import cobra as _cobrapy
-from cobra.manipulation.delete import parse_gpr, eval_gpr
+import logging
 from copy import copy, deepcopy
+from functools import partial
+
+import cobra as _cobrapy
+import six
+from cobra.manipulation.delete import parse_gpr, eval_gpr
 
 import cameo
 from cameo import flux_analysis
 from cameo.parallel import SequentialView
-
-import logging
-import six
 from cameo.util import inheritdocstring
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+__all__ = ["Reaction"]
 
 
 @six.add_metaclass(inheritdocstring)
@@ -43,7 +45,7 @@ class Reaction(_cobrapy.core.Reaction):
     """
 
     @classmethod
-    def clone(cls, reaction, model=None):
+    def clone(cls, reaction, model=None, gene_class=None):
         """Clone a reaction.
 
         Parameters
@@ -64,38 +66,34 @@ class Reaction(_cobrapy.core.Reaction):
                 setattr(new_reaction, attribute, value)
             except AttributeError:
                 logger.info(
-                    "Can't set attribute %s for reaction %s (while cloning it to a cameo style reaction). Skipping it ..." % (
-                        attribute, reaction))
+                        "Can't set attribute %s for reaction %s (while cloning it to a "
+                        "cameo style reaction). Skipping it ..." % (attribute, reaction))
         if not isinstance(reaction.model, cameo.core.solver_based_model.SolverBasedModel):
-            new_reaction._model = None
+            new_reaction.model = None
         if model is not None:
             new_reaction._model = model
-        new_reaction._clone_genes(model)
+        new_reaction._clone_genes(model, gene_class=gene_class)
         new_reaction._clone_metabolites(model)
         return new_reaction
 
-    def _clone_genes(self, model):
+    def _clone_genes(self, model, gene_class=None):
+        if gene_class is None:
+            gene_class = cameo.core.Gene
         cloned_genes = []
         for gene in self._genes:
-            if isinstance(gene, cameo.core.Gene):
-                cloned_genes.append(gene)
-            else:
-                cloned_gene = cameo.core.Gene.clone(gene)
-                cloned_genes.append(cloned_gene)
-                if model is not None:
-                    model.genes._replace_on_id(cloned_gene)
+            cloned_gene = gene_class.clone(gene)
+            cloned_genes.append(cloned_gene)
+            if model is not None:
+                model.genes._replace_on_id(cloned_gene)
         self._genes = set(cloned_genes)
 
     def _clone_metabolites(self, model):
         cloned_metabolites = {}
-        for metabolite, coeff in self.metabolites.items():
-            if isinstance(metabolite, cameo.core.Metabolite):
-                cloned_metabolites[metabolite] = coeff
-            else:
-                cloned_metabolite = cameo.core.Metabolite.clone(metabolite)
-                cloned_metabolites[cloned_metabolite] = coeff
-                if model is not None:
-                    model.metabolites._replace_on_id(cloned_metabolite)
+        for metabolite, coeff in six.iteritems(self.metabolites):
+            cloned_metabolite = cameo.core.Metabolite.clone(metabolite, model)
+            cloned_metabolites[cloned_metabolite] = coeff
+            if model is not None:
+                model.metabolites._replace_on_id(cloned_metabolite)
         self._metabolites = cloned_metabolites
 
     def __init__(self, id=None, name='', subsystem="", lower_bound=0, upper_bound=1000):

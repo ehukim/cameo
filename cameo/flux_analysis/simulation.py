@@ -77,10 +77,9 @@ def fba(model, objective=None, reactions=None, *args, **kwargs):
                undo=partial(setattr, model, 'objective', model.objective))
         solution = model.solve()
         if reactions is not None:
-            result = FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+            return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
         else:
-            result = FluxDistributionResult.from_solution(solution)
-        return result
+            return FluxDistributionResult(solution.fluxes, solution.f)
 
 
 def pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **kwargs):
@@ -118,9 +117,9 @@ def pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **
         try:
             solution = model.solve()
             if reactions is not None:
-                return FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
             else:
-                return FluxDistributionResult.from_solution(solution)
+                return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
             logger.error("pfba could not determine an optimal solution for objective %s" % model.objective)
             raise e
@@ -156,13 +155,13 @@ def gene_pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *arg
         pfba_obj = model.solver.interface.Objective(0, direction='min')
         tm(do=partial(setattr, model, 'objective', pfba_obj),
            undo=partial(setattr, model, 'objective', original_objective))
-        pfba_obj.set_linear_coefficients({enzyme.variable: 1 for enzyme in model.enzymes})
+        pfba_obj.set_linear_coefficients({gene.variable: 1 for gene in model.genes})
         try:
             solution = model.solve()
             if reactions is not None:
-                return FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
             else:
-                return FluxDistributionResult.from_solution(solution)
+                return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
             logger.error("pfba could not determine an optimal solution for objective %s" % model.objective)
             raise e
@@ -234,10 +233,9 @@ def moma(model, reference=None, cache=None, reactions=None, *args, **kwargs):
 
         solution = model.solve()
         if reactions is not None:
-            result = FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+            return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
         else:
-            result = FluxDistributionResult.from_solution(solution)
-        return result
+            return FluxDistributionResult(solution.fluxes, solution.f)
     finally:
         if volatile:
             cache.reset()
@@ -331,10 +329,9 @@ def lmoma(model, reference=None, cache=None, reactions=None, *args, **kwargs):
 
             solution = model.solve()
             if reactions is not None:
-                result = FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
             else:
-                result = FluxDistributionResult.from_solution(solution)
-            return result
+                return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
             raise e
     except Exception as e:
@@ -426,10 +423,9 @@ def room(model, reference=None, cache=None, delta=0.03, epsilon=0.001, reactions
         try:
             solution = model.solve()
             if reactions is not None:
-                result = FluxDistributionResult({r: solution.get_primal_by_id(r) for r in reactions}, solution.f)
+                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
             else:
-                result = FluxDistributionResult.from_solution(solution)
-            return result
+                return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
             logger.error("room could not determine an optimal solution for objective %s" % model.objective)
             raise e
@@ -449,10 +445,6 @@ class FluxDistributionResult(Result):
 
 
     """
-    @classmethod
-    def from_solution(cls, solution, *args, **kwargs):
-        return cls(solution.fluxes, solution.f, *args, **kwargs)
-
     def __init__(self, fluxes, objective_value, *args, **kwargs):
         super(FluxDistributionResult, self).__init__(*args, **kwargs)
         self._fluxes = fluxes
