@@ -77,7 +77,11 @@ def fba(model, objective=None, reactions=None, *args, **kwargs):
                undo=partial(setattr, model, 'objective', model.objective))
         solution = model.solve()
         if reactions is not None:
-            return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
+            reactions = list(reactions)
+            for i, r in enumerate(reactions):
+                if isinstance(r, six.string_types):
+                    reactions[i] = model.reactions.get_by_id(r)
+            return FluxDistributionResult({r.id: r.flux for r in reactions}, solution.f)
         else:
             return FluxDistributionResult(solution.fluxes, solution.f)
 
@@ -88,9 +92,13 @@ def pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **
     Parameters
     ----------
     model: SolverBasedModel
+        A genome-scale metabolic model.
     objective: str or reaction or optlang.Objective
-        An objective to be minimized/maximized for
-
+        An objective to be minimized/maximized for.
+    fraction_of_optimum: Number
+        The fraction of the optimal value of the current objective to keep.
+    reactions: list or None
+        If a list is given, it will only return the fluxes for the selected reactions. This is for code speed up.
     Returns
     -------
     FluxDistributionResult
@@ -109,15 +117,22 @@ def pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **
             tm(do=partial(setattr, model, 'objective', objective),
                undo=partial(setattr, model, 'objective', original_objective))
         model.fix_objective_as_constraint(time_machine=tm, fraction=fraction_of_optimum)
-        pfba_obj = model.solver.interface.Objective(add(
-            [mul((sympy.singleton.S.One, variable)) for variable in list(model.solver.variables.values())]),
-            direction='min', sloppy=True)
+        pfba_obj = model.solver.interface.Objective(0, direction='min')
         tm(do=partial(setattr, model, 'objective', pfba_obj),
            undo=partial(setattr, model, 'objective', original_objective))
+        coefficients = {reaction.forward_variable: 1 for reaction in model.reactions}
+        coefficients.update({reaction.reverse_variable: 1 for reaction in model.reactions})
+        pfba_obj.set_linear_coefficients(coefficients)
+
         try:
             solution = model.solve()
             if reactions is not None:
-                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
+                reactions = list(reactions)
+                for i, r in enumerate(reactions):
+                    if isinstance(r, six.string_types):
+                        reactions[i] = model.reactions.get_by_id(r)
+
+                return FluxDistributionResult({r.id: r.flux for r in reactions}, solution.f)
             else:
                 return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
@@ -125,18 +140,24 @@ def pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **
             raise e
 
 
-def gene_pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *args, **kwargs):
+def gene_pfba(model, objective=None, reactions=None, genes=None, fraction_of_optimum=1, *args, **kwargs):
     """Parsimonious Enzyme Usage Flux Balance Analysis with Enzymes [1].
 
     Parameters
     ----------
     model: GPRBasedModel
+        A genome-scale metabolic model with enzyme usage constraints and variables.
     objective: str or reaction or optlang.Objective
-        An objective to be minimized/maximized for
-
+        An objective to be minimized/maximized for.
+    fraction_of_optimum: Number
+        The fraction of the optimal value of the current objective to keep.
+    reactions: list or None
+        If a list is given, it will only return the fluxes for the selected reactions. This is for code speed up.
+    genes: list or None
+        If a list is given, it will only return the usage for the selected genes. This is for code speed up.
     Returns
     -------
-    FluxDistributionResult
+    GeneUsageAndFluxDistributionResult
         Contains the result of the linear solver.
 
     References
@@ -153,15 +174,31 @@ def gene_pfba(model, objective=None, reactions=None, fraction_of_optimum=1, *arg
                undo=partial(setattr, model, 'objective', original_objective))
         model.fix_objective_as_constraint(time_machine=tm, fraction=fraction_of_optimum)
         pfba_obj = model.solver.interface.Objective(0, direction='min')
-        tm(do=partial(setattr, model, 'objective', pfba_obj),
-           undo=partial(setattr, model, 'objective', original_objective))
-        pfba_obj.set_linear_coefficients({gene.variable: 1 for gene in model.genes})
+        model.change_objective(pfba_obj, time_machine=tm)
+        pfba_obj.set_linear_coefficients({gene.variable: 1 for gene in model.genes if not gene.id == "s0001"})
         try:
             solution = model.solve()
             if reactions is not None:
-                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
+                reactions = list(reactions)
+                for i, r in enumerate(reactions):
+                    if isinstance(r, six.string_types):
+                        reactions[i] = model.reactions.get_by_id(r)
+
             else:
-                return FluxDistributionResult(solution.fluxes, solution.f)
+                reactions = model.reactions
+
+            if genes is not None:
+                genes = list(genes)
+                for i, g in enumerate(genes):
+                    if isinstance(g, six.string_types):
+                        reactions[i] = model.genes.get_by_id(g)
+
+            else:
+                genes = model.genes
+
+            return GeneUsageAndFluxDistributionResult({r.id: r.flux for r in reactions},
+                                                      {g.id: g.usage for g in genes},
+                                                      solution.f)
         except SolveError as e:
             logger.error("pfba could not determine an optimal solution for objective %s" % model.objective)
             raise e
@@ -233,7 +270,11 @@ def moma(model, reference=None, cache=None, reactions=None, *args, **kwargs):
 
         solution = model.solve()
         if reactions is not None:
-            return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
+            reactions = list(reactions)
+            for i, r in enumerate(reactions):
+                if isinstance(r, six.string_types):
+                    reactions[i] = model.reactions.get_by_id(r)
+            return FluxDistributionResult({r.id: r.flux for r in reactions}, solution.f)
         else:
             return FluxDistributionResult(solution.fluxes, solution.f)
     finally:
@@ -329,7 +370,11 @@ def lmoma(model, reference=None, cache=None, reactions=None, *args, **kwargs):
 
             solution = model.solve()
             if reactions is not None:
-                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
+                reactions = list(reactions)
+                for i, r in enumerate(reactions):
+                    if isinstance(r, six.string_types):
+                        reactions[i] = model.reactions.get_by_id(r)
+                return FluxDistributionResult({r.id: r.flux for r in reactions}, solution.f)
             else:
                 return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
@@ -423,7 +468,11 @@ def room(model, reference=None, cache=None, delta=0.03, epsilon=0.001, reactions
         try:
             solution = model.solve()
             if reactions is not None:
-                return FluxDistributionResult({r: r.flux for r in reactions}, solution.f)
+                reactions = list(reactions)
+                for i, r in enumerate(reactions):
+                    if isinstance(r, six.string_types):
+                        reactions[i] = model.reactions.get_by_id(r)
+                return FluxDistributionResult({r.id: r.flux for r in reactions}, solution.f)
             else:
                 return FluxDistributionResult(solution.fluxes, solution.f)
         except SolveError as e:
@@ -572,6 +621,18 @@ class FluxDistributionResult(Result):
         except ImportError:
             print("Escher must be installed in order to visualize maps")
 
+
+class GeneUsageAndFluxDistributionResult(FluxDistributionResult):
+    def __init__(self, fluxes, gene_usage, objective_value, *args, **kwargs):
+        super(GeneUsageAndFluxDistributionResult, self).__init__(fluxes, objective_value, *args, **kwargs)
+        self._gene_usage = gene_usage
+
+    @property
+    def data_frame(self):
+        data = {rid: [flux, 'reaction'] for rid, flux in six.iteritems(self._fluxes)}
+        data.update({gid: [usage, 'gene'] for gid, usage in six.iteritems(self._gene_usage)})
+
+        return pandas.DataFrame(data, columns=['flux', 'variable_type'])
 
 if __name__ == '__main__':
     import time
