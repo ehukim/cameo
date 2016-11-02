@@ -19,21 +19,22 @@ from __future__ import absolute_import
 import copy
 import os
 import unittest
-from nose.tools import assert_almost_equal
 
 import pandas
+from nose.tools import assert_almost_equal
+from optlang.exceptions import IndicatorConstraintsNotSupported
 from sympy import Add
 
 import cameo
 from cameo.config import solvers
+from cameo.core.gpr_based_model import GPRBasedModel
 from cameo.flux_analysis import remove_infeasible_cycles
+from cameo.flux_analysis import structural
 from cameo.flux_analysis.analysis import flux_variability_analysis, phenotypic_phase_plane, find_blocked_reactions
-from cameo.flux_analysis.simulation import fba, pfba, lmoma, room, moma
+from cameo.flux_analysis.simulation import fba, pfba, lmoma, room, moma, gene_pfba
 from cameo.io import load_model
 from cameo.parallel import SequentialView, MultiprocessingView
 from cameo.util import TimeMachine
-from cameo.flux_analysis import structural
-from optlang.exceptions import IndicatorConstraintsNotSupported
 
 TRAVIS = os.getenv('TRAVIS', False)
 
@@ -49,7 +50,6 @@ def assert_data_frames_equal(obj, expected, delta=0.0001, sort_by=None):
             assert_almost_equal(df[column][key], expected[column][key], delta=delta)
 
 
-
 TESTDIR = os.path.dirname(__file__)
 REFERENCE_FVA_SOLUTION_ECOLI_CORE = pandas.read_csv(os.path.join(TESTDIR, 'data/REFERENCE_flux_ranges_EcoliCore.csv'),
                                                     index_col=0)
@@ -59,6 +59,7 @@ REFERENCE_PPP_o2_glc_EcoliCore = pandas.read_csv(os.path.join(TESTDIR, 'data/REF
 
 CORE_MODEL = load_model(os.path.join(TESTDIR, 'data/EcoliCore.xml'), sanitize=False)
 iJO_MODEL = load_model(os.path.join(TESTDIR, 'data/iJO1366.xml'), sanitize=False)
+iAF_MODEL = load_model(os.path.join(TESTDIR, 'data/iAF1260_Machado_2016.sbml'), sanitize=False)
 
 iJO_MODEL_COBRAPY = load_model(os.path.join(TESTDIR, 'data/iJO1366.xml'), solver_interface=None, sanitize=False)
 
@@ -306,6 +307,25 @@ class Wrapper:
                 result_changed = moma(TOY_MODEL_PAPIN_2003, reference=reference_changed)
 
             self.assertNotEqual(expected, result_changed.fluxes)
+
+        def test_gene_pfba(self):
+            reactions = ["PFK", "F6PA", "FBA", "DHAPT", "PYK"]
+
+            model = GPRBasedModel(iAF_MODEL, solver_interface=self.model.solver.interface)
+            model.reactions.R_EX_glc_LPAREN_e_RPAREN_ = -10
+            pfba_result = pfba(model)
+            gene_pfba_result = gene_pfba(model)
+            self.assertAlmostEqual(15.2, sum(abs(pfba_result[r]) for r in reactions), delta=0.1)
+            self.assertAlmostEqual(16.8, sum(abs(gene_pfba_result[r]) for r in reactions), delta=0.1)
+
+        def test_gene_pfba_with_reactions(self):
+            reactions = ["PFK", "F6PA", "FBA", "DHAPT", "PYK"]
+
+            model = GPRBasedModel(iAF_MODEL, solver_interface=self.model.solver.interface)
+            model.reactions.R_EX_glc_LPAREN_e_RPAREN_ = -10
+            gene_pfba_result = gene_pfba(model, reactions=reactions)
+            self.assertAlmostEqual(16.8, sum(abs(gene_pfba_result[r]) for r in reactions), delta=0.1)
+            self.assertEqual(len(gene_pfba_result.fluxes), len(reactions))
 
     class AbstractTestRemoveCycles(unittest.TestCase):
 
