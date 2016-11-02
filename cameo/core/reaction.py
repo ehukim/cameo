@@ -45,7 +45,7 @@ class Reaction(_cobrapy.core.Reaction):
     """
 
     @classmethod
-    def clone(cls, reaction, model=None, gene_class=None):
+    def clone(cls, reaction, model=None):
         """Clone a reaction.
 
         Parameters
@@ -72,16 +72,14 @@ class Reaction(_cobrapy.core.Reaction):
             new_reaction.model = None
         if model is not None:
             new_reaction._model = model
-        new_reaction._clone_genes(model, gene_class=gene_class)
+        new_reaction._clone_genes(model)
         new_reaction._clone_metabolites(model)
         return new_reaction
 
-    def _clone_genes(self, model, gene_class=None):
-        if gene_class is None:
-            gene_class = cameo.core.Gene
+    def _clone_genes(self, model):
         cloned_genes = []
         for gene in self._genes:
-            cloned_gene = gene_class.clone(gene)
+            cloned_gene = cameo.core.Gene.clone(gene)
             cloned_genes.append(cloned_gene)
             if model is not None:
                 model.genes._replace_on_id(cloned_gene)
