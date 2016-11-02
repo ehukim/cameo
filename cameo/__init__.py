@@ -50,7 +50,9 @@ optimization.run(max_evaluations=2000, n=1,
 from __future__ import absolute_import, print_function
 
 import os
+
 import sys
+
 from cameo import config
 from cameo.util import get_system_info, in_ipnb
 
@@ -102,6 +104,7 @@ from cameo import models
 from cameo.core.solver_based_model import SolverBasedModel as Model
 from cameo.core.reaction import Reaction
 from cameo.core.metabolite import Metabolite
+from cameo.core.gene import Gene
 
 from .flux_analysis.analysis import flux_variability_analysis, phenotypic_phase_plane
 from .flux_analysis.simulation import fba, pfba
