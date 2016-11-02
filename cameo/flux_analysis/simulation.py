@@ -175,7 +175,7 @@ def gene_pfba(model, objective=None, reactions=None, genes=None, fraction_of_opt
         model.fix_objective_as_constraint(time_machine=tm, fraction=fraction_of_optimum)
         pfba_obj = model.solver.interface.Objective(0, direction='min')
         model.change_objective(pfba_obj, time_machine=tm)
-        pfba_obj.set_linear_coefficients({gene.variable: 1 for gene in model.genes if not gene.id == "s0001"})
+        pfba_obj.set_linear_coefficients({gene.variable: 1 for gene in model.genes if hasattr(gene, 'variable')})
         try:
             solution = model.solve()
             if reactions is not None:
@@ -367,7 +367,6 @@ def lmoma(model, reference=None, cache=None, reactions=None, *args, **kwargs):
         cache.add_objective(create_objective, None, cache.variables.values())
 
         try:
-
             solution = model.solve()
             if reactions is not None:
                 reactions = list(reactions)
@@ -628,11 +627,47 @@ class GeneUsageAndFluxDistributionResult(FluxDistributionResult):
         self._gene_usage = gene_usage
 
     @property
+    def gene_usage(self):
+        return self._gene_usage
+
+    def __getitem__(self, item):
+        if isinstance(item, cameo.Reaction):
+            return self.fluxes[item.id]
+        elif isinstance(item, cameo.Gene):
+            return self.gene_usage[item.id]
+        elif isinstance(item, str):
+            res = self.fluxes.get(item, False) or self.gene_usage.get(item, False)
+            if res:
+                return res
+            else:
+                exp = parse_expr(item)
+        elif isinstance(item, OptimizationExpression):
+            exp = item.expression
+        elif isinstance(item, sympy.Expr):
+            exp = item
+        else:
+            raise KeyError(item)
+
+        subs = {}
+        for symbol in exp.atoms(sympy.Symbol):
+            if symbol.name in self.fluxes:
+                subs[symbol] = self.fluxes[symbol.name]
+            elif symbol.name in self.gene_usage:
+                subs[symbol] = self.gene_usage[symbol.name]
+            else:
+                raise KeyError(symbol.name)
+
+        return exp.evalf(subs=subs)
+
+    @property
     def data_frame(self):
         data = {rid: [flux, 'reaction'] for rid, flux in six.iteritems(self._fluxes)}
         data.update({gid: [usage, 'gene'] for gid, usage in six.iteritems(self._gene_usage)})
 
-        return pandas.DataFrame(data, columns=['flux', 'variable_type'])
+        df = pandas.DataFrame.from_dict(data, orient='index')
+        df.columns = ['flux', 'variable_type']
+
+        return df
 
 if __name__ == '__main__':
     import time
