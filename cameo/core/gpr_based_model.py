@@ -567,8 +567,8 @@ class GPRBasedModel(SolverBasedModel):
                     self.solver.objective = self.solver.interface.Objective(0, direction='max')
                 if self.solver.objective.direction == 'min':
                     self.solver.objective.direction = 'max'
-                self.solver.objective.set_linear_coefficients(
-                        {forward_variable: objective_coeff, reverse_variable: -objective_coeff})
+                self.solver.objective.set_linear_coefficients({forward_variable: objective_coeff,
+                                                               reverse_variable: -objective_coeff})
 
         self.solver.update()
         for constraint, terms in six.iteritems(constraint_terms):

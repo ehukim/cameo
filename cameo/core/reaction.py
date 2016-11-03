@@ -65,9 +65,8 @@ class Reaction(_cobrapy.core.Reaction):
             try:
                 setattr(new_reaction, attribute, value)
             except AttributeError:
-                logger.info(
-                        "Can't set attribute %s for reaction %s (while cloning it to a "
-                        "cameo style reaction). Skipping it ..." % (attribute, reaction))
+                logger.info("Can't set attribute %s for reaction %s (while cloning it to a "
+                            "cameo style reaction). Skipping it ..." % (attribute, reaction))
         if not isinstance(reaction.model, cameo.core.solver_based_model.SolverBasedModel):
             new_reaction.model = None
         if model is not None:
