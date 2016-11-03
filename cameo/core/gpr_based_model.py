@@ -445,9 +445,8 @@ class GPRBasedModel(SolverBasedModel):
 
         for reaction in self.reactions:
             reaction._genes = {self.genes.get_by_id(gene.id) for gene in reaction.genes}
-            reaction._metabolites = {
-                self.metabolites.get_by_id(met.id): coef for met, coef in six.iteritems(reaction.metabolites)
-                }
+            reaction._metabolites = {self.metabolites.get_by_id(met.id): coeff for
+                                     met, coeff in six.iteritems(reaction.metabolites)}
 
         self._populate_solver(self.reactions, self.metabolites, self.genes)
         self._timestamp_last_optimization = None
